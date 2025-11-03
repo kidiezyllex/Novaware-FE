@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
       borderColor: "rgba(224, 224, 224, 1)",
     },
     "& .MuiInput-input": {
-      fontFamily: "Poppins, sans-serif",
+      fontFamily: "Inter, sans-serif",
       fontSize: 13,
     },
   },

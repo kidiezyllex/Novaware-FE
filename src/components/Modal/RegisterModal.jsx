@@ -27,7 +27,7 @@ import Fade from "@material-ui/core/Fade";
 
 const theme = createTheme({
   typography: {
-    fontFamily: ["Poppins", "sans-serif"].join(","),
+    fontFamily: ["Inter", "sans-serif"].join(","),
   },
 });
 
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     ...theme.mixins.customize.centerFlex(),
     height: "auto",
-    fontFamily: "Poppins, sans-serif",
+    fontFamily: "Inter, sans-serif",
   },
   container: {
     height: "auto",

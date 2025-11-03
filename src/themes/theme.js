@@ -9,7 +9,7 @@ import {
 
 const theme = createTheme({
   typography: {
-    fontFamily: ["Poppins", "Jost", "sans-serif"].join(","),
+    fontFamily: ["Inter", "Jost", "sans-serif"].join(","),
   },
   mixins: {
     customize: {
