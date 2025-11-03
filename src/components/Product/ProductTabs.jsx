@@ -9,7 +9,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import ProductCard from './ProductCard';
-import { Button, CircularProgress, Grid } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 
 function TabPanel(props) {
@@ -24,7 +24,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3} component='div'>
+        <Box py={3} px={0} component='div'>
           {children}
         </Box>
       )}
@@ -83,14 +83,15 @@ const ProductTabs = () => {
   const [value, setValue] = React.useState(0);
   const classes = useStyles();
   const matches = useMediaQuery('(max-width:600px)');
+  const titles = ['Sản phẩm mới nhất', 'Sản phẩm giảm giá', 'Tất cả sản phẩm'];
 
-  const { data: productLatestResponse, isLoading: loadingProductLatest, error: errorProductLatest } = useGetLatestProducts();
+  const { data: productLatestResponse, isLoading: loadingProductLatest, error: errorProductLatest } = useGetLatestProducts({ pageNumber: 1, perPage: 15 });
   const productsLatest = productLatestResponse?.data?.products || [];
 
-  const { data: productSaleResponse, isLoading: loadingProductSale, error: errorProductSale } = useGetSaleProducts();
+  const { data: productSaleResponse, isLoading: loadingProductSale, error: errorProductSale } = useGetSaleProducts({ pageNumber: 1, perPage: 15 });
   const productsSale = productSaleResponse?.data?.products || [];
 
-  const { data: productListResponse, isLoading: loadingProductList, error: errorProductList } = useGetProducts({ option: 'all' });
+  const { data: productListResponse, isLoading: loadingProductList, error: errorProductList } = useGetProducts({ option: 'all', pageNumber: 1, pageSize: 15 });
   const productsList = productListResponse?.data?.products || [];
 
   const handleChange = (event, newValue) => {
@@ -98,7 +99,8 @@ const ProductTabs = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <div className="mx-auto px-16">
+      <h2 className="my-16 mb-8 text-center text-4xl font-normal leading-[1.235]">{titles[value]}</h2>
       <AppBar position='static' className={classes.appBar}>
         <Tabs
           variant={matches ? 'scrollable' : 'standard'}
@@ -123,7 +125,7 @@ const ProductTabs = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <Grid container spacing={4}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-6">
           {loadingProductLatest ? (
             <div className={classes.loading}>
               <CircularProgress color='secondary' />
@@ -132,12 +134,12 @@ const ProductTabs = () => {
             <Alert severity='error'>{errorProductLatest.message || String(errorProductLatest)}</Alert>
           ) : (
             productsLatest && productsLatest.map((product) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
+              <div key={product._id}>
                 <ProductCard {...product} />
-              </Grid>
+              </div>
             ))
           )}
-        </Grid>
+        </div>
         <div className={classes.buttonMore}>
           <Button
             variant='contained'
@@ -150,7 +152,7 @@ const ProductTabs = () => {
         </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Grid container spacing={4}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-6">
           {loadingProductSale ? (
             <div className={classes.loading}>
               <CircularProgress color='secondary' />
@@ -159,12 +161,12 @@ const ProductTabs = () => {
             <Alert severity='error'>{errorProductSale.message || String(errorProductSale)}</Alert>
           ) : (
             productsSale && productsSale.map((product) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
+              <div key={product._id}>
                 <ProductCard {...product} />
-              </Grid>
+              </div>
             ))
           )}
-        </Grid>
+        </div>
         <div className={classes.buttonMore}>
           <Button
             variant='contained'
@@ -177,7 +179,7 @@ const ProductTabs = () => {
         </div>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Grid container spacing={4}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-6">
           {loadingProductList ? (
             <div className={classes.loading}>
               <CircularProgress color='secondary' />
@@ -186,12 +188,12 @@ const ProductTabs = () => {
             <Alert severity='error'>{errorProductList.message || String(errorProductList)}</Alert>
           ) : (
             productsList && productsList.map((product) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
+              <div key={product._id}>
                 <ProductCard {...product} />
-              </Grid>
+              </div>
             ))
           )}
-        </Grid>
+        </div>
         <div className={classes.buttonMore}>
           <Button
             variant='contained'

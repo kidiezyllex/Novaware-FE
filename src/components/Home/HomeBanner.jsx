@@ -15,15 +15,14 @@ const HomeBanner = () => {
   const banners = bannersResponse?.data?.contentSections || [];
   const error = queryError?.message || (queryError ? String(queryError) : null);
   
-  console.log(banners);
   if (loading) return <div>Loading banners...</div>;
   if (error) return <div>Error: {error}</div>;
 
   const flatBanners = banners?.flat();
   const filteredBanners = flatBanners?.filter((b) => b.type === "banner");
 
-  if (!filteredBanners || filteredBanners.length < 2)
-    return <div>Not enough banners found.</div>;
+  // if (!filteredBanners || filteredBanners.length < 2)
+  //   return <div>Not enough banners found.</div>;
   return (
     <div className="home-banner">
       <ThemeProvider theme={theme}>

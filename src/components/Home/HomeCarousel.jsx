@@ -18,38 +18,38 @@ const banners = [
   {
     id: 1,
     image: banner1,
-    title: "New Collection",
-    description: "Discover our latest fashion trends and styles",
-    buttonText: "Shop Now",
+    title: "Bộ sưu tập mới",
+    description: "Khám phá những xu hướng và phong cách thời trang mới nhất của chúng tôi, được tuyển chọn kỹ lưỡng cho mọi dịp và cá tính của bạn.",
+    buttonText: "Mua ngay",
     buttonLink: "/shop",
     position: "left", // left, right, center, center-top
   },
   {
     id: 2,
-    image: banner2,
-    title: "Summer Sale",
-    description: "Up to 50% off on selected items",
-    buttonText: "Explore",
+    image: banner3,
+    title: "Ưu đãi mùa hè",
+    description: "Giảm giá đến 50% cho các sản phẩm chọn lọc, cơ hội tuyệt vời để làm mới tủ đồ với mức giá siêu tiết kiệm và ưu đãi hấp dẫn.",
+    buttonText: "Khám phá",
     buttonLink: "/shop",
     position: "center",
   },
   {
     id: 3,
-    image: banner3,
-    title: "Premium Quality",
-    description: "Experience luxury with our premium collection",
-    buttonText: "Learn More",
+    image: banner4,
+    title: "Phiên bản giới hạn",
+    description: "Thiết kế độc quyền chỉ có trong thời gian ngắn, số lượng có hạn — đừng bỏ lỡ cơ hội sở hữu trước khi hết hàng.",
+    buttonText: "Xem bộ sưu tập",
     buttonLink: "/shop",
-    position: "right",
+    position: "center-top",
   },
   {
     id: 4,
-    image: banner4,
-    title: "Limited Edition",
-    description: "Exclusive designs available for a limited time",
-    buttonText: "View Collection",
+    image: banner2,
+    title: "Chất lượng cao cấp",
+    description: "Trải nghiệm sự tinh tế của bộ sưu tập cao cấp, chú trọng từng chi tiết từ chất liệu đến đường may để mang lại cảm giác thoải mái và bền bỉ.",
+    buttonText: "Tìm hiểu thêm",
     buttonLink: "/shop",
-    position: "center-top",
+    position: "left",
   },
 ];
 
@@ -99,7 +99,7 @@ const HomeCarousel = () => {
               />
               
               {/* Overlay - black/10 */}
-              <div className="absolute inset-0 bg-black/10" />
+              <div className="absolute inset-0 bg-black/30" />
               
               {/* Content */}
               <div
