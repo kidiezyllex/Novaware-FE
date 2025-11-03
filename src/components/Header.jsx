@@ -9,14 +9,11 @@ import ChatIcon from "../assets/icons/ai-icon.svg?react";
 import { setOpenCartDrawer } from "../actions/cartActions";
 import { logout } from "../actions/userActions";
 import { openChatDrawer } from "../actions/chatActions";
-import { useGetCategories } from "../hooks/api/useCategory";
-import { useGetGroupedBrands } from "../hooks/api/useBrand";
 import { useGetFavorites } from "../hooks/api/useUser";
 import { FaHeart } from 'react-icons/fa';
 import { openFavoriteDrawer } from "../actions/favoriteActions";
 import {
   filterByCategory,
-  filterByBrand,
   filterClearAll,
 } from "../actions/filterActions";
 import {
@@ -40,6 +37,8 @@ import HeaderUser from "./HeaderUser.jsx";
 import SearchBox from "./SearchBox.jsx";
 import FavoritePreview from '../components/Drawer/FavoritePreview';
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import BrandDropdown from "./Header/BrandDropdown";
+import CategoryDropdown from "./Header/CategoryDropdown";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -218,37 +217,11 @@ const Header = ({
   const { pathname } = location;
   const currentPath = pathname.split("/")[1];
 
-  // Dropdown Menu
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [openDropdown, setOpenDropdown] = useState({
-    categories: false,
-    brands: false,
-  });
-
-  const handleMenuOpen = (event, menuType) => {
-    setAnchorEl(event.currentTarget);
-    setOpenDropdown({
-      ...openDropdown,
-      [menuType]: true,
-    });
-  };
-
-  const handleMenuClose = (menuType) => {
-      setAnchorEl(null);
-      setOpenDropdown({
-        ...openDropdown,
-        [menuType]: false,
-      });
-  };
+  // Dropdowns are self-managed inside their components
 
   // Hooks for API data
-  const { data: categoriesResponse, isLoading: loadingCategories, error: errorCategories } = useGetCategories();
-  const { data: brandsResponse, isLoading: loadingBrands, error: errorBrands } = useGetGroupedBrands();
   const { data: favoritesResponse } = useGetFavorites(userInfo?._id || "");
-  
-  const categoriesRaw = categoriesResponse?.data?.categories || [];
-  const categories = Array.isArray(categoriesRaw) ? categoriesRaw : [];
-  const brandGroups = brandsResponse?.data?.groups || [];
+
   const favoriteItems = favoritesResponse?.data?.favoriteItems || [];
 
   // scroll effect
@@ -291,23 +264,7 @@ const Header = ({
     }
   };
 
-  const handleCategoryClick = (categoryName) => {
-    dispatch(filterByCategory(categoryName));
-  };
-
-  const handleBrandClick = (brandName) => {
-    dispatch(filterByBrand(brandName));
-  };
-
-  const handleCategoryMenuItemClick = (categoryName) => {
-    handleCategoryClick(categoryName);
-    handleMenuClose("categories");
-  };
-
-  const handleBrandMenuItemClick = (brandName) => {
-    handleBrandClick(brandName);
-    handleMenuClose("brands");
-  };
+  // Category interactions handled within CategoryDropdown
 
   const handleAllCategoriesClick = () => {
     dispatch(filterClearAll());
@@ -366,121 +323,14 @@ const Header = ({
                 Shop
               </MenuItem>
               {/* Categories Menu */}
-                <MenuItem
-                  className={classes.menuItem}
-                  aria-owns={
-                    openDropdown.categories ? "categories-menu" : undefined
-                  }
-                  aria-haspopup="true"
-                  onClick={(e) => handleMenuOpen(e, "categories")}
-                  disableRipple
-                >
-                  <Typography>Categories</Typography>
-                  <ArrowDropDownIcon fontSize="medium" />
-                </MenuItem>
-                <Menu
-                  id="categories-menu"
-                  anchorEl={anchorEl}
-                  open={openDropdown.categories}
-                  onClose={() => handleMenuClose("categories")}
-                  MenuListProps={{
-                    component: "div", // Sử dụng "div" thay vì mặc định "ul"
-                    onMouseLeave: () => handleMenuClose("categories"),
-                  }}
-                  getContentAnchorEl={null}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  PaperProps={{
-                    className: classes.menuPaper
-                  }}
-                >
-                  {loadingCategories ? (
-                    <MenuItem>Loading...</MenuItem>
-                  ) : errorCategories ? (
-                    <MenuItem>{errorCategories}</MenuItem>
-                  ) : (
-                    categories.map((category) => (
-                      <MenuItem
-                        key={category._id}
-                        component={Link}
-                        to={`/shop?category=${category.name}`}
-                        onClick={() =>
-                          handleCategoryMenuItemClick(category.name)
-                        }
-                      >
-                        {category.name}
-                      </MenuItem>
-                    ))
-                  )}
-                </Menu>
+                <CategoryDropdown
+                  menuItemClassName={classes.menuItem}
+                />
 
               {/* Brands Menu */}
-                <MenuItem
-                  className={classes.menuItem}
-                  aria-owns={
-                    openDropdown.brands ? "brands-menu" : undefined
-                  }
-                  aria-haspopup="true"
-                  onClick={(e) => handleMenuOpen(e, "brands")}
-                  disableRipple
-                >
-                  <Typography>Brands</Typography>
-                  <ArrowDropDownIcon fontSize="medium" />
-                </MenuItem>
-                <Menu
-                  id="brands-menu"
-                  anchorEl={anchorEl}
-                  open={openDropdown.brands}
-                  onClose={() => handleMenuClose("brands")}
-                  MenuListProps={{
-                    component: "div",
-                    className: classes.brandsMenuList,
-                    onMouseLeave: () => handleMenuClose("brands"),
-                  }}
-                  getContentAnchorEl={null}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  PaperProps={{
-                    className: classes.menuPaper
-                  }}
-                >
-                  {loadingBrands ? (
-                    <MenuItem>Loading...</MenuItem>
-                  ) : errorBrands ? (
-                    <MenuItem>{errorBrands}</MenuItem>
-                  ) : (
-                    brandGroups.map((group) => (
-                      <div className={classes.brandGroupColumn} key={group.letter}>
-                        <div className={classes.letterRow} role="presentation" aria-hidden>
-                          <span className={classes.letterText}>{group.letter}</span>
-                          <span className={classes.letterDivider} />
-                        </div>
-                        {group.brands.map((brand) => (
-                          <MenuItem
-                            key={brand._id}
-                            component={Link}
-                            to={`/shop?brand=${brand.name}`}
-                            onClick={() => handleBrandMenuItemClick(brand.name)}
-                          >
-                            <Typography className={classes.menuItemText}>{brand.name}</Typography>
-                          </MenuItem>
-                        ))}
-                      </div>
-                    ))
-                  )}
-                </Menu>
+              <BrandDropdown
+                menuItemClassName={classes.menuItem}
+              />
 
               <MenuItem
                 component={Link}
@@ -628,7 +478,7 @@ const Header = ({
               <CartIcon />
             </Badge>
           </IconButton>
-          
+
           {/* Favorites */}
           <IconButton color="inherit" onClick={handleFavoriteClick}>
             <Badge badgeContent={favoriteItems.length} color="secondary" overlap="rectangular">
