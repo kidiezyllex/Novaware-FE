@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { closeChatDrawer } from "../../actions/chatActions";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import CloseIcon from "@material-ui/icons/Close";
 import SendIcon from "@material-ui/icons/Send";
 import axios from "axios";
@@ -242,7 +242,7 @@ const ChatPreview = () => {
       }
     } catch (error) {
       console.error(error);
-      dispatch(openSnackbar("Oops! Something went wrong.", "error"));
+      toast.error("Đã xảy ra lỗi!");
       setMessages((prevMessages) => [
         ...prevMessages,
         {

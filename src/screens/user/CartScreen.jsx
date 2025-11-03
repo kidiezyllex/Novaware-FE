@@ -2,7 +2,7 @@ import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart } from "../../actions/cartActions";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Avatar,
@@ -99,7 +99,7 @@ const CartScreen = ({ history }) => {
 
   const removeFromCartHandler = (id, sizeSelected, colorSelected) => {
     dispatch(removeFromCart(id, sizeSelected, colorSelected));
-    dispatch(openSnackbar("Item has been removed from the cart", "success"));
+    toast.success("Sản phẩm đã được xóa khỏi giỏ hàng!");
   };
 
   // Tính tổng giá của những item được chọn
@@ -112,7 +112,7 @@ const CartScreen = ({ history }) => {
     const selectedProducts = cartItems.filter((item) => item.selected);
 
     if (selectedProducts.length === 0) {
-      dispatch(openSnackbar("Please select at least one item.", "warning"));
+      toast.warning("Vui lòng chọn ít nhất một sản phẩm.");
       return;
     }
 

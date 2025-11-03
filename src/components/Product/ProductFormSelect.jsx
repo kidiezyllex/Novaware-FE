@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { useDispatch } from "react-redux";
 import { addToCart, removeFromCart } from "../../actions/cartActions";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import {
   FormControl,
   InputLabel,
@@ -56,7 +56,7 @@ const ProductFormSelect = ({ item, className }) => {
 
     // Nếu không có thay đổi gì thì không làm gì cả
     if (oldSize === newSize && oldColor === newColor && item.qty === data.qty) {
-      dispatch(openSnackbar("No changes made", "info"));
+      toast.info("Không có thay đổi nào");
       return;
     }
 
@@ -65,7 +65,7 @@ const ProductFormSelect = ({ item, className }) => {
 
     // 2. Thêm item mới
     dispatch(addToCart(id, data.qty, newSize, data.color, newColor));
-    dispatch(openSnackbar("Item has been updated", "success"));
+    toast.success("Sản phẩm đã được cập nhật!");
   };
 
   return (

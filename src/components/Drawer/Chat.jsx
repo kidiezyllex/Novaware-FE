@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { closeAdminChatDrawer } from "../../actions/chatActions";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import {
   IconButton,
   Drawer,
@@ -223,7 +223,7 @@ const Chat = ({ setHasNewMessageRef }) => {
       ) {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
         if (!openAdminChatDrawer) {
-          dispatch(openSnackbar("You have new message!", "info"));
+          toast.info("Bạn có tin nhắn mới!");
           if (setHasNewMessageRef.current) {
             setHasNewMessageRef.current(true);
           }

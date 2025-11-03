@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useResetPassword } from "../../hooks/api/useUser"; 
+import { useResetPassword } from "../../hooks/api/useAuth"; 
 import { useLocation, useHistory } from "react-router-dom";
 import {
   Button,
@@ -58,7 +58,7 @@ const ResetPasswordModal = ({ open, onClose, resetTokenFromProp }) => {
     } else {
       if (resetToken) {
         try {
-          await resetPasswordMutation.mutateAsync({ body: { password }, token: resetToken });
+          await resetPasswordMutation.mutateAsync({ body: { password }, resetToken: resetToken });
         } catch (error) {
           console.error("Reset password failed:", error);
         }

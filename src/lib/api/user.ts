@@ -1,10 +1,5 @@
 import { sendGet, sendPost, sendPut, sendDelete } from "./axios";
 import {
-	IRegisterResponse,
-	ILoginResponse,
-	IForgotPasswordResponse,
-	IVerifyCodeResponse,
-	IResetPasswordResponse,
 	IGetProfileResponse,
 	IUpdateProfileResponse,
 	IGetUsersResponse,
@@ -20,11 +15,6 @@ import {
 	IGetUsersForTestingResponse,
 } from "../../interface/response/user";
 import {
-	IRegisterBody,
-	ILoginBody,
-	IForgotPasswordBody,
-	IVerifyCodeBody,
-	IResetPasswordBody,
 	IUpdateProfileBody,
 	IGetUsersQuery,
 	IUpdateUserBody,
@@ -32,33 +22,6 @@ import {
 	IGetFavoritesQuery,
 	IGetUsersForTestingQuery,
 } from "../../interface/request/user";
-
-// Register
-export const register = async (body: IRegisterBody): Promise<IRegisterResponse> => {
-	return await sendPost(`/users`, body);
-};
-
-// Login
-export const login = async (body: ILoginBody): Promise<ILoginResponse> => {
-	return await sendPost(`/users/login`, body);
-};
-
-// Forgot Password
-export const forgotPassword = async (body: IForgotPasswordBody): Promise<IForgotPasswordResponse> => {
-	return await sendPost(`/users/forgot-password`, body);
-};
-
-// Verify Code
-export const verifyCode = async (body: IVerifyCodeBody): Promise<IVerifyCodeResponse> => {
-	return await sendPost(`/users/verify-code`, body);
-};
-
-// Reset Password
-export const resetPassword = async (body: IResetPasswordBody): Promise<IResetPasswordResponse> => {
-	// Note: Token should be passed via Authorization header in axios interceptor
-	// For now, we'll use the default instance which should have the token
-	return await sendPut(`/users/reset-password`, body);
-};
 
 // Get Profile
 export const getProfile = async (): Promise<IGetProfileResponse> => {

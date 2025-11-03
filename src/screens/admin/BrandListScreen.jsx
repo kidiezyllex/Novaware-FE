@@ -11,7 +11,7 @@ import {
   TextField,
   IconButton,
 } from "@material-ui/core";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { makeStyles } from "@material-ui/core/styles";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import {
@@ -88,16 +88,16 @@ const BrandListScreen = ({ history }) => {
 
   useEffect(() => {
     if (successCreate) {
-      dispatch(openSnackbar("Brand created successfully!", "success"));
+      toast.success("Thương hiệu đã được tạo thành công!");
       setBrandName("");
     }
     if (successUpdate) {
-      dispatch(openSnackbar("Brand updated successfully!", "success"));
+      toast.success("Thương hiệu đã được cập nhật!");
     }
     if (successDelete) {
-      dispatch(openSnackbar("Brand deleted successfully!", "success"));
+      toast.success("Thương hiệu đã được xóa!");
     }
-  }, [dispatch, successDelete, successCreate, successUpdate]);
+  }, [successDelete, successCreate, successUpdate]);
 
   const deleteHandler = async (id) => {
     if (window.confirm("Are you sure you want to delete this brand?")) {

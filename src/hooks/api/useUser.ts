@@ -1,10 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-	register,
-	login,
-	forgotPassword,
-	verifyCode,
-	resetPassword,
 	getProfile,
 	updateProfile,
 	getUsers,
@@ -21,37 +16,6 @@ import {
 } from '../../lib/api/user';
 import * as UserTypes from '../../interface/response/user';
 import * as UserRequestTypes from '../../interface/request/user';
-
-// Mutations
-export const useRegister = () => {
-	return useMutation<UserTypes.IRegisterResponse, Error, UserRequestTypes.IRegisterBody>({
-		mutationFn: register,
-	});
-};
-
-export const useLogin = () => {
-	return useMutation<UserTypes.ILoginResponse, Error, UserRequestTypes.ILoginBody>({
-		mutationFn: login,
-	});
-};
-
-export const useForgotPassword = () => {
-	return useMutation<UserTypes.IForgotPasswordResponse, Error, UserRequestTypes.IForgotPasswordBody>({
-		mutationFn: forgotPassword,
-	});
-};
-
-export const useVerifyCode = () => {
-	return useMutation<UserTypes.IVerifyCodeResponse, Error, UserRequestTypes.IVerifyCodeBody>({
-		mutationFn: verifyCode,
-	});
-};
-
-export const useResetPassword = () => {
-	return useMutation<UserTypes.IResetPasswordResponse, Error, { body: UserRequestTypes.IResetPasswordBody; token?: string }>({
-		mutationFn: ({ body, token }) => resetPassword(body, token),
-	});
-};
 
 // Queries
 export const useGetProfile = () => {

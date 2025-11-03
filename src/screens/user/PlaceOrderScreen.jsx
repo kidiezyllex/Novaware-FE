@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useCreateOrder } from "../../hooks/api/useOrder";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import {
   Button,
   Container,
@@ -133,9 +133,9 @@ const PlaceOrderScreen = ({ history }) => {
   useEffect(() => {
     if (success && order?._id) {
       history.push(`/order/${order._id}`);
-      dispatch(openSnackbar("Order has been created successfully", "success"));
+      toast.success("Đơn hàng đã được tạo thành công!");
     }
-  }, [history, success, dispatch, order]);
+  }, [history, success, order]);
 
   const placeOrderHandler = async () => {
     try {
@@ -150,7 +150,7 @@ const PlaceOrderScreen = ({ history }) => {
       });
     } catch (error) {
       console.error("Failed to create order:", error);
-      dispatch(openSnackbar("Failed to create order", "error"));
+      toast.error("Tạo đơn hàng thất bại");
     }
   };
 

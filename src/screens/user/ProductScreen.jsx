@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { addToCart } from "../../actions/cartActions";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { Grid, Container, Link } from "@material-ui/core";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
@@ -81,13 +81,7 @@ const ProductScreen = ({ match, setLoginModalOpen }) => {
     const colorName = selectedColor ? selectedColor.name : "";
 
     dispatch(addToCart(productId, qty, size, color, colorName));
-    dispatch(
-      openSnackbar("The product has been added to cart!", "success", {
-        hasLink: true,
-        to: "/cart",
-        text: "View Cart",
-      })
-    );
+    toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
   };
 
   const handleAddToFavorites = async () => {
@@ -97,9 +91,9 @@ const ProductScreen = ({ match, setLoginModalOpen }) => {
           userId: userInfo._id,
           body: { productId: product._id }
         });
-        dispatch(openSnackbar("Product added to favorites!", "success"));
+        toast.success("Đã thêm vào yêu thích!");
       } catch (error) {
-        dispatch(openSnackbar("Failed to add to favorites", "error"));
+        toast.error("Thêm vào yêu thích thất bại");
       }
     } else {
       setLoginModalOpen(true);
@@ -113,9 +107,9 @@ const ProductScreen = ({ match, setLoginModalOpen }) => {
           userId: userInfo._id,
           productId: product._id
         });
-        dispatch(openSnackbar("Product removed from favorites!", "info"));
+        toast.info("Đã xóa khỏi yêu thích!");
       } catch (error) {
-        dispatch(openSnackbar("Failed to remove from favorites", "error"));
+        toast.error("Xóa khỏi yêu thích thất bại");
       }
     }
   };

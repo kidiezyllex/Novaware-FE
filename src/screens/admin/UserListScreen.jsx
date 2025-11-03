@@ -10,7 +10,7 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { makeStyles } from "@material-ui/core/styles";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import Meta from "../../components/Meta";
@@ -115,9 +115,9 @@ const UserListScreen = ({ history }) => {
 
   useEffect(() => {
     if (successDelete) {
-      dispatch(openSnackbar("The user has been deleted", "success"));
+      toast.success("Người dùng đã được xóa!");
     }
-  }, [dispatch, successDelete]);
+  }, [successDelete]);
 
   const deleteHandler = async (id) => {
     if (window.confirm("Are you sure to delete this user?")) {

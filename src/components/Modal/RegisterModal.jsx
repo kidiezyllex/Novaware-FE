@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { VscEyeClosed, VscEye } from "react-icons/vsc";
-import { useRegister } from "../../hooks/api/useUser";
+import { useRegister } from "../../hooks/api/useAuth";
 import { Link as RouterLink } from "react-router-dom";
 import {
   makeStyles,

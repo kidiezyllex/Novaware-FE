@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { useGetCategories } from "../../hooks/api/useCategory";
 import { useGetBrands } from "../../hooks/api/useBrand";
 import { useGetProduct, useUpdateProduct } from "../../hooks/api/useProduct";
@@ -264,7 +264,7 @@ const ProductEditScreen = ({ match, history }) => {
       } catch (error) {
         console.error(error);
         setUploading(false);
-        dispatch(openSnackbar("Error uploading images", "error"));
+        toast.error("Lỗi khi tải hình ảnh");
         return;
       }
     }
@@ -290,11 +290,11 @@ const ProductEditScreen = ({ match, history }) => {
         id: productId,
         body: productData
       });
-      dispatch(openSnackbar("Product has been updated!", "success"));
+      toast.success("Sản phẩm đã được cập nhật!");
       history.push("/admin/productlist");
     } catch (error) {
       console.error("Failed to update product:", error);
-      dispatch(openSnackbar("Failed to update product", "error"));
+      toast.error("Cập nhật sản phẩm thất bại");
     } finally {
       setUploading(false);
     }
@@ -303,10 +303,10 @@ const ProductEditScreen = ({ match, history }) => {
   // Effects
   useEffect(() => {
     if (successUpdate) {
-      dispatch(openSnackbar("Product has been updated!", "success"));
+      toast.success("Sản phẩm đã được cập nhật!");
       history.push("/admin/productlist");
     }
-  }, [successUpdate, history, dispatch]);
+  }, [successUpdate, history]);
 
   useEffect(() => {
     if (product && product._id === productId) {

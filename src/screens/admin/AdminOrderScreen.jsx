@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { GrLocation, GrCreditCard, GrProjects, GrUser } from "react-icons/gr";
 import { Link as RouterLink } from "react-router-dom";
 import { useGetOrder, useUpdateOrderToDelivered, useConfirmOrder } from "../../hooks/api/useOrder";
@@ -159,15 +159,15 @@ const AdminOrderScreen = ({ match, history }) => {
 
   useEffect(() => {
     if (successDeliver) {
-      dispatch(openSnackbar("Order delivered successfully!", "success"));
+      toast.success("Đơn hàng đã được giao thành công!");
     }
-  }, [dispatch, successDeliver]);
+  }, [successDeliver]);
 
   useEffect(() => {
     if (successConfirm) {
-      dispatch(openSnackbar("Order confirmed successfully!", "success"));
+      toast.success("Đơn hàng đã được xác nhận!");
     }
-  }, [dispatch, successConfirm]);
+  }, [successConfirm]);
 
   const handleConfirm = async () => {
     if (order) {
@@ -175,7 +175,7 @@ const AdminOrderScreen = ({ match, history }) => {
         await confirmOrderMutation.mutateAsync(order._id);
       } catch (error) {
         console.error("Failed to confirm order:", error);
-        dispatch(openSnackbar("Failed to confirm order", "error"));
+        toast.error("Xác nhận đơn hàng thất bại");
       }
     }
   };
@@ -186,7 +186,7 @@ const AdminOrderScreen = ({ match, history }) => {
         await deliverOrderMutation.mutateAsync(order._id);
       } catch (error) {
         console.error("Failed to deliver order:", error);
-        dispatch(openSnackbar("Failed to deliver order", "error"));
+        toast.error("Giao đơn hàng thất bại");
       }
     }
   };

@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { Link as RouterLink } from "react-router-dom";
 import { useLocation, useHistory } from "react-router-dom";
-import { useLogin } from "../../hooks/api/useUser";
+import { useLogin } from "../../hooks/api/useAuth";
+import { useGetUserById } from "../../hooks/api/useUser";
 import { useForm, FormProvider } from "react-hook-form";
-import { VscEyeClosed, VscEye } from "react-icons/vsc";
+import { VscEyeClosed, VscEye, VscClose } from "react-icons/vsc";
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
+import cookies from "js-cookie";
+import { USER_LOGIN_SUCCESS } from "../../constants/userConstants";
+import { socialLogin, handleSocialLoginCallback } from "../../actions/userActions";
 import {
   makeStyles,
   createTheme,
@@ -19,6 +23,8 @@ import Box from "@material-ui/core/Box";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import Loader from "../../components/Loader";
@@ -97,6 +103,16 @@ const useStyles = makeStyles((theme) => ({
       color: "white",
     },
   },
+  closeIcon: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    zIndex: 1,
+    color: theme.palette.text.secondary,
+    "&:hover": {
+      color: theme.palette.text.primary,
+    },
+  },
 }));
 
 const LoginModal = ({
@@ -107,6 +123,7 @@ const LoginModal = ({
   setForgotPasswordModalOpen,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const methods = useForm();
   const { handleSubmit } = methods;
 
@@ -117,14 +134,65 @@ const LoginModal = ({
   const history = useHistory();
 
   const loginMutation = useLogin();
-  const { isLoading: loading, error, isSuccess } = loginMutation;
+  const { isLoading: loading, error, isSuccess, data: loginResponse } = loginMutation;
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const hasRedirected = useRef(false);
+  
+  // Lấy chi tiết user sau khi đăng nhập thành công
+  const { data: userDetails, isLoading: isLoadingUserDetails } = useGetUserById(currentUserId || "");
+  
   const userInfo = useSelector((state) => state.userLogin?.userInfo);
 
+  // Reset state khi modal đóng
   useEffect(() => {
-    if (isSuccess && userInfo) {
+    if (!open) {
+      setCurrentUserId(null);
+      hasRedirected.current = false;
+    }
+  }, [open]);
+
+  // Xử lý sau khi đăng nhập thành công
+  useEffect(() => {
+    if (isSuccess && loginResponse?.data) {
+      const { _id, token } = loginResponse.data;
+      
+      // Lưu token vào localStorage và cookies
+      localStorage.setItem("access_token", token);
+      localStorage.setItem("accessToken", token);
+      localStorage.setItem("token", JSON.stringify({ token }));
+      cookies.set("accessToken", token);
+      
+      // Lưu currentUserId
+      localStorage.setItem("currentUserId", _id);
+      setCurrentUserId(_id);
+      
+      // Lưu userInfo vào localStorage (để tương thích với code cũ)
+      const userInfoToStore = {
+        _id,
+        name: loginResponse.data.name,
+        email: loginResponse.data.email,
+        isAdmin: loginResponse.data.isAdmin,
+        token,
+      };
+      localStorage.setItem("userInfo", JSON.stringify(userInfoToStore));
+      
+      // Dispatch Redux action để cập nhật state
+      dispatch({
+        type: USER_LOGIN_SUCCESS,
+        payload: userInfoToStore,
+      });
+    }
+  }, [isSuccess, loginResponse, dispatch]);
+
+  // Xử lý sau khi lấy được chi tiết user
+  useEffect(() => {
+    if (userDetails?.data?.user && currentUserId && !hasRedirected.current) {
+      hasRedirected.current = true;
       onClose();
-      dispatch(openSnackbar("Login successful", "success"));
-      if (userInfo.isAdmin) {
+      toast.success("Đăng nhập thành công");
+      
+      const isAdmin = userDetails.data.user.isAdmin || false;
+      if (isAdmin) {
         history.push("/admin/orderstats");
       } else {
         if (redirect) {
@@ -134,14 +202,15 @@ const LoginModal = ({
         }
       }
     }
-  }, [isSuccess, history, redirect, userInfo, onClose, dispatch]);
+  }, [userDetails, currentUserId, onClose, dispatch, history, redirect]);
 
   const submitHandler = async ({ email, password }) => {
     try {
       await loginMutation.mutateAsync({ email, password });
-      onClose();
     } catch (error) {
       console.error("Login failed:", error);
+      const errorMessage = error?.message || error?.error || "Đăng nhập thất bại";
+      toast.error(errorMessage);
     }
   };
 
@@ -191,6 +260,13 @@ const LoginModal = ({
             <Grid container component={Paper} className={classes.container}>
               <Grid item sm={12} md={12}>
                 <Box className={classes.content}>
+                  <IconButton
+                    className={classes.closeIcon}
+                    onClick={onClose}
+                    aria-label="close"
+                  >
+                    <VscClose />
+                  </IconButton>
                   <img src={logo} alt="" className={classes.logo} />
                   <FormProvider {...methods}>
                     <form
@@ -237,13 +313,32 @@ const LoginModal = ({
                           }}
                         />
                       </FormControl>
+                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} mt={1}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={rememberMe}
+                              onChange={(e) => setRememberMe(e.target.checked)}
+                              color="secondary"
+                            />
+                          }
+                          label="Remember Me"
+                        />
+                        <Link
+                          component={RouterLink}
+                          onClick={handleForgotPasswordClick}
+                        >
+                          Forgot password?
+                        </Link>
+                      </Box>
                       <Button
                         type="submit"
                         variant="contained"
                         color="secondary"
                         fullWidth
+                        className="!rounded-none !h-10"
                       >
-                        Sign in
+                        Login
                       </Button>
                     </form>
                   </FormProvider>
@@ -257,16 +352,8 @@ const LoginModal = ({
                     </Link>
                   </Box>
 
-                  {loading && <Loader my={0} />}
+                  {(loading || isLoadingUserDetails) && <Loader my={0} />}
                   {error && <Message mt={0}>{error}</Message>}
-                  <Box display="flex" justifyContent="flex-end" pb={3} pt={1}>
-                    <Link
-                      component={RouterLink}
-                      onClick={handleForgotPasswordClick}
-                    >
-                      Forgot password?
-                    </Link>
-                  </Box>
                   <p>Or login with</p>
                   <Box className={classes.socialButtonsContainer}>
                     <Button

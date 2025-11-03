@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useForgotPassword, useVerifyCode } from "../../hooks/api/useUser"; 
+import { useForgotPassword, useVerifyCode } from "../../hooks/api/useAuth"; 
 import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import {

@@ -3,7 +3,7 @@ import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserDetails, updateUser } from '../../actions/userActions';
-import { openSnackbar } from '../../actions/snackbarActions';
+import { toast } from 'react-toastify';
 import { USER_UPDATE_RESET } from '../../constants/userConstants';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
@@ -59,11 +59,11 @@ const UserEditModal = ({ userId, open, handleClose }) => {
 
   useEffect(() => {
     if (successUpdate) {
-      dispatch(openSnackbar('Update successful', 'success'));
+      toast.success('Cập nhật thành công');
       dispatch({ type: USER_UPDATE_RESET });
       handleClose();
     } else if (errorUpdate) {
-      dispatch(openSnackbar(errorUpdate, 'error'));
+      toast.error(errorUpdate);
     }
   }, [dispatch, successUpdate, errorUpdate, handleClose]);
 

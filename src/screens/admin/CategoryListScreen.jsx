@@ -11,7 +11,7 @@ import {
   TextField,
   IconButton,
 } from "@material-ui/core";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { makeStyles } from "@material-ui/core/styles";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineSave } from "react-icons/ai";
 import {
@@ -90,16 +90,16 @@ const CategoryListScreen = ({ history }) => {
 
   useEffect(() => {
     if (successCreate) {
-      dispatch(openSnackbar("Category created successfully!", "success"));
+      toast.success("Danh mục đã được tạo thành công!");
       setCategoryName("");
     }
     if (successUpdate) {
-      dispatch(openSnackbar("Category updated successfully!", "success"));
+      toast.success("Danh mục đã được cập nhật!");
     }
     if (successDelete) {
-      dispatch(openSnackbar("Category deleted successfully!", "success"));
+      toast.success("Danh mục đã được xóa!");
     }
-  }, [dispatch, successDelete, successCreate, successUpdate]);
+  }, [successDelete, successCreate, successUpdate]);
 
   const deleteHandler = async (id) => {
     if (window.confirm("Are you sure you want to delete this category?")) {

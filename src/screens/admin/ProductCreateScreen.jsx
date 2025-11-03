@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { MdCloudUpload, MdClose } from "react-icons/md";
 import { useGetCategories } from "../../hooks/api/useCategory";
 import { useGetBrands } from "../../hooks/api/useBrand";
@@ -244,7 +244,7 @@ const ProductCreateScreen = ({ history }) => {
       } catch (error) {
         console.error(error);
         setUploading(false);
-        dispatch(openSnackbar("Error uploading images", "error"));
+        toast.error("Lỗi khi tải hình ảnh");
         return; 
       }
     } else {
@@ -270,11 +270,11 @@ const ProductCreateScreen = ({ history }) => {
     // Create product using mutation
     try {
       await createProductMutation.mutateAsync(productData);
-      dispatch(openSnackbar("Product has been created!", "success"));
+      toast.success("Sản phẩm đã được tạo thành công!");
       history.push("/admin/productlist");
     } catch (error) {
       console.error("Failed to create product:", error);
-      dispatch(openSnackbar("Failed to create product", "error"));
+      toast.error("Tạo sản phẩm thất bại");
     } finally {
       setUploading(false);
     }

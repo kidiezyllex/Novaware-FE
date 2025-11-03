@@ -22,7 +22,7 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { useGetProfile, useUpdateProfile } from "../../hooks/api/useUser";
 import { useGetMyOrders } from "../../hooks/api/useOrder";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -146,11 +146,9 @@ const ProfileScreen = ({ history }) => {
 
   useEffect(() => {
     if (success) {
-      dispatch(
-        openSnackbar("Profile has been updated successfully", "success")
-      );
+      toast.success("Cập nhật hồ sơ thành công");
     }
-  }, [dispatch, success]);
+  }, [success]);
 
   const submitHandler = async (data) => {
     if (user?._id) {

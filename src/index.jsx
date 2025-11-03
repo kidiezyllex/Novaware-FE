@@ -10,6 +10,8 @@ import './assets/scss/style.scss';
 import App from './App.jsx';
 import axios from 'axios';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 axios.defaults.baseURL = import.meta.env?.VITE_API_URL || 'http://localhost:5000/';
 
@@ -30,6 +32,18 @@ const Main = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <App  />
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </ThemeProvider>
       </QueryClientProvider>
     </Provider>

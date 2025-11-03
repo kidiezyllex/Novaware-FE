@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { withStyles } from "@material-ui/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import {
   TextField,
   Typography,
@@ -408,7 +408,7 @@ const AdminChatScreen = ({ setHasNewMessageRef }) => {
           notification.sender !== "admin"
         ) {
           setHasNewMessageRef.current = true;
-          dispatch(openSnackbar("You have new message!", "info"));
+          toast.info("Bạn có tin nhắn mới!");
         }
       } else if (notification.type === "markAsRead") {
         setMessages((prevMessages) =>

@@ -12,7 +12,7 @@ import {
 import { useForm, FormProvider } from "react-hook-form";
 import InputController from "../../components/InputController";
 import { makeStyles } from "@material-ui/core/styles";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -51,11 +51,11 @@ const UpdateProfileModal = ({ open, onClose, user }) => {
         gender: data.gender,
       });
       onClose();
-      dispatch(openSnackbar("Profile updated successfully!", "success"));
+      toast.success("Cập nhật hồ sơ thành công!");
       window.location.reload(); 
     } catch (error) {
       console.error("Failed to update profile:", error);
-      dispatch(openSnackbar("Failed to update profile", "error"));
+      toast.error("Cập nhật hồ sơ thất bại");
     }
   };
 

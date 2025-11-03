@@ -1,3 +1,28 @@
+export interface IPriceRange {
+	min: number;
+	max: number;
+}
+
+export interface IUserPreferences {
+	priceRange?: IPriceRange;
+	style?: string;
+	colorPreferences?: string[];
+	brandPreferences?: string[];
+}
+
+export interface IContentProfile {
+	featureVector?: number[];
+	categoryWeights?: number[];
+}
+
+export interface IInteractionHistory {
+	_id: string;
+	productId: string;
+	interactionType: "view" | "purchase" | "review" | "like" | "cart";
+	rating?: number | null;
+	timestamp: string;
+}
+
 export interface IUser {
 	_id: string;
 	name: string;
@@ -6,7 +31,16 @@ export interface IUser {
 	height?: number;
 	weight?: number;
 	gender?: string;
+	age?: number;
 	avatar?: string;
+	preferences?: IUserPreferences;
+	contentProfile?: IContentProfile;
+	favorites?: string[];
+	userEmbedding?: number[];
+	interactionHistory?: IInteractionHistory[];
+	outfitHistory?: any[];
+	createdAt?: string;
+	updatedAt?: string;
 }
 
 export interface IRegisterResponse {
@@ -59,6 +93,7 @@ export interface IGetUsersResponse {
 }
 
 export interface IGetUserByIdResponse {
+	status: string;
 	message: string;
 	data: {
 		user: IUser;

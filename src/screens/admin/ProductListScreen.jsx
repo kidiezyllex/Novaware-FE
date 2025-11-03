@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { useGetProducts, useDeleteProduct } from "../../hooks/api/useProduct";
 import { Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -157,11 +157,11 @@ const ProductListScreen = ({ history }) => {
 
   useEffect(() => {
     if (successDelete) {
-      dispatch(openSnackbar("The product has been deleted", "success"));
+      toast.success("Sản phẩm đã được xóa!");
     } else if (errorDelete) {
-      dispatch(openSnackbar(errorDelete.message || String(errorDelete), "error"));
+      toast.error(errorDelete.message || String(errorDelete));
     }
-  }, [dispatch, successDelete, errorDelete]);
+  }, [successDelete, errorDelete]);
 
   const deleteHandler = async (id) => {
     if (window.confirm("Are you sure")) {

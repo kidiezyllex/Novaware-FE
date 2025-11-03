@@ -14,7 +14,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Alert } from "@material-ui/lab";
 import { MdCloudUpload, MdClose } from "react-icons/md";
 import { useDispatch } from "react-redux";
-import { openSnackbar } from "../../actions/snackbarActions";
+import { toast } from "react-toastify";
 import { useUpdateContentSection } from "../../hooks/api/useContentSection";
 import axios from "axios";
 
@@ -231,10 +231,10 @@ const HomeContentEditScreen = () => {
             id: updated._id,
             body: updated
           });
-          dispatch(openSnackbar("Banner updated successfully!", "success"));
+          toast.success("Banner đã được cập nhật!");
         } catch (error) {
           console.error("Failed to update banner:", error);
-          dispatch(openSnackbar("Failed to update banner", "error"));
+          toast.error("Cập nhật banner thất bại");
         }
       } else {
         const oldImages = carouselPreviewImages
@@ -251,10 +251,10 @@ const HomeContentEditScreen = () => {
             id: updated._id,
             body: updated
           });
-          dispatch(openSnackbar("Carousel updated successfully!", "success"));
+          toast.success("Carousel đã được cập nhật!");
         } catch (error) {
           console.error("Failed to update carousel:", error);
-          dispatch(openSnackbar("Failed to update carousel", "error"));
+          toast.error("Cập nhật carousel thất bại");
         }
       }
     } catch (err) {
