@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const InputController = ({
-  type,
+  type = 'text',
   name,
   label,
   defaultValue,
@@ -56,10 +56,6 @@ const InputController = ({
       rules={{ required: required && `(*) ${label} is required`, ...rules }}
     />
   );
-};
-
-InputController.defaultProps = {
-  type: 'text',
 };
 
 export default InputController;

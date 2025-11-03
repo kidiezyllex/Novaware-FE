@@ -26,7 +26,11 @@ const useStyles = makeStyles((theme) => ({
   itemIcon: {
     display: "inline-flex",
     alignItems: "center",
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1) + 4,
+    color: theme.palette.text.secondary,
+  },
+  textMedium: {
+    fontWeight: 400,
   },
 }));
 
@@ -82,7 +86,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ menuItemClassName }
         onClick={handleOpen}
         disableRipple
       >
-        <Typography>Categories</Typography>
+        <Typography className={classes.textMedium}>Categories</Typography>
         <ArrowDropDownIcon fontSize="medium" />
       </MenuItem>
 
@@ -118,7 +122,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ menuItemClassName }
               onClick={() => handleCategoryClick(category.name)}
             >
               {renderIcon(category.name)}
-              <Typography>{category.name}</Typography>
+              <Typography className={classes.textMedium}>{category.name}</Typography>
             </MenuItem>
           ))
         )}

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { FiShoppingBag } from "react-icons/fi";
-import { FaTags, FaShareAlt, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaTags, FaShareAlt, FaHeart, FaRegHeart, FaTrademark, FaBoxOpen } from "react-icons/fa";
 import {
   Box,
   Button,
@@ -14,6 +14,8 @@ import {
   FormHelperText,
 } from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
 import Link from "@material-ui/core/Link";
 import Rating from "@material-ui/lab/Rating";
 import Radio from "@material-ui/core/Radio";
@@ -27,6 +29,7 @@ import ReturnPolicy from "../Modal/ReturnPolicy.jsx";
 import UpdateProfileModal from "../Modal/UpdateProfileModal.jsx";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
+import { formatPriceVN } from "../../utils/formatPrice.js";
 
 const useStyles = makeStyles((theme) => ({
   price: {
@@ -65,13 +68,14 @@ const useStyles = makeStyles((theme) => ({
     height: 48,
     width: 160,
     marginRight: 10,
+    borderRadius: 0,
   },
   buttonheart: {
     height: 48,
     width: 50,
-    display: "flex", 
-    alignItems: "center", 
-    justifyContent: "center", 
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     border: "1px solid #f50057",
   },
   socialGroup: {
@@ -113,6 +117,45 @@ const useStyles = makeStyles((theme) => ({
     border: "none",
     backgroundColor: "transparent",
   },
+  qtyContainer: {
+    display: "flex",
+    alignItems: "stretch",
+    border: "1px solid #000",
+    borderRadius: 2,
+    height: 76,
+    width: 124,
+    overflow: "hidden",
+  },
+  qtyNumber: {
+    flex: "none",
+    width: 82,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 16,
+  },
+  qtySide: {
+    width: 40,
+    display: "flex",
+    flexDirection: "column",
+    borderLeft: "1px solid #000",
+  },
+  qtyBtn: {
+    flex: "none",
+    height: 36,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    userSelect: "none",
+  },
+  qtyDivider: {
+    height: 1,
+    backgroundColor: "#000",
+  },
+  qtyIcon: {
+    fontSize: 16,
+  },
 }));
 
 const ProductInfo = React.memo(
@@ -142,15 +185,38 @@ const ProductInfo = React.memo(
       () =>
         product.colors
           ? product.colors.map((color) => ({
-              name: color.name,
-              hexCode: color.hexCode,
-            }))
+            name: color.name,
+            hexCode: color.hexCode,
+          }))
           : [],
       [product.colors]
     );
 
     return (
       <>
+        <Box display="flex" alignItems="center" mb={1}>
+          <Chip
+            size="small"
+            color="primary"
+            icon={<FaTags style={{ fontSize: 14 }} />}
+            label={product.category}
+            style={{ marginRight: 8, padding: "0 8px" }}
+          />
+          <Chip
+            size="small"
+            color="primary"
+            icon={<FaTrademark style={{ fontSize: 14 }} />}
+            label={product.brand}
+            style={{ marginRight: 8, padding: "0 8px" }}
+          />
+          <Chip
+            size="small"
+            color={product.countInStock > 0 ? "primary" : "default"}
+            icon={<FaBoxOpen style={{ fontSize: 14 }} />}
+            label={`${product.countInStock > 0 ? `${product.countInStock} in stock` : "Out of stock"}`}
+            style={{ padding: "0 8px" }}
+          />
+        </Box>
         <Typography variant="h4" component="h1" gutterBottom>
           {product.name}
         </Typography>
@@ -169,9 +235,8 @@ const ProductInfo = React.memo(
             style={{ marginLeft: 5 }}
             color={product.countInStock > 0 ? "secondary" : "black"}
           >
-            {`Status: ${
-              product.countInStock > 0 ? "In Stock" : "Out of Stock"
-            }`}
+            {`Status: ${product.countInStock > 0 ? "In Stock" : "Out of Stock"
+              }`}
           </Typography>
         </Box>
 
@@ -190,10 +255,10 @@ const ProductInfo = React.memo(
               component="span"
               className={classes.rootPrice}
             >
-              ${Number(product.price).toFixed(2)}
+              {formatPriceVN(product.price)}
             </Typography>
           ) : null}
-          {"  "}${Number(product.price * (1 - product.sale / 100)).toFixed(2)}
+          {"  "}{formatPriceVN(product.price * (1 - product.sale / 100))}
         </Typography>
 
         <Typography
@@ -245,14 +310,16 @@ const ProductInfo = React.memo(
                                   !isSizeAvailable && classes.disabled
                                 )}
                                 style={{
+                                  borderRadius: 0,
                                   backgroundColor:
                                     field.value === size && isSizeAvailable
-                                      ? "#f0f0f0"
+                                      ? "#f5005730"
                                       : "transparent",
                                   opacity: isSizeAvailable ? 1 : 0.5,
                                   pointerEvents: isSizeAvailable
                                     ? "auto"
                                     : "none",
+                                  borderColor: field.value === size ? "#f50057" : "#ccc",
                                 }}
                               >
                                 <Typography
@@ -332,7 +399,7 @@ const ProductInfo = React.memo(
                               className={clsx(
                                 classes.buttoncz,
                                 field.value === (color.hexCode || color.name) &&
-                                  "active"
+                                "active"
                               )}
                               alignItems="center"
                               style={{
@@ -384,25 +451,48 @@ const ProductInfo = React.memo(
                 name="qty"
                 control={control}
                 defaultValue={1}
-                render={({ field }) => (
-                  <TextField
-                    select
-                    label="Select quantity"
-                    variant="outlined"
-                    error={!product.countInStock}
-                    helperText={!product.countInStock && "Out of stock"}
-                    style={{ minWidth: "110px" }}
-                    {...field}
-                  >
-                    {Array(product.countInStock)
-                      .fill()
-                      .map((_, index) => (
-                        <MenuItem value={index + 1} key={index + 1}>
-                          {index + 1}
-                        </MenuItem>
-                      ))}
-                  </TextField>
-                )}
+                render={({ field }) => {
+                  const value = Number(field.value) || 1;
+                  const min = 1;
+                  const max = Math.max(0, Number(product.countInStock) || 0);
+                  const disabled = max === 0;
+                  const handleChange = (next) => {
+                    if (disabled) return;
+                    const clamped = Math.min(Math.max(next, min), Math.max(min, max));
+                    field.onChange(clamped);
+                  };
+                  return (
+                    <Box>
+                      <Box className={classes.qtyContainer} aria-disabled={disabled}>
+                        <Box className={classes.qtyNumber}>
+                          <Typography>{disabled ? 0 : value}</Typography>
+                        </Box>
+                        <Box className={classes.qtySide}>
+                          <Box
+                            className={classes.qtyBtn}
+                            onClick={() => handleChange(value + 1)}
+                            style={{ opacity: disabled || value >= max ? 0.4 : 1, pointerEvents: disabled || value >= max ? "none" : "auto" }}
+                            title={disabled ? "Out of stock" : "Increase"}
+                          >
+                            <AddIcon className={classes.qtyIcon} />
+                          </Box>
+                          <Box className={classes.qtyDivider} />
+                          <Box
+                            className={classes.qtyBtn}
+                            onClick={() => handleChange(value - 1)}
+                            style={{ opacity: disabled || value <= min ? 0.4 : 1, pointerEvents: disabled || value <= min ? "none" : "auto" }}
+                            title={disabled ? "Out of stock" : "Decrease"}
+                          >
+                            <RemoveIcon className={classes.qtyIcon} />
+                          </Box>
+                        </Box>
+                      </Box>
+                      {disabled && (
+                        <FormHelperText error>Out of stock</FormHelperText>
+                      )}
+                    </Box>
+                  );
+                }}
               />
             </Box>
             {/* Button Group */}
@@ -419,19 +509,27 @@ const ProductInfo = React.memo(
                 Add to Cart
               </Button>
               {/* Favorite Button */}
-              <IconButton
+              <Button
+                variant="contained"
                 color="secondary"
-                className={classes.buttonheart}
+                startIcon={<FaHeart />}
+                className={classes.button}
+                disabled={product.countInStock === 0}
+                type="submit"
                 onClick={
                   isFavorite ? handleRemoveFromFavorites : handleAddToFavorites
                 }
               >
                 {isFavorite ? (
-                  <FaHeart style={{ fontSize: "28px" }} />
+                  <span style={{ whiteSpace: "nowrap", wordBreak: "keep-all" }}>
+                    remove wishlist
+                  </span>
                 ) : (
-                  <FaRegHeart style={{ fontSize: "28px" }} />
+                  <span style={{ whiteSpace: "nowrap", wordBreak: "keep-all" }}>
+                    wishlist
+                  </span>
                 )}
-              </IconButton>
+              </Button>
             </Box>
           </FormControl>
         </form>

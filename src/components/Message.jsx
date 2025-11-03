@@ -1,7 +1,7 @@
 import Alert from '@material-ui/lab/Alert';
 import React from 'react';
 
-const Message = ({ severity, children, mt, mb, ml, mr, m }) => {
+const Message = ({ severity = 'error', children, mt = 16, mb = 16, ml, mr, m }) => {
   return (
     <Alert
       style={{
@@ -17,12 +17,6 @@ const Message = ({ severity, children, mt, mb, ml, mr, m }) => {
       {children}
     </Alert>
   );
-};
-
-Message.defaultProps = {
-  severity: 'error',
-  mt: 16,
-  mb: 16,
 };
 
 export default Message;

@@ -42,34 +42,38 @@ const ProductImageGallery = React.memo(({ product }) => {
     <>
       {product.images?.length > 0 ? (
         <>
-          <Box onClick={() => setOpen(true)} style={{ cursor: "pointer" }}>
-            <img
-              src={product.images[index]}
-              alt={product.name}
-              style={{ width: "100%" }}
-            />
-          </Box>
-          {product.sale > 0 && (
-            <div className={classes.sale}>{`- ${product.sale}% `}</div>
-          )}
+          <Box display="flex">
+            {/* Left-side thumbnails */}
+            <Box mr={2} style={{ width: 90, display: "flex", flexDirection: "column", maxHeight: 500, overflowY: "auto" }}>
+              {product.images.map((image, i) => (
+                <img
+                  key={i}
+                  src={image}
+                  alt={`${product.name} thumbnail ${i + 1}`}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    objectFit: "cover",
+                    marginBottom: 10,
+                    border: index === i ? "2px solid #f50057" : "1px solid #eee",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setIndex(i)}
+                />
+              ))}
+            </Box>
 
-          {/* Thumbnails outside Lightbox */}
-          <Box display="flex" mt={2}>
-            {product.images.map((image, i) => (
+            {/* Main image */}
+            <Box onClick={() => setOpen(true)} style={{ cursor: "pointer", position: "relative", flex: 1 }}>
               <img
-                key={i}
-                src={image}
-                alt={`${product.name} thumbnail ${i + 1}`}
-                style={{
-                  width: "auto",
-                  height: "80px",
-                  marginRight: "10px",
-                  border: index === i ? "1px solid #f50057" : "none",
-                  cursor: "pointer",
-                }}
-                onClick={() => setIndex(i)}
+                src={product.images[index]}
+                alt={product.name}
+                style={{ width: "100%" }}
               />
-            ))}
+              {product.sale > 0 && (
+                <div className={classes.sale}>{`- ${product.sale}% `}</div>
+              )}
+            </Box>
           </Box>
 
           <Lightbox
@@ -83,7 +87,7 @@ const ProductImageGallery = React.memo(({ product }) => {
             }}
             thumbnails={{
               border: "1px solid #f50057",
-              borderRadius: 8,
+              borderRadius: 4,
               padding: 4,
               gap: 18,
             }}

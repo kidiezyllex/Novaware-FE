@@ -6,7 +6,8 @@ import ProductCard from "../Product/ProductCard";
 import { useGetTopProducts } from "../../hooks/api/useProduct";
 const TopProducts: React.FC = () => {
   const { data: productTopRatedResponse, isLoading: loadingProductTop, error: errorProductTop } = useGetTopProducts({ pageNumber: 1, perPage: 15 });
-  const productTop = productTopRatedResponse?.data?.products || [];
+  const productTopRaw = productTopRatedResponse?.data?.products || [];
+  const productTop = React.useMemo(() => productTopRaw.slice(0, 15).sort(() => 0.5 - Math.random()), [productTopRaw]);
 
   return (
     <div className="mx-auto px-16">
@@ -34,6 +35,7 @@ const TopProducts: React.FC = () => {
               color="secondary"
               component={RouterLink}
               to="/shop?sort_by=rating"
+              className="!rounded-none"
             >
               Xem thêm
             </Button>

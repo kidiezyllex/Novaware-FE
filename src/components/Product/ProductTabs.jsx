@@ -86,10 +86,12 @@ const ProductTabs = () => {
   const titles = ['Sản phẩm mới nhất', 'Sản phẩm giảm giá', 'Tất cả sản phẩm'];
 
   const { data: productLatestResponse, isLoading: loadingProductLatest, error: errorProductLatest } = useGetLatestProducts({ pageNumber: 1, perPage: 15 });
-  const productsLatest = productLatestResponse?.data?.products || [];
+  const productsLatestRaw = productLatestResponse?.data?.products || [];
+  const productsLatest = React.useMemo(() => productsLatestRaw.slice(0, 15).sort(() => 0.5 - Math.random()), [productsLatestRaw]);
 
   const { data: productSaleResponse, isLoading: loadingProductSale, error: errorProductSale } = useGetSaleProducts({ pageNumber: 1, perPage: 15 });
-  const productsSale = productSaleResponse?.data?.products || [];
+  const productsSaleRaw = productSaleResponse?.data?.products || [];
+  const productsSale = React.useMemo(() => productsSaleRaw.slice(0, 15).sort(() => 0.5 - Math.random()), [productsSaleRaw]);
 
   const { data: productListResponse, isLoading: loadingProductList, error: errorProductList } = useGetProducts({ option: 'all', pageNumber: 1, pageSize: 15 });
   const productsList = productListResponse?.data?.products || [];
@@ -145,8 +147,9 @@ const ProductTabs = () => {
             color='secondary'
             component={Link}
             to='/shop?sort_by=latest'
+            className="!rounded-none"
           >
-            Discover More
+           Xem thêm
           </Button>
         </div>
       </TabPanel>
@@ -172,8 +175,9 @@ const ProductTabs = () => {
             color='secondary'
             component={Link}
             to='/shop?sort_by=sale'
+            className="!rounded-none"
           >
-            Discover More
+            Xem thêm
           </Button>
         </div>
       </TabPanel>

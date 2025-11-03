@@ -11,7 +11,7 @@ import {
 const style = {
   marginRight: 8,
 };
-const ShareButtons = ({ url, quote, size }) => {
+const ShareButtons = ({ url, quote = 'NovaWare', size = 32 }) => {
   return (
     <>
       <FacebookShareButton url={url} quote={quote} style={style}>
@@ -25,11 +25,6 @@ const ShareButtons = ({ url, quote, size }) => {
       </TwitterShareButton>
     </>
   );
-};
-
-ShareButtons.defaultProps = {
-  quote: 'NovaWare',
-  size: 32,
 };
 
 export default ShareButtons;

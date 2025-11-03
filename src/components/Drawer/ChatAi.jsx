@@ -30,6 +30,7 @@ import axios from "axios";
 import gpticon from "../../assets/icons/chat-gpt-icon.png";
 import geminiicon from "../../assets/icons/google-gemini-icon.png";
 import novawareicon from "../../assets/icons/novaware-icon.png";
+import { generateAIResponse } from "../../lib/api/gemini";
 
 const useStyles = makeStyles((theme) => ({
   drawerContent: {
@@ -217,25 +218,28 @@ const ChatPreview = () => {
     inputRef.current.blur();
 
     try {
-      const endpoint =
-        selectedAI === "gpt"
-          ? "/api/chatgpt"
-          : selectedAI === "gemini"
-          ? "/api/chatgemini"
-          : "/api/chatnovaware";
-
-      const response = await axios.post(`http://localhost:5000${endpoint}`, {
-        prompt: inputMessage,
-      });
-
-      const aiResponse = {
-        role: "assistant",
-        content: response.data.text,
-        ai: selectedAI,
-        imageLinks: response.data.imageLinks || [],
-      };
-
-      setMessages((prevMessages) => [...prevMessages, aiResponse]);
+      if (selectedAI === "gemini") {
+        const text = await generateAIResponse(inputMessage);
+        const aiResponse = {
+          role: "assistant",
+          content: text,
+          ai: selectedAI,
+          imageLinks: [],
+        };
+        setMessages((prevMessages) => [...prevMessages, aiResponse]);
+      } else {
+        const endpoint = selectedAI === "gpt" ? "/api/chatgpt" : "/api/chatnovaware";
+        const response = await axios.post(`http://localhost:5000${endpoint}`, {
+          prompt: inputMessage,
+        });
+        const aiResponse = {
+          role: "assistant",
+          content: response.data.text,
+          ai: selectedAI,
+          imageLinks: response.data.imageLinks || [],
+        };
+        setMessages((prevMessages) => [...prevMessages, aiResponse]);
+      }
     } catch (error) {
       console.error(error);
       dispatch(openSnackbar("Oops! Something went wrong.", "error"));

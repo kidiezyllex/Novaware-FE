@@ -11,7 +11,7 @@ const HomeScreen = () => {
       <Meta />
       <HomeCarousel />
       <TopProducts />
-      <HomeBanner />
+      {/* <HomeBanner /> */}
       <ProductTabs />
       <HomeService />
     </>

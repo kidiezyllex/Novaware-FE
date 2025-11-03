@@ -1,7 +1,11 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-const Meta = ({ title, description, keywords }) => {
+const Meta = ({ 
+  title = 'NovaWare', 
+  description = 'Wear What You Love. Love What You Wear.', 
+  keywords = 'Limited Edition, Only While Supplies Last, Exclusive Offer' 
+}) => {
   return (
     <Helmet>
       <title>{title}</title>
@@ -9,12 +13,6 @@ const Meta = ({ title, description, keywords }) => {
       <meta name='keyword' content={keywords} />
     </Helmet>
   );
-};
-
-Meta.defaultProps = {
-  title: 'NovaWare',
-  description: 'Wear What You Love. Love What You Wear.',
-  keywords: 'Limited Edition, Only While Supplies Last, Exclusive Offer',
 };
 
 export default Meta;
