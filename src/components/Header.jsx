@@ -10,7 +10,7 @@ import { setOpenCartDrawer } from "../actions/cartActions";
 import { logout } from "../actions/userActions";
 import { openChatDrawer } from "../actions/chatActions";
 import { useGetCategories } from "../hooks/api/useCategory";
-import { useGetBrands } from "../hooks/api/useBrand";
+import { useGetGroupedBrands } from "../hooks/api/useBrand";
 import { useGetFavorites } from "../hooks/api/useUser";
 import { FaHeart } from 'react-icons/fa';
 import { openFavoriteDrawer } from "../actions/favoriteActions";
@@ -148,6 +148,56 @@ const useStyles = makeStyles((theme) => ({
   menuPaper: {
     boxShadow: "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
     border: `1px solid ${theme.palette.divider}`,
+    width: '90vw',
+    maxWidth: '90vw',
+  },
+  brandsMenuList: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+    gridAutoRows: 'minmax(32px, auto)',
+    columnGap: theme.spacing(2),
+    rowGap: theme.spacing(1),
+    padding: theme.spacing(1, 2),
+  },
+  brandGroupColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    gap: theme.spacing(0.5),
+    minWidth: 0,
+  },
+  letterItem: {
+    fontWeight: 700,
+    color: '#f50057',
+    cursor: 'default',
+    '&.Mui-disabled': {
+      opacity: 1,
+      color: '#f50057',
+    },
+  },
+  letterRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    padding: '8px 16px',
+  },
+  letterText: {
+    fontWeight: 700,
+    color: '#f50057',
+    whiteSpace: 'nowrap',
+  },
+  letterDivider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#f50057',
+    opacity: 0.4,
+  },
+  menuItemText: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    maxWidth: '100%',
+    display: 'block',
   },
 }));
 
@@ -193,12 +243,12 @@ const Header = ({
 
   // Hooks for API data
   const { data: categoriesResponse, isLoading: loadingCategories, error: errorCategories } = useGetCategories();
-  const { data: brandsResponse, isLoading: loadingBrands, error: errorBrands } = useGetBrands();
+  const { data: brandsResponse, isLoading: loadingBrands, error: errorBrands } = useGetGroupedBrands();
   const { data: favoritesResponse } = useGetFavorites(userInfo?._id || "");
   
   const categoriesRaw = categoriesResponse?.data?.categories || [];
   const categories = Array.isArray(categoriesRaw) ? categoriesRaw : [];
-  const brands = brandsResponse?.data?.brands || [];
+  const brandGroups = brandsResponse?.data?.groups || [];
   const favoriteItems = favoritesResponse?.data?.favoriteItems || [];
 
   // scroll effect
@@ -390,6 +440,7 @@ const Header = ({
                   onClose={() => handleMenuClose("brands")}
                   MenuListProps={{
                     component: "div",
+                    className: classes.brandsMenuList,
                     onMouseLeave: () => handleMenuClose("brands"),
                   }}
                   getContentAnchorEl={null}
@@ -410,15 +461,23 @@ const Header = ({
                   ) : errorBrands ? (
                     <MenuItem>{errorBrands}</MenuItem>
                   ) : (
-                    brands.map((brand) => (
-                      <MenuItem
-                        key={brand._id}
-                        component={Link}
-                        to={`/shop?brand=${brand.name}`}
-                        onClick={() => handleBrandMenuItemClick(brand.name)}
-                      >
-                        {brand.name}
-                      </MenuItem>
+                    brandGroups.map((group) => (
+                      <div className={classes.brandGroupColumn} key={group.letter}>
+                        <div className={classes.letterRow} role="presentation" aria-hidden>
+                          <span className={classes.letterText}>{group.letter}</span>
+                          <span className={classes.letterDivider} />
+                        </div>
+                        {group.brands.map((brand) => (
+                          <MenuItem
+                            key={brand._id}
+                            component={Link}
+                            to={`/shop?brand=${brand.name}`}
+                            onClick={() => handleBrandMenuItemClick(brand.name)}
+                          >
+                            <Typography className={classes.menuItemText}>{brand.name}</Typography>
+                          </MenuItem>
+                        ))}
+                      </div>
                     ))
                   )}
                 </Menu>

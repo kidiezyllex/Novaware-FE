@@ -30,7 +30,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     margin: "20px 0 0",
     padding: "20px 0",
-    backgroundColor: "theme.palette.background.default",
+    backgroundColor: theme.palette.background.default,
+    borderTop: "1px solid #D1D5DB",
+    borderBottom: "1px solid #D1D5DB",
     justifyContent: "center",
   },
   card: {
@@ -42,9 +44,16 @@ const useStyles = makeStyles((theme) => ({
   topIcon: {
     width: 40,
     height: 40,
-    marginBottom: 10,
+    display: "block",
+    margin: "0 auto 10px",
     "& path": {
       fill: theme.palette.secondary.main,
+    },
+  },
+  gridItem: {
+    borderLeft: "1px solid #D1D5DB",
+    "&:first-child": {
+      borderLeft: "none",
     },
   },
 }));
@@ -56,7 +65,7 @@ const HomeService = () => {
       {content.map((item, index) => {
         const { Icon } = item;
         return (
-          <Grid item md={3} key={index + 1}>
+          <Grid item md={3} key={index + 1} className={classes.gridItem}>
             <Card className={classes.card} variant="outlined">
               <CardContent>
                 <Icon className={classes.topIcon} />

@@ -107,7 +107,7 @@ const HomeCarousel = () => {
                   banner.position
                 )} z-10 w-full md:w-auto px-4 md:px-0`}
               >
-                <h2 className="font-sans font-black text-4xl md:text-6xl lg:text-7xl text-white mb-4 md:mb-6 drop-shadow-lg">
+                <h2 className="font-sans font-light text-4xl md:text-6xl lg:text-7xl text-white mb-4 md:mb-6 drop-shadow-lg">
                   {banner.title}
                 </h2>
                 <p className="text-white text-sm md:text-lg lg:text-xl mb-6 md:mb-8 max-w-md drop-shadow-md">

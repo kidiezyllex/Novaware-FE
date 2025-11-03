@@ -27,7 +27,6 @@ import {
 	IFilterProductsQuery,
 } from "../../interface/request/product";
 
-// Get All Products
 export const getProducts = async (query?: IGetProductsQuery): Promise<IGetProductsResponse> => {
 	return await sendGet(`/products`, query);
 };

@@ -277,9 +277,6 @@ const HomeContentEditScreen = () => {
         </Grid>
       </Grid>
 
-      {error && <Alert severity="error">{error}</Alert>}
-      {loading && <Alert severity="info">Loading...</Alert>}
-
       {/* Banners */}
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -453,8 +450,6 @@ const HomeContentEditScreen = () => {
           </Grid>
         </AccordionDetails>
       </Accordion>
-
-      {uploading && <Alert severity="info">Uploading...</Alert>}
     </div>
   );
 };

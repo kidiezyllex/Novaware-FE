@@ -33,3 +33,20 @@ export interface IDeleteBrandResponse {
 	message: string;
 }
 
+export interface IGroupedBrandItem {
+    _id: string;
+    name: string;
+}
+
+export interface IBrandGroup {
+    letter: string;
+    brands: IGroupedBrandItem[];
+}
+
+export interface IGetGroupedBrandsResponse {
+    message: string;
+    data: {
+        groups: IBrandGroup[];
+    };
+}
+

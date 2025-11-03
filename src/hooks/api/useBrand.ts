@@ -15,6 +15,18 @@ export const useGetBrands = (query?: BrandRequestTypes.IGetBrandsQuery) => {
 	});
 };
 
+export const useGetGroupedBrands = () => {
+    return useQuery<BrandTypes.IGetGroupedBrandsResponse, Error>({
+        queryKey: ['brands', 'grouped'],
+        // lazy import to avoid circular import complaints in some bundlers
+        queryFn: async () => {
+            const { getGroupedBrands } = await import('../../lib/api/brand');
+            return await getGroupedBrands();
+        },
+        staleTime: 5 * 60 * 1000,
+    });
+};
+
 export const useCreateBrand = () => {
 	const queryClient = useQueryClient();
 

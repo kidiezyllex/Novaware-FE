@@ -255,7 +255,7 @@ const Chat = ({ setHasNewMessageRef }) => {
   }, [userInfo, socket]);
 
   if (!userInfo) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   return (

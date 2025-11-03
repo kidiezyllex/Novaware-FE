@@ -4,6 +4,7 @@ import {
 	ICreateBrandResponse,
 	IUpdateBrandResponse,
 	IDeleteBrandResponse,
+    IGetGroupedBrandsResponse,
 } from "../../interface/response/brand";
 import {
 	IGetBrandsQuery,
@@ -13,6 +14,10 @@ import {
 
 export const getBrands = async (query?: IGetBrandsQuery): Promise<IGetBrandsResponse> => {
 	return await sendGet(`/brands`, query);
+};
+
+export const getGroupedBrands = async (): Promise<IGetGroupedBrandsResponse> => {
+    return await sendGet(`/brands/grouped`);
 };
 
 export const createBrand = async (body: ICreateBrandBody): Promise<ICreateBrandResponse> => {

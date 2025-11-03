@@ -121,7 +121,6 @@ const ProductTabs = () => {
             label='Sale Products'
             {...a11yProps(1)}
           />
-          <Tab className={classes.tab} label='All Products' {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -173,33 +172,6 @@ const ProductTabs = () => {
             color='secondary'
             component={Link}
             to='/shop?sort_by=sale'
-          >
-            Discover More
-          </Button>
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-6">
-          {loadingProductList ? (
-            <div className={classes.loading}>
-              <CircularProgress color='secondary' />
-            </div>
-          ) : errorProductList ? (
-            <Alert severity='error'>{errorProductList.message || String(errorProductList)}</Alert>
-          ) : (
-            productsList && productsList.map((product) => (
-              <div key={product._id}>
-                <ProductCard {...product} />
-              </div>
-            ))
-          )}
-        </div>
-        <div className={classes.buttonMore}>
-          <Button
-            variant='contained'
-            color='secondary'
-            component={Link}
-            to='/shop'
           >
             Discover More
           </Button>
