@@ -69,3 +69,4 @@ Desktop.ini
 *.njsproj
 *.sln
 *.sw?
+pnpm-lock.yaml
