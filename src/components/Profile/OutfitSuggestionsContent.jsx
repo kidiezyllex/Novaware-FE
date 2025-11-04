@@ -18,7 +18,7 @@ import Message from "../Message";
 import Loader from "../Loader";
 import StarIcon from "@material-ui/icons/Star";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import formatPriceVN from "../../utils/formatPrice";
+import { formatPriceDollar } from "../../utils/formatPrice";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -215,7 +215,7 @@ const OutfitSuggestionsContent = () => {
                               {product.name}
                             </Typography>
                             <Typography variant="body2" className={classes.productPrice}>
-                              {formatPriceVN(product.price)}
+                              {formatPriceDollar(product.price)}
                             </Typography>
                             <Button
                               size="small"
@@ -241,7 +241,7 @@ const OutfitSuggestionsContent = () => {
                       Total Price:
                     </Typography>
                     <Typography variant="h6" className={classes.totalPrice}>
-                      {formatPriceVN(outfit.totalPrice)}
+                      {formatPriceDollar(outfit.totalPrice)}
                     </Typography>
                   </Box>
                   <Box className={classes.compatibilityScore}>

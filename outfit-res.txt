@@ -1,0 +1,790 @@
+{
+  "success": true,
+  "data": {
+    "outfits": [
+      {
+        "name": "Women's Outfit 1",
+        "products": [
+          {
+            "_id": "68fd617551f9562e9cca71a7",
+            "size": {
+              "s": 2,
+              "m": 2,
+              "l": 3,
+              "xl": 8
+            },
+            "images": [
+              "https://m.media-amazon.com/images/I/41x7HycdBIL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41QPWG-OncL._AC_.jpg"
+            ],
+            "rating": 2.9,
+            "numReviews": 13,
+            "price": 995838,
+            "sale": 22,
+            "countInStock": 44,
+            "outfitTags": [],
+            "compatibleProducts": [
+              "68fd618851f9562e9cca77a8",
+              "68fd616a51f9562e9cca6ecb",
+              "68fd618851f9562e9cca78fd"
+            ],
+            "featureVector":[]
+            "name": "XXTAXN Women's Sports Bras Set Cutout Sleeveless Tops Biker Shorts Two Piece Outfits DarkPink",
+            "brand": "Ruecker - Graham",
+            "category": "Tops",
+            "description": "No description",
+            "colors": [],
+            "user": "68fd60d96f16962acc50e2f2",
+            "reviews": [
+              {
+                "_id": "6909c0c3803f0f5b3c475de8",
+                "name": "Stuart Ullrich",
+                "rating": 1,
+                "comment": "Tempore voluptates sed vitae aut.",
+                "user": "68fd6b7e9876690c08d16228",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475de9",
+                "name": "Mark Kulas",
+                "rating": 1,
+                "comment": "Explicabo autem iure fuga explicabo aperiam. Maiores itaque nihil in harum quia quia nulla sit maiores. Voluptatum necessitatibus officiis vero est doloribus quia quam sapiente.",
+                "user": "68fd6b4c9876690c08d0ce78",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475dea",
+                "name": "Edmund King II",
+                "rating": 5,
+                "comment": "Quia laboriosam quis aut rerum totam nostrum asperiores labore laborum.",
+                "user": "68fd6b4a9876690c08d0c982",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475deb",
+                "name": "Virginia Bins II",
+                "rating": 4,
+                "comment": "Sint vitae ut voluptatem. Fugit aut pariatur ut et animi impedit. Aperiam eos maxime et praesentium quia.",
+                "user": "68fd6b489876690c08d0c3bd",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475dec",
+                "name": "Jamie Balistreri",
+                "rating": 4,
+                "comment": "Ratione hic iure et amet dignissimos exercitationem. Maiores vel ipsa nesciunt in quam. Ullam temporibus et ad eos.",
+                "user": "68fd6b469876690c08d0be0e",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475ded",
+                "name": "Rick West-Stanton",
+                "rating": 1,
+                "comment": "Aut enim molestias accusantium accusamus iusto animi. Unde nam quam qui qui. Corrupti consequatur animi eum dolorem.",
+                "user": "68fd6b489876690c08d0c1d5",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475dee",
+                "name": "Dr. Courtney Emard",
+                "rating": 2,
+                "comment": "Iste dolorum ipsam accusamus rem. Eaque aut nobis repellat rerum nisi.",
+                "user": "68fd6b459876690c08d0b9fd",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475def",
+                "name": "Yolanda Ratke",
+                "rating": 2,
+                "comment": "Minima nesciunt ut laborum laboriosam provident qui. Inventore dolorum reiciendis dignissimos ea sed dolores dolorum aliquid. Assumenda at mollitia libero sed nihil doloremque.",
+                "user": "68fd6b579876690c08d0f378",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df0",
+                "name": "Geneva Swaniawski-Hermiston",
+                "rating": 4,
+                "comment": "Nisi et odit et consequatur nobis exercitationem. Atque molestiae molestiae suscipit natus repellendus neque molestiae repellat et. Necessitatibus quia consequatur consequatur dolorem quisquam reprehenderit.",
+                "user": "68fd6b7a9876690c08d1529c",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df1",
+                "name": "Joshua Becker",
+                "rating": 2,
+                "comment": "Ipsa animi iste ducimus a aliquam.",
+                "user": "68fd6b739876690c08d14183",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df2",
+                "name": "Mr. Saul Ruecker",
+                "rating": 5,
+                "comment": "Officiis asperiores officiis ut molestias vel quas.",
+                "user": "68fd6b459876690c08d0baca",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df3",
+                "name": "Darnell Sauer",
+                "rating": 4,
+                "comment": "Amet labore aspernatur cupiditate unde molestiae dolorem facere animi.",
+                "user": "68fd6b4c9876690c08d0cd6c",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df4",
+                "name": "Terry Wilkinson",
+                "rating": 3,
+                "comment": "Vel doloribus aut non. Omnis voluptatibus fugiat et nulla ad veniam harum.",
+                "user": "68fd6b839876690c08d170d0",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              }
+            ],
+            "__v": 2,
+            "createdAt": "2025-10-25T23:47:01.849Z",
+            "updatedAt": "2025-11-04T09:00:51.541Z",
+            "variants": [
+              {
+                "stock": 44,
+                "_id": "6909c0c3803f0f5b3c475de5",
+                "color": "#000000",
+                "size": "m",
+                "price": 995838
+              }
+            ]
+          },
+          {
+            "_id": "68fd619151f9562e9cca81c9",
+            "size": {
+              "s": 6,
+              "m": 9,
+              "l": 3,
+              "xl": 18
+            },
+            "images": [
+              "https://m.media-amazon.com/images/I/31pAa80CZJL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41z9y6I+fcL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41TrHKThk-L._AC_.jpg",
+              "https://m.media-amazon.com/images/I/51WQS2CcrYL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/51i7IqlTzwL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/51fNHlVzayL._AC_.jpg"
+            ],
+            "rating": 3.5,
+            "numReviews": 49,
+            "price": 2254000,
+            "sale": 21,
+            "countInStock": 36,
+            "outfitTags": [],
+            "compatibleProducts": [
+              "68fd618251f9562e9cca76f0",
+              "68fd619151f9562e9cca8287",
+              "68fd618c51f9562e9cca7e4e"
+            ],
+            "featureVector":[]
+            "name": "junytDing Tea Length Mother of The Bride Dress with Sleeve Lace Applique Chiffon Formal Evening Party Gowns for Women LD095",
+            "brand": "Dickens Inc",
+            "category": "Dresses",
+            "description": "WARNING: 1.The item is flat packed when post,please iron under warm and low temperature to ease the crease if needed,except some dresses fabric can't be iron. 2.Accessories: The dress doesn't include any accessory,such as wedding veil,gloves,shawl,crown,necklace,earrings,etc. 3.If the standard size does not fit you well,we also can accept custom made for you FOR FREE. The measurements we need as follows,you can refer how to measure it according to the measure guide in the top left pictures part of this page. 1.Full Bust _____ inch or ___ cm 2.Waist _____ inch or ___ cm 3.Hips _____ inch or ___ cm 4.Full Sleeve Length_____ inch or ___ cm 5.Armhole _____ inch or ___ cm 6.Height(without wearing shoes): _____inch or ___ cm 7.The height of your high heel shoes: _____inch or ___ cm 8.The date you need this dress_____ 9.Your phone number: _____ Note: 1.The shooting light and setting of your computer screen may cause slight color mismatches.All products are subject to material objects",
+            "colors": [],
+            "user": "68fd60d96f16962acc50e2f2",
+            "reviews": [],
+            "__v": 0,
+            "createdAt": "2025-10-25T23:47:29.396Z",
+            "updatedAt": "2025-10-28T23:27:10.716Z"
+          },
+          {
+            "_id": "68fd616a51f9562e9cca6d3f",
+            "size": {
+              "s": 11,
+              "m": 7,
+              "l": 12,
+              "xl": 7
+            },
+            "images": [
+              "https://m.media-amazon.com/images/I/415lxXgIHRL._AC_.jpg"
+            ],
+            "rating": 4.5,
+            "numReviews": 6,
+            "price": 812577,
+            "sale": 15,
+            "countInStock": 22,
+            "outfitTags": [],
+            "compatibleProducts": [
+              "68fd618c51f9562e9cca7bda",
+              "68fd616a51f9562e9cca6cec",
+              "68fd617451f9562e9cca7027"
+            ],
+            "featureVector":[],
+            "name": "Neff Mens Richard Sherman Brodie Sunglasses 14FS11RS, Green, OS",
+            "brand": "Thompson - Harvey",
+            "category": "Accessories",
+            "description": "Polycarbonate lens Non-Polarized",
+            "colors": [],
+            "user": "68fd60d96f16962acc50e2f2",
+            "reviews": [],
+            "__v": 1,
+            "createdAt": "2025-10-25T23:46:51.186Z",
+            "updatedAt": "2025-11-04T07:00:47.213Z",
+            "variants": [
+              {
+                "stock": 22,
+                "_id": "6909a49fc1e53f51282acc23",
+                "colorId": "690999a81aeb5a34d85fafd6",
+                "sizeId": "6909964863aeb31080a6c9d0",
+                "price": 812577
+              }
+            ]
+          }
+        ],
+        "style": "sport",
+        "totalPrice": 4062415,
+        "compatibilityScore": 0.6,
+        "gender": "female",
+        "description": "Dress + Accessories + Shoes"
+      },
+      {
+        "name": "Women's Outfit 2",
+        "products": [
+          {
+            "_id": "68fd617551f9562e9cca71a7",
+            "size": {
+              "s": 2,
+              "m": 2,
+              "l": 3,
+              "xl": 8
+            },
+            "images": [
+              "https://m.media-amazon.com/images/I/41x7HycdBIL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41QPWG-OncL._AC_.jpg"
+            ],
+            "rating": 2.9,
+            "numReviews": 13,
+            "price": 995838,
+            "sale": 22,
+            "countInStock": 44,
+            "outfitTags": [],
+            "compatibleProducts": [
+              "68fd618851f9562e9cca77a8",
+              "68fd616a51f9562e9cca6ecb",
+              "68fd618851f9562e9cca78fd"
+            ],
+           "featureVector":[],
+            "name": "XXTAXN Women's Sports Bras Set Cutout Sleeveless Tops Biker Shorts Two Piece Outfits DarkPink",
+            "brand": "Ruecker - Graham",
+            "category": "Tops",
+            "description": "No description",
+            "colors": [],
+            "user": "68fd60d96f16962acc50e2f2",
+            "reviews": [
+              {
+                "_id": "6909c0c3803f0f5b3c475de8",
+                "name": "Stuart Ullrich",
+                "rating": 1,
+                "comment": "Tempore voluptates sed vitae aut.",
+                "user": "68fd6b7e9876690c08d16228",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475de9",
+                "name": "Mark Kulas",
+                "rating": 1,
+                "comment": "Explicabo autem iure fuga explicabo aperiam. Maiores itaque nihil in harum quia quia nulla sit maiores. Voluptatum necessitatibus officiis vero est doloribus quia quam sapiente.",
+                "user": "68fd6b4c9876690c08d0ce78",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475dea",
+                "name": "Edmund King II",
+                "rating": 5,
+                "comment": "Quia laboriosam quis aut rerum totam nostrum asperiores labore laborum.",
+                "user": "68fd6b4a9876690c08d0c982",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475deb",
+                "name": "Virginia Bins II",
+                "rating": 4,
+                "comment": "Sint vitae ut voluptatem. Fugit aut pariatur ut et animi impedit. Aperiam eos maxime et praesentium quia.",
+                "user": "68fd6b489876690c08d0c3bd",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475dec",
+                "name": "Jamie Balistreri",
+                "rating": 4,
+                "comment": "Ratione hic iure et amet dignissimos exercitationem. Maiores vel ipsa nesciunt in quam. Ullam temporibus et ad eos.",
+                "user": "68fd6b469876690c08d0be0e",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475ded",
+                "name": "Rick West-Stanton",
+                "rating": 1,
+                "comment": "Aut enim molestias accusantium accusamus iusto animi. Unde nam quam qui qui. Corrupti consequatur animi eum dolorem.",
+                "user": "68fd6b489876690c08d0c1d5",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475dee",
+                "name": "Dr. Courtney Emard",
+                "rating": 2,
+                "comment": "Iste dolorum ipsam accusamus rem. Eaque aut nobis repellat rerum nisi.",
+                "user": "68fd6b459876690c08d0b9fd",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475def",
+                "name": "Yolanda Ratke",
+                "rating": 2,
+                "comment": "Minima nesciunt ut laborum laboriosam provident qui. Inventore dolorum reiciendis dignissimos ea sed dolores dolorum aliquid. Assumenda at mollitia libero sed nihil doloremque.",
+                "user": "68fd6b579876690c08d0f378",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df0",
+                "name": "Geneva Swaniawski-Hermiston",
+                "rating": 4,
+                "comment": "Nisi et odit et consequatur nobis exercitationem. Atque molestiae molestiae suscipit natus repellendus neque molestiae repellat et. Necessitatibus quia consequatur consequatur dolorem quisquam reprehenderit.",
+                "user": "68fd6b7a9876690c08d1529c",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df1",
+                "name": "Joshua Becker",
+                "rating": 2,
+                "comment": "Ipsa animi iste ducimus a aliquam.",
+                "user": "68fd6b739876690c08d14183",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df2",
+                "name": "Mr. Saul Ruecker",
+                "rating": 5,
+                "comment": "Officiis asperiores officiis ut molestias vel quas.",
+                "user": "68fd6b459876690c08d0baca",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df3",
+                "name": "Darnell Sauer",
+                "rating": 4,
+                "comment": "Amet labore aspernatur cupiditate unde molestiae dolorem facere animi.",
+                "user": "68fd6b4c9876690c08d0cd6c",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df4",
+                "name": "Terry Wilkinson",
+                "rating": 3,
+                "comment": "Vel doloribus aut non. Omnis voluptatibus fugiat et nulla ad veniam harum.",
+                "user": "68fd6b839876690c08d170d0",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              }
+            ],
+            "__v": 2,
+            "createdAt": "2025-10-25T23:47:01.849Z",
+            "updatedAt": "2025-11-04T09:00:51.541Z",
+            "variants": [
+              {
+                "stock": 44,
+                "_id": "6909c0c3803f0f5b3c475de5",
+                "color": "#000000",
+                "size": "m",
+                "price": 995838
+              }
+            ]
+          },
+          {
+            "_id": "68fd619151f9562e9cca81c9",
+            "size": {
+              "s": 6,
+              "m": 9,
+              "l": 3,
+              "xl": 18
+            },
+            "images": [
+              "https://m.media-amazon.com/images/I/31pAa80CZJL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41z9y6I+fcL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41TrHKThk-L._AC_.jpg",
+              "https://m.media-amazon.com/images/I/51WQS2CcrYL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/51i7IqlTzwL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/51fNHlVzayL._AC_.jpg"
+            ],
+            "rating": 3.5,
+            "numReviews": 49,
+            "price": 2254000,
+            "sale": 21,
+            "countInStock": 36,
+            "outfitTags": [],
+            "compatibleProducts": [
+              "68fd618251f9562e9cca76f0",
+              "68fd619151f9562e9cca8287",
+              "68fd618c51f9562e9cca7e4e"
+            ],
+           "featureVector": [],
+            "name": "junytDing Tea Length Mother of The Bride Dress with Sleeve Lace Applique Chiffon Formal Evening Party Gowns for Women LD095",
+            "brand": "Dickens Inc",
+            "category": "Dresses",
+            "description": "WARNING: 1.The item is flat packed when post,please iron under warm and low temperature to ease the crease if needed,except some dresses fabric can't be iron. 2.Accessories: The dress doesn't include any accessory,such as wedding veil,gloves,shawl,crown,necklace,earrings,etc. 3.If the standard size does not fit you well,we also can accept custom made for you FOR FREE. The measurements we need as follows,you can refer how to measure it according to the measure guide in the top left pictures part of this page. 1.Full Bust _____ inch or ___ cm 2.Waist _____ inch or ___ cm 3.Hips _____ inch or ___ cm 4.Full Sleeve Length_____ inch or ___ cm 5.Armhole _____ inch or ___ cm 6.Height(without wearing shoes): _____inch or ___ cm 7.The height of your high heel shoes: _____inch or ___ cm 8.The date you need this dress_____ 9.Your phone number: _____ Note: 1.The shooting light and setting of your computer screen may cause slight color mismatches.All products are subject to material objects",
+            "colors": [],
+            "user": "68fd60d96f16962acc50e2f2",
+            "reviews": [],
+            "__v": 0,
+            "createdAt": "2025-10-25T23:47:29.396Z",
+            "updatedAt": "2025-10-28T23:27:10.716Z"
+          },
+          {
+            "_id": "68fd616a51f9562e9cca6b2b",
+            "size": {
+              "s": 12,
+              "m": 16,
+              "l": 1,
+              "xl": 0
+            },
+            "images": [
+              "https://m.media-amazon.com/images/I/411b5RLtr6L._AC_.jpg",
+              "https://m.media-amazon.com/images/I/411B3Xk0OZL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/51JZ9vEMkJL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41UTlmQ2ZnL._AC_.jpg"
+            ],
+            "rating": 2,
+            "numReviews": 1,
+            "price": 931478,
+            "sale": 28,
+            "countInStock": 28,
+            "outfitTags": [],
+            "compatibleProducts": [
+              "68fd619151f9562e9cca81f1",
+              "68fd619151f9562e9cca82ee",
+              "68fd619151f9562e9cca82a7"
+            ],
+            "featureVector": [],
+            "name": "Marc By Marc Jacobs Core Pretty Medium Tate Shoulder Bag (Amethyst)",
+            "brand": "Erdman LLC",
+            "category": "Accessories",
+            "description": "No description",
+            "colors": [],
+            "user": "68fd60d96f16962acc50e2f2",
+            "reviews": [
+              {
+                "_id": "6909b20fd14c1a497082d908",
+                "name": "Tara Grant",
+                "rating": 2,
+                "comment": "Libero necessitatibus id quos qui. Provident est laboriosam sint molestiae maxime doloremque debitis quae.",
+                "user": "68fd6b579876690c08d0f304",
+                "createdAt": "2025-11-04T07:58:07.538Z",
+                "updatedAt": "2025-11-04T07:58:07.538Z"
+              }
+            ],
+            "__v": 6,
+            "createdAt": "2025-10-25T23:46:51.072Z",
+            "updatedAt": "2025-11-04T07:58:07.539Z",
+            "variants": [
+              {
+                "stock": 28,
+                "_id": "6909b20fd14c1a497082d905",
+                "color": "#000000",
+                "size": "m",
+                "price": 931478
+              }
+            ]
+          }
+        ],
+        "style": "sport",
+        "totalPrice": 4181316,
+        "compatibilityScore": 0.6,
+        "gender": "female",
+        "description": "Dress + Accessories + Shoes"
+      },
+      {
+        "name": "Women's Outfit 3",
+        "products": [
+          {
+            "_id": "68fd617551f9562e9cca71a7",
+            "size": {
+              "s": 2,
+              "m": 2,
+              "l": 3,
+              "xl": 8
+            },
+            "images": [
+              "https://m.media-amazon.com/images/I/41x7HycdBIL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41QPWG-OncL._AC_.jpg"
+            ],
+            "rating": 2.9,
+            "numReviews": 13,
+            "price": 995838,
+            "sale": 22,
+            "countInStock": 44,
+            "outfitTags": [],
+            "compatibleProducts": [
+              "68fd618851f9562e9cca77a8",
+              "68fd616a51f9562e9cca6ecb",
+              "68fd618851f9562e9cca78fd"
+            ],
+            "featureVector":[],
+            "name": "XXTAXN Women's Sports Bras Set Cutout Sleeveless Tops Biker Shorts Two Piece Outfits DarkPink",
+            "brand": "Ruecker - Graham",
+            "category": "Tops",
+            "description": "No description",
+            "colors": [],
+            "user": "68fd60d96f16962acc50e2f2",
+            "reviews": [
+              {
+                "_id": "6909c0c3803f0f5b3c475de8",
+                "name": "Stuart Ullrich",
+                "rating": 1,
+                "comment": "Tempore voluptates sed vitae aut.",
+                "user": "68fd6b7e9876690c08d16228",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475de9",
+                "name": "Mark Kulas",
+                "rating": 1,
+                "comment": "Explicabo autem iure fuga explicabo aperiam. Maiores itaque nihil in harum quia quia nulla sit maiores. Voluptatum necessitatibus officiis vero est doloribus quia quam sapiente.",
+                "user": "68fd6b4c9876690c08d0ce78",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475dea",
+                "name": "Edmund King II",
+                "rating": 5,
+                "comment": "Quia laboriosam quis aut rerum totam nostrum asperiores labore laborum.",
+                "user": "68fd6b4a9876690c08d0c982",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475deb",
+                "name": "Virginia Bins II",
+                "rating": 4,
+                "comment": "Sint vitae ut voluptatem. Fugit aut pariatur ut et animi impedit. Aperiam eos maxime et praesentium quia.",
+                "user": "68fd6b489876690c08d0c3bd",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475dec",
+                "name": "Jamie Balistreri",
+                "rating": 4,
+                "comment": "Ratione hic iure et amet dignissimos exercitationem. Maiores vel ipsa nesciunt in quam. Ullam temporibus et ad eos.",
+                "user": "68fd6b469876690c08d0be0e",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475ded",
+                "name": "Rick West-Stanton",
+                "rating": 1,
+                "comment": "Aut enim molestias accusantium accusamus iusto animi. Unde nam quam qui qui. Corrupti consequatur animi eum dolorem.",
+                "user": "68fd6b489876690c08d0c1d5",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475dee",
+                "name": "Dr. Courtney Emard",
+                "rating": 2,
+                "comment": "Iste dolorum ipsam accusamus rem. Eaque aut nobis repellat rerum nisi.",
+                "user": "68fd6b459876690c08d0b9fd",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475def",
+                "name": "Yolanda Ratke",
+                "rating": 2,
+                "comment": "Minima nesciunt ut laborum laboriosam provident qui. Inventore dolorum reiciendis dignissimos ea sed dolores dolorum aliquid. Assumenda at mollitia libero sed nihil doloremque.",
+                "user": "68fd6b579876690c08d0f378",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df0",
+                "name": "Geneva Swaniawski-Hermiston",
+                "rating": 4,
+                "comment": "Nisi et odit et consequatur nobis exercitationem. Atque molestiae molestiae suscipit natus repellendus neque molestiae repellat et. Necessitatibus quia consequatur consequatur dolorem quisquam reprehenderit.",
+                "user": "68fd6b7a9876690c08d1529c",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df1",
+                "name": "Joshua Becker",
+                "rating": 2,
+                "comment": "Ipsa animi iste ducimus a aliquam.",
+                "user": "68fd6b739876690c08d14183",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df2",
+                "name": "Mr. Saul Ruecker",
+                "rating": 5,
+                "comment": "Officiis asperiores officiis ut molestias vel quas.",
+                "user": "68fd6b459876690c08d0baca",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df3",
+                "name": "Darnell Sauer",
+                "rating": 4,
+                "comment": "Amet labore aspernatur cupiditate unde molestiae dolorem facere animi.",
+                "user": "68fd6b4c9876690c08d0cd6c",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              },
+              {
+                "_id": "6909c0c3803f0f5b3c475df4",
+                "name": "Terry Wilkinson",
+                "rating": 3,
+                "comment": "Vel doloribus aut non. Omnis voluptatibus fugiat et nulla ad veniam harum.",
+                "user": "68fd6b839876690c08d170d0",
+                "createdAt": "2025-11-04T09:00:51.541Z",
+                "updatedAt": "2025-11-04T09:00:51.541Z"
+              }
+            ],
+            "__v": 2,
+            "createdAt": "2025-10-25T23:47:01.849Z",
+            "updatedAt": "2025-11-04T09:00:51.541Z",
+            "variants": [
+              {
+                "stock": 44,
+                "_id": "6909c0c3803f0f5b3c475de5",
+                "color": "#000000",
+                "size": "m",
+                "price": 995838
+              }
+            ]
+          },
+          {
+            "_id": "68fd619151f9562e9cca81c9",
+            "size": {
+              "s": 6,
+              "m": 9,
+              "l": 3,
+              "xl": 18
+            },
+            "images": [
+              "https://m.media-amazon.com/images/I/31pAa80CZJL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41z9y6I+fcL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41TrHKThk-L._AC_.jpg",
+              "https://m.media-amazon.com/images/I/51WQS2CcrYL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/51i7IqlTzwL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/51fNHlVzayL._AC_.jpg"
+            ],
+            "rating": 3.5,
+            "numReviews": 49,
+            "price": 2254000,
+            "sale": 21,
+            "countInStock": 36,
+            "outfitTags": [],
+            "compatibleProducts": [
+              "68fd618251f9562e9cca76f0",
+              "68fd619151f9562e9cca8287",
+              "68fd618c51f9562e9cca7e4e"
+            ],
+           "featureVector":[],
+            "name": "junytDing Tea Length Mother of The Bride Dress with Sleeve Lace Applique Chiffon Formal Evening Party Gowns for Women LD095",
+            "brand": "Dickens Inc",
+            "category": "Dresses",
+            "description": "WARNING: 1.The item is flat packed when post,please iron under warm and low temperature to ease the crease if needed,except some dresses fabric can't be iron. 2.Accessories: The dress doesn't include any accessory,such as wedding veil,gloves,shawl,crown,necklace,earrings,etc. 3.If the standard size does not fit you well,we also can accept custom made for you FOR FREE. The measurements we need as follows,you can refer how to measure it according to the measure guide in the top left pictures part of this page. 1.Full Bust _____ inch or ___ cm 2.Waist _____ inch or ___ cm 3.Hips _____ inch or ___ cm 4.Full Sleeve Length_____ inch or ___ cm 5.Armhole _____ inch or ___ cm 6.Height(without wearing shoes): _____inch or ___ cm 7.The height of your high heel shoes: _____inch or ___ cm 8.The date you need this dress_____ 9.Your phone number: _____ Note: 1.The shooting light and setting of your computer screen may cause slight color mismatches.All products are subject to material objects",
+            "colors": [],
+            "user": "68fd60d96f16962acc50e2f2",
+            "reviews": [],
+            "__v": 0,
+            "createdAt": "2025-10-25T23:47:29.396Z",
+            "updatedAt": "2025-10-28T23:27:10.716Z"
+          },
+          {
+            "_id": "68fd618c51f9562e9cca7d08",
+            "size": {
+              "s": 15,
+              "m": 7,
+              "l": 12,
+              "xl": 16
+            },
+            "images": [
+              "https://m.media-amazon.com/images/I/31iZvmFPuCL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/31wXrPbxdUL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/31CMeISPkFL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/31vRomIAGFL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41jPQhZYxPL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41CrMKs4JlL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/41uXcaJl+aL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/310fen3k4RL._AC_.jpg",
+              "https://m.media-amazon.com/images/I/31hLAzVh5GL._AC_.jpg"
+            ],
+            "rating": 5,
+            "numReviews": 6,
+            "price": 201280,
+            "sale": 24,
+            "countInStock": 25,
+            "outfitTags": [],
+            "compatibleProducts": [
+              "68fd618c51f9562e9cca7e39",
+              "68fd618851f9562e9cca77cc",
+              "68fd616a51f9562e9cca6e42"
+            ],
+            "featureVector":[],
+            "name": "Jimmy Orange Aluminum Magnesium Polarized Sunglasses cycling Men Outdoor driving sunglasses Women High Quality JO671 (black frame black lenses)",
+            "brand": "Schowalter - Upton",
+            "category": "Accessories",
+            "description": "Polarized UV Protection Coating coating",
+            "colors": [],
+            "user": "68fd60d96f16962acc50e2f2",
+            "reviews": [],
+            "__v": 0,
+            "createdAt": "2025-10-25T23:47:25.191Z",
+            "updatedAt": "2025-10-28T23:25:13.066Z"
+          }
+        ],
+        "style": "sport",
+        "totalPrice": 3451118,
+        "compatibilityScore": 0.6,
+        "gender": "female",
+        "description": "Dress + Accessories + Shoes"
+      }
+    ],
+    "model": "GNN (GCN)",
+    "timestamp": "2025-11-04T21:17:20.861Z",
+    "pagination": {
+      "page": 1,
+      "pages": 1,
+      "count": 3,
+      "perPage": 9
+    }
+  },
+  "message": "Outfit recommendations generated successfully"
+}

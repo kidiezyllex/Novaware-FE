@@ -8,7 +8,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import ProductModalView from "./ProductModalView";
 import { addToCart, setOpenCartDrawer } from "../../actions/cartActions";
 import { useDispatch } from "react-redux";
-import formatPriceVN from "../../utils/formatPrice";
+import { formatPriceDollar } from "../../utils/formatPrice";
 
 const ProductCard = (props) => {
   const { _id, name, images, price, sale } = props;
@@ -115,11 +115,11 @@ const ProductCard = (props) => {
             <div className="mt-auto flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <span className={`text-lg font-bold ${sale > 0 ? "text-primary" : "text-gray-900"}`}>
-                  {formatPriceVN(finalPrice)}
+                  {formatPriceDollar(finalPrice)}
                 </span>
                 {sale > 0 && (
                   <span className="text-sm text-gray-500 line-through">
-                    {formatPriceVN(price)}
+                    {formatPriceDollar(price)}
                   </span>
                 )}
               </div>

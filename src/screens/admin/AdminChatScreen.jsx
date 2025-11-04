@@ -207,26 +207,13 @@ const AdminChatScreen = ({ setHasNewMessageRef }) => {
 
   const token = userInfo && userInfo.token;
 
-  // Hàm check tin nhan
+  // Hàm check tin nhan - Removed API call
   const fetchLastMessage = useCallback(
     async (userId) => {
-      try {
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        const { data } = await axios.get(`/api/chats/${userId}`, config);
-        const lastMessage = data.messages[data.messages.length - 1];
-        const isUnread =
-          lastMessage && lastMessage.sender !== "admin" && !lastMessage.read;
-        return {
-          content: lastMessage ? lastMessage.content : "No messages yet",
-          isUnread,
-          timestamp: lastMessage ? lastMessage.timestamp : null,
-        };
-      } catch (error) {
-        console.error("Error fetching last message:", error);
-        return { content: "No messages yet", isUnread: false, timestamp: null };
-      }
+      // API call removed
+      return { content: "No messages yet", isUnread: false, timestamp: null };
     },
-    [token]
+    []
   );
 
   // Hàm chọn user
@@ -270,25 +257,7 @@ const AdminChatScreen = ({ setHasNewMessageRef }) => {
     fetchUsers();
   }, [userInfo, token, fetchLastMessage, users.length]);
 
-  // Lấy tin nhắn khi chọn user
-  useEffect(() => {
-    const fetchMessages = async () => {
-      if (selectedUser) {
-        try {
-          const config = { headers: { Authorization: `Bearer ${token}` } };
-          const { data } = await axios.get(
-            `/api/chats/${selectedUser._id}`,
-            config
-          );
-          setMessages(data.messages);
-        } catch (error) {
-          console.error("Error fetching messages:", error);
-        }
-      }
-    };
-
-    fetchMessages();
-  }, [selectedUser, token]);
+  // Lấy tin nhắn khi chọn user - Removed API call
 
   // cuon xuong cuoi
   useEffect(() => {
@@ -315,12 +284,6 @@ const AdminChatScreen = ({ setHasNewMessageRef }) => {
     setMessages((prevMessages) => [...prevMessages, msg]);
 
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.post(
-        `/api/chats/${selectedUser._id}`,
-        { sender: "admin", content: newMessage },
-        config
-      );
       if (!socket) return;
       socket.emit("sendMessage", { ...msg, receiver: selectedUser._id }); 
     } catch (error) {
@@ -330,7 +293,7 @@ const AdminChatScreen = ({ setHasNewMessageRef }) => {
     } finally {
       setLoading(false);
     }
-  }, [newMessage, selectedUser, token, socket]);
+  }, [newMessage, selectedUser, socket]);
 
   // Effect để nhận tin nhắn mới qua socket (Realtime chat)
   useEffect(() => {

@@ -45,7 +45,7 @@ export const useGNNOutfitPerfect = (userId: string, query: RecommendRequestTypes
 	return useQuery<RecommendTypes.IOutfitPerfectRecommendationResponse, Error>({
 		queryKey: ['recommend', 'gnn-outfit-perfect', userId, query],
 		queryFn: () => getOutfitPerfectRecommendations(userId, query),
-		enabled: !!userId,
+		enabled: !!userId && !!query.productId,
 	});
 };
 

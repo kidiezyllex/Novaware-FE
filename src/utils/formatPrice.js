@@ -1,31 +1,35 @@
 /**
- * Format số tiền thành định dạng VNĐ
- * @param {number|string} price - Giá cần format
- * @returns {string} - Giá đã được format (ví dụ: "1.000 đ", "100.000 đ")
+ * Format số tiền thành định dạng USD ($)
+ * @param {number|string} price - Giá cần format (VNĐ)
+ * @returns {string} - Giá đã được format (ví dụ: "$40", "$4,000")
  * 
  * @example
- * formatPriceVN(1000) // "1.000 đ"
- * formatPriceVN(100000) // "100.000 đ"
- * formatPriceVN(1234567) // "1.234.567 đ"
+ * formatPriceDollar(1000000) // "$40" (1,000,000 / 25,000)
+ * formatPriceDollar(100000000) // "$4,000" (100,000,000 / 25,000)
  */
-export const formatPriceVN = (price) => {
+export const formatPriceDollar = (price) => {
   // Chuyển đổi về số nếu là string
   const numPrice = typeof price === 'string' ? parseFloat(price) : price;
   
   // Kiểm tra nếu không phải số hợp lệ
   if (isNaN(numPrice) || numPrice === null || numPrice === undefined) {
-    return '0 đ';
+    return '$0';
   }
   
-  // Làm tròn về số nguyên và chuyển đổi thành string
-  const roundedPrice = Math.round(numPrice);
-  const priceString = roundedPrice.toString();
+  // Chia cho 25000 để chuyển từ VNĐ sang USD
+  const usdPrice = numPrice / 25000;
   
-  // Format với dấu chấm làm phân cách hàng nghìn
-  const formattedPrice = priceString.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  // Làm tròn đến 2 chữ số thập phân
+  const roundedPrice = Math.round(usdPrice * 100) / 100;
   
-  return `${formattedPrice} đ`;
+  // Format với dấu phẩy làm phân cách hàng nghìn và dấu chấm cho thập phân
+  const formattedPrice = roundedPrice.toLocaleString('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+  
+  return `$${formattedPrice}`;
 };
 
-export default formatPriceVN;
+export default formatPriceDollar;
 

@@ -16,7 +16,6 @@ import {
 import moment from "moment";
 import CloseIcon from "@material-ui/icons/Close";
 import SendIcon from "@material-ui/icons/Send";
-import axios from "axios";
 import useSocket from "../../hooks/useSocket";
 import AdminChatScreen from "../../screens/admin/AdminChatScreen";
 
@@ -127,28 +126,13 @@ const Chat = ({ setHasNewMessageRef }) => {
   const [loading, setLoading] = useState(false);
 
   const userId = userInfo && userInfo._id;
-  const token = userInfo && userInfo.token;
   const messageEndRef = useRef(null);
 
   const handleCloseChatDrawer = useCallback(() => {
     dispatch(closeAdminChatDrawer());
   }, [dispatch]);
 
-  // Lấy tin nhắn cho user thường
-  useEffect(() => {
-    const fetchMessages = async () => {
-      if (userInfo && !userInfo.isAdmin && userId) {
-        try {
-          const config = { headers: { Authorization: `Bearer ${token}` } };
-          const { data } = await axios.get(`/api/chats/${userId}`, config);
-          setMessages(data.messages);
-        } catch (error) {
-          console.error("Error when take message:", error);
-        }
-      }
-    };
-    fetchMessages();
-  }, [userInfo, userId, token]);
+  // Lấy tin nhắn cho user thường - Removed API call
 
   // cuon xuong cuoi
   useEffect(() => {
@@ -192,12 +176,6 @@ const Chat = ({ setHasNewMessageRef }) => {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
 
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.post(
-        `/api/chats/${chatId}`,
-        { sender, content: inputMessage },
-        config
-      );
       if (!socket) return;
       socket.emit("sendMessage", { ...newMessage, receiver: "admin" }); // Thêm receiver khi user gửi tin nhắn
     } catch (error) {
@@ -209,7 +187,7 @@ const Chat = ({ setHasNewMessageRef }) => {
     } finally {
       setLoading(false);
     }
-  }, [inputMessage, userId, token, socket]);
+  }, [inputMessage, userId, socket]);
 
   // Nhận tin nhắn mới qua socket cho user thường
   useEffect(() => {

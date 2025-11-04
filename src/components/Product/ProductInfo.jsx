@@ -1,17 +1,10 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { FiShoppingBag } from "react-icons/fi";
 import { FaTags, FaShareAlt, FaHeart, FaRegHeart, FaTrademark, FaBoxOpen, FaTshirt } from "react-icons/fa";
 import {
   Box,
   Button,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  Dialog,
-  DialogContent,
-  IconButton,
   Chip,
   Divider,
   Typography,
@@ -19,11 +12,6 @@ import {
   TextField,
   FormHelperText,
 } from "@material-ui/core";
-import CallMadeIcon from "@material-ui/icons/CallMade";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCards } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/effect-cards";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
@@ -35,15 +23,15 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { toast } from "react-toastify";
+import clsx from "clsx";
 import ShareButtons from "../ShareButtons.jsx";
 import ShippingPolicy from "../Modal/ShippingPolicy.jsx";
 import ReturnPolicy from "../Modal/ReturnPolicy.jsx";
 import UpdateProfileModal from "../Modal/UpdateProfileModal.jsx";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import { formatPriceVN } from "../../utils/formatPrice.js";
-import { useGNNPersonalizedProducts } from "../../hooks/api/useRecommend";
-import LottieLoading from "../LottieLoading.jsx";
+import { formatPriceDollar } from "../../utils/formatPrice.js";
+import YouMightAlsoLikeModal from "./YouMightAlsoLikeModal.jsx";
+import CompleteTheLookModal from "./CompleteTheLookModal.jsx";
 
 const useStyles = makeStyles((theme) => ({
   price: {
@@ -145,25 +133,6 @@ const useStyles = makeStyles((theme) => ({
   },
   navLeft: { left: -8 },
   navRight: { right: -8 },
-  card: { width: 320, height: "auto", borderRadius: 8 },
-  media: { height: 300, backgroundSize: "contain", objectFit: "contain" },
-  transparentPaper: {
-    background: "transparent",
-    boxShadow: "none",
-  },
-  gnnLikeSwiper: {
-    '& .swiper-slide': {
-      backgroundColor: 'transparent !important',
-      background: 'transparent !important',
-      boxShadow: 'none !important',
-    },
-    '& .swiper-slide-shadow, & .swiper-slide-shadow-left, & .swiper-slide-shadow-right, & .swiper-slide-shadow-top, & .swiper-slide-shadow-bottom': {
-      display: 'none !important',
-      backgroundImage: 'none !important',
-      backgroundColor: 'transparent !important',
-      opacity: '0 !important',
-    },
-  },
   buttonGroup: {
     marginTop: 30,
     display: "flex",
@@ -252,23 +221,9 @@ const ProductInfo = React.memo(
     const { handleSubmit, control } = useForm();
     const classes = useStyles(product);
     const [likeModalOpen, setLikeModalOpen] = useState(false);
+    const [outfitModalOpen, setOutfitModalOpen] = useState(false);
     const currentUserId = user?._id || user?.id || "";
-    const { data: likeData, isLoading: likeLoading, error: likeError } = useGNNPersonalizedProducts(
-      currentUserId,
-      { k: 5 }
-    );
-    const likeScrollerRef = useRef(null);
-
-    useEffect(() => {
-      if (!likeModalOpen) return;
-      if (!currentUserId) {
-        toast.info("Please sign in to see personalized recommendations.");
-        return;
-      }
-      if (likeError) {
-        toast.error("Failed to load recommendations.");
-      }
-    }, [likeModalOpen, currentUserId, likeError]);
+    const productId = product._id || "";
 
     const sizeOptions = useMemo(() => ["S", "M", "L", "XL"], []);
     const colorOptions = useMemo(
@@ -345,10 +300,10 @@ const ProductInfo = React.memo(
               component="span"
               className={classes.rootPrice}
             >
-              {formatPriceVN(product.price)}
+              {formatPriceDollar(product.price)}
             </Typography>
           ) : null}
-          {"  "}{formatPriceVN(product.price * (1 - product.sale / 100))}
+          {"  "}{formatPriceDollar(product.price * (1 - product.sale / 100))}
         </Typography>
 
         <Typography
@@ -605,7 +560,13 @@ const ProductInfo = React.memo(
                 startIcon={<FaTshirt className={classes.pulseIcon} />}
                 className={classes.button}
                 type="button"
-                onClick={() => {}}
+                onClick={() => {
+                  if (!currentUserId) {
+                    toast.info("Please sign in to see outfit recommendations.");
+                    return;
+                  }
+                  setOutfitModalOpen(true);
+                }}
                 style={{ backgroundColor: "#9c27b0", color: "#fff", whiteSpace: "nowrap", paddingLeft: 16, paddingRight: 16, width: "auto", minWidth: "auto" }}
               >
                 Complete the look
@@ -651,91 +612,20 @@ const ProductInfo = React.memo(
           </FormControl>
         </form>
 
-        {/* You might also like Modal with Swiper Cube */}
-        <Dialog
+        {/* You might also like Modal */}
+        <YouMightAlsoLikeModal
           open={likeModalOpen}
           onClose={() => setLikeModalOpen(false)}
-          fullWidth
-          maxWidth="sm"
-          style={{ zIndex: 9999 }}
-          PaperProps={{ className: classes.transparentPaper, elevation: 0 }}
-          BackdropProps={{ style: { backgroundColor: "rgba(0,0,0,0.4)" } }}
-        >
-          <DialogContent style={{ padding: 0 }}>
-            {currentUserId && likeLoading && (
-              <LottieLoading />
-            )}
-            {currentUserId && !likeLoading && !likeError && likeData?.data?.products?.length > 0 && (
-              <Swiper
-                effect={"cards"}
-                grabCursor={true}
-                modules={[EffectCards]}
-                className={clsx("gnn-like-swiper !overflow-hidden", classes.gnnLikeSwiper)}
-              >
-                {likeData.data.products.slice(0, 5).map((p, idx) => (
-                  <SwiperSlide key={p._id || idx} style={{ backgroundColor: "transparent", width: 320 }}>  
-                    <Card className={classes.card} style={{ margin: "0 auto", }}>
-                      <CardActionArea>
-                        <CardMedia
-                          className={classes.media}
-                          image={p.images && p.images.length > 0 ? p.images[0] : "https://via.placeholder.com/180"}
-                          title={p.name}
-                        />
-                        <CardContent>
-                          <Typography variant="subtitle2" noWrap>{p.name}</Typography>
-                          <Typography variant="subtitle2" color="secondary">
-                            {formatPriceVN(p.price * (1 - (p.sale || 0) / 100))}
-                          </Typography>
-                          {(p.category || p.brand || typeof p.countInStock !== 'undefined') && (
-                            <Box mt={1} display="flex" alignItems="center" flexWrap="wrap" style={{ gap: 6, rowGap: 6 }}>
-                              {p.category && (
-                                <Chip
-                                  size="small"
-                                  color="primary"
-                                  icon={<FaTags style={{ fontSize: 14 }} />}
-                                  label={p.category}
-                                  style={{padding: "0 8px" }}
-                                />
-                              )}
-                              {p.brand && (
-                                <Chip
-                                  size="small"
-                                  color="primary"
-                                  icon={<FaTrademark style={{ fontSize: 14 }} />}
-                                  label={p.brand}
-                                  style={{padding: "0 8px" }}
-                                />
-                              )}
-                              <Chip
-                                size="small"
-                                color={(Number(p.countInStock) || 0) > 0 ? "primary" : "default"}
-                                icon={<FaBoxOpen style={{ fontSize: 14 }} />}
-                                label={`${(Number(p.countInStock) || 0) > 0 ? `${Number(p.countInStock)} in stock` : "Out of stock"}`}
-                                style={{ padding: "0 8px" }}
-                              />
-                            </Box>
-                          )}
-                          <Box mt={1}>
-                            <Button
-                              variant="outlined"
-                              color="primary"
-                              size="medium"
-                              style={{width: "100%"}}
-                              onClick={() => window.open(`/product/${p._id || ''}` , "_blank")}
-                              endIcon={<CallMadeIcon />}
-                            >
-                              View details
-                            </Button>
-                          </Box>
-                        </CardContent>
-                      </CardActionArea>
-                    </Card>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            )}
-          </DialogContent>
-        </Dialog>
+          userId={currentUserId}
+        />
+
+        {/* Complete the look Modal */}
+        <CompleteTheLookModal
+          open={outfitModalOpen}
+          onClose={() => setOutfitModalOpen(false)}
+          userId={currentUserId}
+          productId={productId}
+        />
 
         <Box
           display="flex"
