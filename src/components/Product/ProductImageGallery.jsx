@@ -68,7 +68,7 @@ const ProductImageGallery = React.memo(({ product }) => {
               <img
                 src={product.images[index]}
                 alt={product.name}
-                style={{ width: "100%" }}
+                style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "contain" }}
               />
               {product.sale > 0 && (
                 <div className={classes.sale}>{`- ${product.sale}% `}</div>

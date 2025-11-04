@@ -1,24 +1,34 @@
 import { sendGet, sendPost } from "./axios";
 import {
 	IRecommendationResponse,
-	IOutfitRecommendationResponse,
 	ISimilarProductsResponse,
 	ITrendingProductsResponse,
 	IPersonalizedResponse,
-	ITrainModelsResponse,
+	IPersonalizedGNNResponse,
+	IHybridRecommendationV9Response,
+	IOutfitPerfectRecommendationResponse,
+	ITrainGNNIncrementalResponse,
 } from "../../interface/response/recommend";
 import {
 	IGetRecommendationsQuery,
 	IGetTrendingQuery,
 	IGetSimilarProductsQuery,
 	IGetPersonalizedQuery,
+	IGetOutfitPerfectQuery,
 } from "../../interface/request/recommend";
 
-export const getGNNRecommendations = async (userId: string, query?: IGetRecommendationsQuery): Promise<IRecommendationResponse> => {
-	return await sendGet(`/recommend/gnn/${userId}`, query);
+// 9.1 Personalized Products (GNN)
+export const getGNNPersonalizedRecommendations = async (
+	userId: string,
+	query?: IGetPersonalizedQuery
+): Promise<IPersonalizedGNNResponse> => {
+	return await sendGet(`/recommend/gnn/personalize/${userId}`, query);
 };
 
-export const getHybridRecommendations = async (userId: string, query?: IGetRecommendationsQuery): Promise<IRecommendationResponse> => {
+export const getHybridRecommendations = async (
+	userId: string,
+	query?: IGetRecommendationsQuery
+): Promise<IHybridRecommendationV9Response> => {
 	return await sendGet(`/recommend/hybrid/${userId}`, query);
 };
 
@@ -26,8 +36,12 @@ export const getBestRecommendations = async (userId: string, query?: IGetRecomme
 	return await sendGet(`/recommend/best/${userId}`, query);
 };
 
-export const getOutfitRecommendations = async (userId: string, query?: IGetRecommendationsQuery): Promise<IOutfitRecommendationResponse> => {
-	return await sendGet(`/recommend/outfits/${userId}`, query);
+// 9.3 Outfit Perfect (GNN)
+export const getOutfitPerfectRecommendations = async (
+	userId: string,
+	query: IGetOutfitPerfectQuery
+): Promise<IOutfitPerfectRecommendationResponse> => {
+	return await sendGet(`/recommend/gnn/outfit-perfect/${userId}`, query);
 };
 
 export const getSimilarProducts = async (productId: string, query?: IGetSimilarProductsQuery): Promise<ISimilarProductsResponse> => {
@@ -42,7 +56,8 @@ export const getPersonalizedRecommendations = async (userId: string, query?: IGe
 	return await sendGet(`/recommend/personalized/${userId}`, query);
 };
 
-export const trainModels = async (): Promise<ITrainModelsResponse> => {
-	return await sendPost(`/recommend/train`);
+// 9.4 Train GNN (Incremental)
+export const trainGNNIncremental = async (): Promise<ITrainGNNIncrementalResponse> => {
+	return await sendPost(`/recommend/train/gnn-incremental`);
 };
 

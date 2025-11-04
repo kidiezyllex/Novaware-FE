@@ -107,3 +107,52 @@ export interface ITrainModelsResponse {
 	message: string;
 }
 
+// 9.x 新接口类型
+export interface IPersonalizedGNNResponse {
+	success: boolean;
+	message: string;
+	data: IProduct[];
+}
+
+export interface IHybridRecommendationV9Response {
+	success: boolean;
+	message: string;
+	data: {
+		products: IProduct[];
+		pagination: {
+			page: number;
+			pages: number;
+			count: number;
+			perPage: number;
+		};
+	};
+}
+
+export interface IOutfitPerfectRecommendationResponse {
+	success: boolean;
+	message: string;
+	data: {
+		outfits: IOutfit[];
+		model: string;
+		timestamp: string;
+		pagination: {
+			page: number;
+			pages: number;
+			count: number;
+			perPage: number;
+		};
+	};
+}
+
+export interface ITrainGNNIncrementalResponse {
+	success: boolean;
+	message: string;
+	data: {
+		gnn: {
+			trained: boolean;
+			trainingTime: string;
+			mode: 'incremental' | string;
+		};
+	};
+}
+

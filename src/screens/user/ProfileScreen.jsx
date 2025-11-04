@@ -18,6 +18,7 @@ import ProfileSidebar from "../../components/Profile/ProfileSidebar";
 import ProfileContent from "../../components/Profile/ProfileContent";
 import OrdersContent from "../../components/Profile/OrdersContent";
 import FavoritesContent from "../../components/Profile/FavoritesContent";
+import OutfitSuggestionsContent from "../../components/Profile/OutfitSuggestionsContent";
 import SettingsContent from "../../components/Profile/SettingsContent";
 
 const useStyles = makeStyles((theme) => ({
@@ -75,6 +76,8 @@ const ProfileScreen = ({ history }) => {
         );
       case "favorites":
         return <FavoritesContent />;
+      case "outfit-suggestions":
+        return <OutfitSuggestionsContent />;
       case "settings":
         return <SettingsContent />;
       default:

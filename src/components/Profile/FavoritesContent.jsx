@@ -179,7 +179,7 @@ const FavoritesContent = () => {
                       className={classes.detailButton}
                       endIcon={<CallMadeIcon />}
                     >
-                      Chi tiết sản phẩm
+                      View details
                     </Button>
                   </TableCell>
                   <TableCell className={classes.tableCell}>

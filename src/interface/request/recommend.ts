@@ -21,3 +21,7 @@ export interface IGetPersonalizedQuery {
 	k?: number;
 }
 
+export interface IGetOutfitPerfectQuery extends IGetRecommendationsQuery {
+	productId: string;
+}
+

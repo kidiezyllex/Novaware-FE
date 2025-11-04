@@ -1,10 +1,16 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { FiShoppingBag } from "react-icons/fi";
-import { FaTags, FaShareAlt, FaHeart, FaRegHeart, FaTrademark, FaBoxOpen } from "react-icons/fa";
+import { FaTags, FaShareAlt, FaHeart, FaRegHeart, FaTrademark, FaBoxOpen, FaTshirt } from "react-icons/fa";
 import {
   Box,
   Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Dialog,
+  DialogContent,
   IconButton,
   Chip,
   Divider,
@@ -13,6 +19,11 @@ import {
   TextField,
   FormHelperText,
 } from "@material-ui/core";
+import CallMadeIcon from "@material-ui/icons/CallMade";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCards } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-cards";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
@@ -30,6 +41,7 @@ import UpdateProfileModal from "../Modal/UpdateProfileModal.jsx";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { formatPriceVN } from "../../utils/formatPrice.js";
+import { useGNNPersonalizedProducts } from "../../hooks/api/useRecommend";
 
 const useStyles = makeStyles((theme) => ({
   price: {
@@ -70,6 +82,18 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 10,
     borderRadius: 0,
   },
+  productItem: {
+    display: "flex",
+    alignItems: "center",
+    padding: "8px 0",
+  },
+  productThumb: {
+    width: 56,
+    height: 56,
+    objectFit: "cover",
+    borderRadius: 4,
+    marginRight: 12,
+  },
   buttonheart: {
     height: 48,
     width: 50,
@@ -106,6 +130,38 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "29px",
     fontSize: "35px",
   },
+  scrollerWrap: {
+    position: "relative",
+    marginTop: 12,
+  },
+  navBtn: {
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)",
+    zIndex: 1,
+    background: "rgba(255,255,255,0.9)",
+  },
+  navLeft: { left: -8 },
+  navRight: { right: -8 },
+  card: { width: 320, height: "auto", borderRadius: 8 },
+  media: { height: 300, backgroundSize: "cover" },
+  transparentPaper: {
+    background: "transparent",
+    boxShadow: "none",
+  },
+  gnnLikeSwiper: {
+    '& .swiper-slide': {
+      backgroundColor: 'transparent !important',
+      background: 'transparent !important',
+      boxShadow: 'none !important',
+    },
+    '& .swiper-slide-shadow, & .swiper-slide-shadow-left, & .swiper-slide-shadow-right, & .swiper-slide-shadow-top, & .swiper-slide-shadow-bottom': {
+      display: 'none !important',
+      backgroundImage: 'none !important',
+      backgroundColor: 'transparent !important',
+      opacity: '0 !important',
+    },
+  },
   buttonGroup: {
     marginTop: 30,
     display: "flex",
@@ -116,6 +172,11 @@ const useStyles = makeStyles((theme) => ({
     padding: 10,
     border: "none",
     backgroundColor: "transparent",
+  },
+  addToCartFullWidth: {
+    height: 48,
+    width: "100%",
+    borderRadius: 0,
   },
   qtyContainer: {
     display: "flex",
@@ -156,6 +217,15 @@ const useStyles = makeStyles((theme) => ({
   qtyIcon: {
     fontSize: 16,
   },
+  pulseIcon: {
+    animation: "$pulse 1.2s ease-in-out infinite",
+    transformOrigin: "center",
+  },
+  "@keyframes pulse": {
+    "0%": { transform: "scale(1)" },
+    "50%": { transform: "scale(1.2)" },
+    "100%": { transform: "scale(1)" },
+  },
 }));
 
 const ProductInfo = React.memo(
@@ -179,6 +249,13 @@ const ProductInfo = React.memo(
   }) => {
     const { handleSubmit, control } = useForm();
     const classes = useStyles(product);
+    const [likeModalOpen, setLikeModalOpen] = useState(false);
+    const currentUserId = user?._id || user?.id || "";
+    const { data: likeData, isLoading: likeLoading, error: likeError } = useGNNPersonalizedProducts(
+      currentUserId,
+      { k: 5 }
+    );
+    const likeScrollerRef = useRef(null);
 
     const sizeOptions = useMemo(() => ["S", "M", "L", "XL"], []);
     const colorOptions = useMemo(
@@ -495,30 +572,43 @@ const ProductInfo = React.memo(
                 }}
               />
             </Box>
-            {/* Button Group */}
+            {/* Button Groups */}
+            {/* Top row: two new buttons + Wishlist */}
             <Box className={classes.buttonGroup}>
-              {/* Add to Cart Button */}
               <Button
                 variant="contained"
-                color="secondary"
-                startIcon={<FiShoppingBag />}
+                color="default"
+                startIcon={<FaRegHeart className={classes.pulseIcon} />}
                 className={classes.button}
-                disabled={product.countInStock === 0}
-                type="submit"
+                type="button"
+                onClick={() => setLikeModalOpen(true)}
+                style={{ backgroundColor: "#00bcd4", color: "#fff", whiteSpace: "nowrap", paddingLeft: 16, paddingRight: 16, width: "auto", minWidth: "auto" }}
               >
-                Add to Cart
+                You might also like
               </Button>
-              {/* Favorite Button */}
+              <Button
+                variant="contained"
+                color="default"
+                startIcon={<FaTshirt className={classes.pulseIcon} />}
+                className={classes.button}
+                type="button"
+                onClick={() => {}}
+                style={{ backgroundColor: "#9c27b0", color: "#fff", whiteSpace: "nowrap", paddingLeft: 16, paddingRight: 16, width: "auto", minWidth: "auto" }}
+              >
+                Complete the look
+              </Button>
+              {/* Favorite Button (Wishlist) */}
               <Button
                 variant="contained"
                 color="secondary"
                 startIcon={<FaHeart />}
                 className={classes.button}
                 disabled={product.countInStock === 0}
-                type="submit"
+                type="button"
                 onClick={
                   isFavorite ? handleRemoveFromFavorites : handleAddToFavorites
                 }
+                style={{ whiteSpace: "nowrap", paddingLeft: 16, paddingRight: 16 }}
               >
                 {isFavorite ? (
                   <span style={{ whiteSpace: "nowrap", wordBreak: "keep-all" }}>
@@ -531,8 +621,114 @@ const ProductInfo = React.memo(
                 )}
               </Button>
             </Box>
+            {/* Bottom row: Add to Cart full width */}
+            <Box style={{ marginTop: 12, width: "100%" }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<FiShoppingBag />}
+                className={classes.addToCartFullWidth}
+                disabled={product.countInStock === 0}
+                type="submit"
+                fullWidth
+              >
+                Add to Cart
+              </Button>
+            </Box>
           </FormControl>
         </form>
+
+        {/* You might also like Modal with Swiper Cube */}
+        <Dialog
+          open={likeModalOpen}
+          onClose={() => setLikeModalOpen(false)}
+          fullWidth
+          maxWidth="sm"
+          style={{ zIndex: 9999 }}
+          PaperProps={{ className: classes.transparentPaper, elevation: 0 }}
+          BackdropProps={{ style: { backgroundColor: "rgba(0,0,0,0.4)" } }}
+        >
+          <DialogContent style={{ padding: 0 }}>
+            {!currentUserId && (
+              <Typography color="textSecondary" style={{ padding: 16 }}>Please sign in to see personalized recommendations.</Typography>
+            )}
+            {currentUserId && likeLoading && (
+              <Typography color="textSecondary" style={{ padding: 16 }}>Loading...</Typography>
+            )}
+            {currentUserId && likeError && (
+              <Typography color="error" style={{ padding: 16 }}>Failed to load recommendations.</Typography>
+            )}
+            {currentUserId && !likeLoading && !likeError && likeData?.data?.products?.length > 0 && (
+              <Swiper
+                effect={"cards"}
+                grabCursor={true}
+                modules={[EffectCards]}
+                className={clsx("gnn-like-swiper !overflow-hidden", classes.gnnLikeSwiper)}
+              >
+                {likeData.data.products.slice(0, 5).map((p, idx) => (
+                  <SwiperSlide key={p._id || idx} style={{ backgroundColor: "transparent", width: 320 }}>  
+                    <Card className={classes.card} style={{ margin: "0 auto", }}>
+                      <CardActionArea>
+                        <CardMedia
+                          className={classes.media}
+                          image={p.images && p.images.length > 0 ? p.images[0] : "https://via.placeholder.com/180"}
+                          title={p.name}
+                        />
+                        <CardContent>
+                          <Typography variant="subtitle2" noWrap>{p.name}</Typography>
+                          <Typography variant="subtitle2" color="secondary">
+                            {formatPriceVN(p.price * (1 - (p.sale || 0) / 100))}
+                          </Typography>
+                          {(p.category || p.brand || typeof p.countInStock !== 'undefined') && (
+                            <Box mt={1} display="flex" alignItems="center" flexWrap="wrap" style={{ gap: 6, rowGap: 6 }}>
+                              {p.category && (
+                                <Chip
+                                  size="small"
+                                  color="primary"
+                                  icon={<FaTags style={{ fontSize: 14 }} />}
+                                  label={p.category}
+                                  style={{padding: "0 8px" }}
+                                />
+                              )}
+                              {p.brand && (
+                                <Chip
+                                  size="small"
+                                  color="primary"
+                                  icon={<FaTrademark style={{ fontSize: 14 }} />}
+                                  label={p.brand}
+                                  style={{padding: "0 8px" }}
+                                />
+                              )}
+                              <Chip
+                                size="small"
+                                color={(Number(p.countInStock) || 0) > 0 ? "primary" : "default"}
+                                icon={<FaBoxOpen style={{ fontSize: 14 }} />}
+                                label={`${(Number(p.countInStock) || 0) > 0 ? `${Number(p.countInStock)} in stock` : "Out of stock"}`}
+                                style={{ padding: "0 8px" }}
+                              />
+                            </Box>
+                          )}
+                          <Box mt={1}>
+                            <Button
+                              variant="outlined"
+                              color="primary"
+                              size="medium"
+                              style={{width: "100%"}}
+                              onClick={() => window.open(`/product/${p._id || ''}` , "_blank")}
+                              endIcon={<CallMadeIcon />}
+                            >
+                              View details
+                            </Button>
+                          </Box>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            )}
+          </DialogContent>
+        </Dialog>
 
         <Box
           display="flex"
