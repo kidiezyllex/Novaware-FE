@@ -217,7 +217,7 @@ const ProductInfo = React.memo(
             style={{ padding: "0 8px" }}
           />
         </Box>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography variant="h5" component="h1" gutterBottom>
           {product.name}
         </Typography>
         <Box display="flex" alignItems="center" mb={1}>

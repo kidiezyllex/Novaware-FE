@@ -9,7 +9,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import ProductCard from './ProductCard';
-import { Button, CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress, Typography } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 
 function TabPanel(props) {
@@ -102,7 +102,11 @@ const ProductTabs = () => {
 
   return (
     <div className="mx-auto px-16">
-      <h2 className="my-16 mb-8 text-center text-4xl font-normal leading-[1.235]">{titles[value]}</h2>
+      <div className='w-full flex items-center justify-center gap-4 my-10'>
+        <div className='h-[1px] bg-primary flex-1'></div>
+        <Typography variant="h5" align="center" className="tracking-widest">{titles[value] || ''}</Typography>
+        <div className='h-[1px] bg-primary flex-1'></div>
+      </div>
       <AppBar position='static' className={classes.appBar}>
         <Tabs
           variant={matches ? 'scrollable' : 'standard'}
@@ -149,7 +153,7 @@ const ProductTabs = () => {
             to='/shop?sort_by=latest'
             className="!rounded-none"
           >
-           Xem thêm
+            Xem thêm
           </Button>
         </div>
       </TabPanel>

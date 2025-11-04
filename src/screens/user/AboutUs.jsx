@@ -106,7 +106,7 @@ const AboutUs = () => {
 
       {/* Sứ mệnh */}
       <Box className={classes.section}>
-        <Typography variant="h4" className={classes.sectionTitle}>
+        <Typography variant="h5" className={classes.sectionTitle}>
           Our Mission
         </Typography>
         <Typography variant="body1" className={classes.contentText} align="center" paragraph>
@@ -169,7 +169,7 @@ const AboutUs = () => {
 
       {/* Giá trị cốt lõi */}
       <Box className={classes.section}>
-        <Typography variant="h4" className={classes.sectionTitle}>
+        <Typography variant="h5" className={classes.sectionTitle}>
           Our Values
         </Typography>
         <Typography variant="body1" className={classes.contentText} align="center" paragraph>
@@ -197,7 +197,7 @@ const AboutUs = () => {
 
       {/* Đội ngũ */}
       <Box className={classes.section}>
-        <Typography variant="h4" className={classes.sectionTitle}>
+        <Typography variant="h5" className={classes.sectionTitle}>
           Meet Our Team
         </Typography>
         <Typography variant="body1" className={classes.contentText} align="center" paragraph>
@@ -210,7 +210,7 @@ const AboutUs = () => {
 
       {/* Section WHAT WE WANT */}
       <Box className={classes.section}>
-        <Typography variant="h4" className={classes.sectionTitle}>
+        <Typography variant="h5" className={classes.sectionTitle}>
           What We Want
         </Typography>
         <ul style={{ textAlign: "left", margin: "0 auto", maxWidth: "600px" }}>

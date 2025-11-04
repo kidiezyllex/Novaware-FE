@@ -1,6 +1,6 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import Loader from "../Loader";
 import ProductCard from "../Product/ProductCard";
 import { useGetTopProducts } from "../../hooks/api/useProduct";
@@ -11,9 +11,11 @@ const TopProducts: React.FC = () => {
 
   return (
     <div className="mx-auto px-16">
-      <h2 className="my-16 mb-8 text-center text-4xl font-normal leading-[1.235]">
-        Top Products
-      </h2>
+      <div className='w-full flex items-center justify-center gap-4 my-10'>
+        <div className='h-[1px] bg-primary flex-1'></div>
+        <Typography variant="h5" align="center" className="tracking-widest">Top Products</Typography>
+        <div className='h-[1px] bg-primary flex-1'></div>
+      </div>
       {loadingProductTop ? (
         <Loader />
       ) : errorProductTop ? (

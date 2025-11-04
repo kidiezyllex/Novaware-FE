@@ -36,19 +36,19 @@ const OrderSummary = ({
         <Box display="flex" justifyContent="space-around">
           <div>
             <Typography variant="subtitle1">Total Orders</Typography>
-            <Typography variant="h4">{totalOrders}</Typography>
+            <Typography variant="h5">{totalOrders}</Typography>
           </div>
           <div>
             <Typography variant="subtitle1">Delivered Orders</Typography>
-            <Typography variant="h4">{totalDeliveredOrders}</Typography>
+            <Typography variant="h5">{totalDeliveredOrders}</Typography>
           </div>
           <div>
             <Typography variant="subtitle1">Cancelled Orders</Typography>
-            <Typography variant="h4">{totalCancelledOrders}</Typography>
+            <Typography variant="h5">{totalCancelledOrders}</Typography>
           </div>
           <div>
             <Typography variant="subtitle1">Average Daily Revenue</Typography>
-            <Typography variant="h4">
+            <Typography variant="h5">
               $
               {averageDailyRevenue.toLocaleString(undefined, {
                 minimumFractionDigits: 2,

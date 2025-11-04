@@ -148,11 +148,11 @@ const OrderStatistics = ({
           <Box className={classes.statsContainer}>
             <div>
               <Typography variant="subtitle1">Order Count</Typography>
-              <Typography variant="h4">{selectedDateStats.count}</Typography>
+              <Typography variant="h5">{selectedDateStats.count}</Typography>
             </div>
             <div>
               <Typography variant="subtitle1">Revenue</Typography>
-              <Typography variant="h4">
+              <Typography variant="h5">
                 $
                 {selectedDateStats.revenue.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
@@ -161,13 +161,13 @@ const OrderStatistics = ({
             </div>
             <div>
               <Typography variant="subtitle1">Delivered</Typography>
-              <Typography variant="h4">
+              <Typography variant="h5">
                 {selectedDateStats.delivered}
               </Typography>
             </div>
             <div>
               <Typography variant="subtitle1">Cancelled</Typography>
-              <Typography variant="h4">
+              <Typography variant="h5">
                 {selectedDateStats.cancelled}
               </Typography>
             </div>
@@ -200,11 +200,11 @@ const OrderStatistics = ({
           <Box display="flex" justifyContent="space-around">
             <div>
               <Typography variant="subtitle1">Order Count</Typography>
-              <Typography variant="h4">{dailyStats.count}</Typography>
+              <Typography variant="h5">{dailyStats.count}</Typography>
             </div>
             <div>
               <Typography variant="subtitle1">Revenue</Typography>
-              <Typography variant="h4">
+              <Typography variant="h5">
                 $
                 {dailyStats.revenue.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
@@ -213,7 +213,7 @@ const OrderStatistics = ({
             </div>
             <div>
               <Typography variant="subtitle1">Cancelled</Typography>
-              <Typography variant="h4">{dailyCancelled}</Typography>
+              <Typography variant="h5">{dailyCancelled}</Typography>
             </div>
           </Box>
         </Paper>
@@ -227,11 +227,11 @@ const OrderStatistics = ({
           <Box display="flex" justifyContent="space-around">
             <div>
               <Typography variant="subtitle1">Order Count</Typography>
-              <Typography variant="h4">{monthlyStats.count}</Typography>
+              <Typography variant="h5">{monthlyStats.count}</Typography>
             </div>
             <div>
               <Typography variant="subtitle1">Revenue</Typography>
-              <Typography variant="h4">
+              <Typography variant="h5">
                 $
                 {monthlyStats.revenue.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
@@ -240,7 +240,7 @@ const OrderStatistics = ({
             </div>
             <div>
               <Typography variant="subtitle1">Cancelled</Typography>
-              <Typography variant="h4">{monthlyCancelled}</Typography>
+              <Typography variant="h5">{monthlyCancelled}</Typography>
             </div>
           </Box>
         </Paper>

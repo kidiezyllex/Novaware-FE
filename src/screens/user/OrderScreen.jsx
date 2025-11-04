@@ -426,7 +426,7 @@ const UserOrderScreen = ({ match, history }) => {
             </Grid>
             <Grid item xs={12} lg={4}>
               <Paper elevation={0} className={classes.cartTotalWrapper}>
-                <Typography variant="h4" style={{ fontSize: 23 }}>
+                <Typography variant="h5" style={{ fontSize: 23 }}>
                   Order Summary
                 </Typography>
                 <Divider className={classes.divider} />

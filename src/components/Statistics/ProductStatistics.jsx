@@ -48,11 +48,11 @@ const ProductStatistics = ({
           <Box display="flex" justifyContent="space-around">
             <div>
               <Typography variant="subtitle1">Total Products</Typography>
-              <Typography variant="h4">{totalProducts}</Typography>
+              <Typography variant="h5">{totalProducts}</Typography>
             </div>
             <div>
               <Typography variant="subtitle1">Products Sold</Typography>
-              <Typography variant="h4">{numProductsSold}</Typography>
+              <Typography variant="h5">{numProductsSold}</Typography>
             </div>
           </Box>
         </Paper>
@@ -66,11 +66,11 @@ const ProductStatistics = ({
           <Box display="flex" justifyContent="space-around">
             <div>
               <Typography variant="subtitle1">Total Stock</Typography>
-              <Typography variant="h4">{totalStock}</Typography>
+              <Typography variant="h5">{totalStock}</Typography>
             </div>
             <div>
               <Typography variant="subtitle1">Total Stock Sold</Typography>
-              <Typography variant="h4">{totalStockSold}</Typography>
+              <Typography variant="h5">{totalStockSold}</Typography>
             </div>
           </Box>
         </Paper>

@@ -28,7 +28,7 @@ const NotFoundScreen = () => {
       <Typography variant="h1" className={classes.title}>
         404
       </Typography>
-      <Typography variant="h4">Page Not Found</Typography>
+      <Typography variant="h5">Page Not Found</Typography>
       <Typography variant="body1">
         The page you are looking for might have been removed, had its name
         changed, or is temporarily unavailable.

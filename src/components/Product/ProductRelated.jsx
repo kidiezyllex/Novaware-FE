@@ -9,18 +9,18 @@ const ProductRelated = ({ category = "", excludeId }) => {
   const { data: productRelatedResponse, isLoading: loading, error: queryError } = useGetRelatedProducts(
     category && excludeId ? { category, excludeId } : undefined
   );
-  
+
   const products = productRelatedResponse?.data?.products || [];
   const error = queryError?.message || (queryError ? String(queryError) : null);
   return (
     <>
-      <Box my={3}>
-        <Typography variant="h4" align="center">
-          Related Products
-        </Typography>
-      </Box>
+      <div className='w-full flex items-center justify-center gap-4 my-10'>
+        <div className='h-[1px] bg-primary flex-1'></div>
+        <Typography variant="h5" align="center" className="tracking-widest">Related Products</Typography>
+        <div className='h-[1px] bg-primary flex-1'></div>
+      </div>
       <Paper
-        style={{ padding: "32px 20px", margin: "24px 0 50px" }}
+        style={{ padding: "0px 20px", margin: "0 50px" }}
         elevation={0}
       >
         <Grid container spacing={4}>
