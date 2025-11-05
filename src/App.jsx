@@ -6,7 +6,8 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import LottieLoading from "./components/LottieLoading"; 
+import LottieLoading from "./components/LottieLoading";
+import CreateAdminAccount from "./components/CreateAdminAccount"; 
 // Import Layout
 import UserLayout from "./components/Layouts/UserLayout.jsx";
 import AdminLayout from "./components/Layouts/AdminLayout.jsx";
@@ -59,23 +60,32 @@ const App = () => {
 
   return (
     <Router>
+      <CreateAdminAccount />
       <Suspense fallback={<LottieLoading />}>
-        {/* Admin Routes */}
-        {userInfo && userInfo.isAdmin && (
-          <Switch>
-            <Route path="/admin">
+        <Switch>
+          {/* Admin Routes - Must be inside Switch and checked first */}
+          <Route path="/admin" exact>
+            {userInfo && userInfo.isAdmin ? (
+              <Redirect to="/admin/orderstats" />
+            ) : (
+              <Redirect to="/" />
+            )}
+          </Route>
+          
+          <Route path="/admin">
+            {userInfo && userInfo.isAdmin ? (
               <AdminLayout>
                 <Switch>
-                  <Route path="/admin/orderlist" component={OrderListScreen} />
+                  <Route path="/admin/orderstats" component={StatisticsScreen} exact />
+                  <Route path="/admin/orders" component={OrderListScreen} />
                   <Route path="/admin/product/create" component={ProductCreateScreen} />
                   <Route path="/admin/product/:id" component={ProductEditScreen} />
-                  <Route path="/admin/productlist" component={ProductListScreen} />
-                  <Route path="/admin/categorylist" component={CategoryListScreen} />
+                  <Route path="/admin/products" component={ProductListScreen} />
+                  <Route path="/admin/categories" component={CategoryListScreen} />
                   <Route path="/admin/home-content" component={HomeContentEditScreen} />
                   <Route path="/admin/order/:id" component={AdminOrderScreen} />
-                  <Route path="/admin/brandlist" component={BrandListScreen} />
-                  <Route path="/admin/userlist" component={UserListScreen} />
-                  <Route path="/admin/orderstats" component={StatisticsScreen} exact />
+                  <Route path="/admin/brands" component={BrandListScreen} />
+                  <Route path="/admin/users" component={UserListScreen} />
                   <Route
                     path="/admin/chat"
                     render={(props) => (
@@ -85,13 +95,12 @@ const App = () => {
                   <Redirect to="/admin/orderstats" />
                 </Switch>
               </AdminLayout>
-            </Route>
-            <Route render={() => <Redirect to="/admin/orderstats" />} />
-          </Switch>
-        )}
+            ) : (
+              <Redirect to="/" />
+            )}
+          </Route>
 
-        {/* User Routes */}
-        {!userInfo?.isAdmin && (
+          {/* User Routes */}
           <Route>
             <UserLayout setHasNewMessageRef={setHasNewMessageRef}>
               <Switch>
@@ -110,7 +119,7 @@ const App = () => {
               </Switch>
             </UserLayout>
           </Route>
-        )}
+        </Switch>
       </Suspense>
     </Router>
   );

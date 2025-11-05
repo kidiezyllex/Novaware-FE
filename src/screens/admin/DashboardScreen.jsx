@@ -75,7 +75,7 @@ const DashboardScreen = () => {
               Manage Users
             </Typography>
             <Button variant="contained" className={classes.button}>
-              <Link to="/admin/userlist" className={classes.link}>
+              <Link to="/admin/users" className={classes.link}>
                 Go to User List
               </Link>
             </Button>
@@ -90,7 +90,7 @@ const DashboardScreen = () => {
               Manage Brands
             </Typography>
             <Button variant="contained" className={classes.button}>
-              <Link to="/admin/brandlist" className={classes.link}>
+              <Link to="/admin/brands" className={classes.link}>
                 Go to Brand List
               </Link>
             </Button>
@@ -105,7 +105,7 @@ const DashboardScreen = () => {
               Manage Categories
             </Typography>
             <Button variant="contained" className={classes.button}>
-              <Link to="/admin/categorylist" className={classes.link}>
+              <Link to="/admin/categories" className={classes.link}>
                 Go to Category List
               </Link>
             </Button>
@@ -120,7 +120,7 @@ const DashboardScreen = () => {
               Manage Products
             </Typography>
             <Button variant="contained" className={classes.button}>
-              <Link to="/admin/productlist" className={classes.link}>
+              <Link to="/admin/products" className={classes.link}>
                 Go to Product List
               </Link>
             </Button>
@@ -135,7 +135,7 @@ const DashboardScreen = () => {
               Manage Orders
             </Typography>
             <Button variant="contained" className={classes.button}>
-              <Link to="/admin/orderlist" className={classes.link}>
+              <Link to="/admin/orders" className={classes.link}>
                 Go to Order List
               </Link>
             </Button>

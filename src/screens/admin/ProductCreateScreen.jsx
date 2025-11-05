@@ -271,7 +271,7 @@ const ProductCreateScreen = ({ history }) => {
     try {
       await createProductMutation.mutateAsync(productData);
       toast.success("Sản phẩm đã được tạo thành công!");
-      history.push("/admin/productlist");
+      history.push("/admin/products");
     } catch (error) {
       console.error("Failed to create product:", error);
       toast.error("Tạo sản phẩm thất bại");
@@ -283,7 +283,7 @@ const ProductCreateScreen = ({ history }) => {
   // Effects
   useEffect(() => {
     if (successCreate && createdProduct) {
-      history.push("/admin/productlist");
+      history.push("/admin/products");
     }
   }, [successCreate, createdProduct, history]);
 

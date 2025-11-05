@@ -35,6 +35,7 @@ import queryString from "query-string";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import ProductFilterBar from "../../components/Product/ProductFilterBar";
+import LottieEmpty from "@/components/LottieEmpty";
 
 const useStyles = makeStyles((theme) => ({
   breadcrumbsContainer: {
@@ -303,20 +304,8 @@ const ShopScreen = ({ location, history }) => {
                   </Grid>
                 ))
               ) : (
-                <Grid item xs={12}>
-                  <Message severity="info" mt={0}>
-                    No product found.{" "}
-                    <Link
-                      component={RouterLink}
-                      to={`shop?sort_by=${sort_by}&page=1`}
-                    >
-                      Back
-                    </Link>
-                    {` or `}
-                    <Link onClick={() => dispatch(filterClearAll())}>
-                      Clear all filter
-                    </Link>
-                  </Message>
+                <Grid item xs={12} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <LottieEmpty style={{ transform: "scale(1)" }} />
                 </Grid>
               )}
               {pages > 1 && (

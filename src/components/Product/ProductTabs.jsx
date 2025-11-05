@@ -152,7 +152,7 @@ const ProductTabs = () => {
             to='/shop?sort_by=latest'
             className="!rounded-none"
           >
-            Xem thêm
+            View more
           </Button>
         </div>
       </TabPanel>
@@ -178,7 +178,7 @@ const ProductTabs = () => {
             to='/shop?sort_by=sale'
             className="!rounded-none"
           >
-            Xem thêm
+            View more
           </Button>
         </div>
       </TabPanel>

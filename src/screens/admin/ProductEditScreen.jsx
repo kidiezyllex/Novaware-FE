@@ -291,7 +291,7 @@ const ProductEditScreen = ({ match, history }) => {
         body: productData
       });
       toast.success("Sản phẩm đã được cập nhật!");
-      history.push("/admin/productlist");
+      history.push("/admin/products");
     } catch (error) {
       console.error("Failed to update product:", error);
       toast.error("Cập nhật sản phẩm thất bại");
@@ -304,7 +304,7 @@ const ProductEditScreen = ({ match, history }) => {
   useEffect(() => {
     if (successUpdate) {
       toast.success("Sản phẩm đã được cập nhật!");
-      history.push("/admin/productlist");
+      history.push("/admin/products");
     }
   }, [successUpdate, history]);
 

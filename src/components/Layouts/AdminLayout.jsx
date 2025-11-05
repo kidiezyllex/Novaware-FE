@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from 'react-redux';
 import { logout } from '../../actions/userActions';
-import { Link as RouterLink } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link as RouterLink, useLocation, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Drawer,
@@ -17,26 +16,27 @@ import {
   CssBaseline,
   Button,
   Typography,
+  Box,
 } from "@material-ui/core";
-import ViewCarouselIcon from '@material-ui/icons/ViewCarousel';
 import clsx from 'clsx';
 import logo from "../../assets/images/logo.png";
 
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+// Filled Icons
 import {
   Group as GroupIcon,
   Store as StoreIcon,
   Category as CategoryIcon,
   ShoppingBasket as ShoppingBasketIcon,
   Assessment as AssessmentIcon,
-  LocalShipping as LocalShippingIcon,
   Chat as ChatIcon,
+  Settings as SettingsIcon,
+  Receipt as ReceiptIcon,
+  ExitToApp as LogoutIcon,
 } from "@material-ui/icons";
 
-const drawerWidth = 240;
-const closedDrawerWidth = 55;
+const drawerWidth = 280;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,74 +44,77 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: '#ffffff',
     color: theme.palette.text.primary,
-    boxShadow: '0px 2px 8px -1px rgb(0 0 0 / 10%)',
+    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
   appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
   appBarShiftClose: {
+    width: '100%',
+    marginLeft: 0,
     transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
     }),
   },
   toolbar: {
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: theme.spacing(0, 2),
+    minHeight: 64,
   },
   logoWrapper: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    margin: '0 auto',
+    flex: 1,
   },
   logo: {
     maxWidth: 140,
+    height: 'auto',
     [theme.breakpoints.down("sm")]: {
       maxWidth: 120,
     },
   },
   menuButton: {
     marginRight: theme.spacing(2),
-  },
-  hide: {
-    display: 'none',
+    color: theme.palette.text.primary,
   },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: 'nowrap',
   },
-  drawerOpen: {
+  drawerPaper: {
     width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerClose: {
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    overflowX: 'hidden',
-    width: closedDrawerWidth,
+    backgroundColor: '#f8f9fa',
+    borderRight: '1px solid rgba(0, 0, 0, 0.08)',
   },
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
+    padding: theme.spacing(2, 1.5),
     justifyContent: 'space-between',
+    minHeight: 64,
+    backgroundColor: '#ffffff',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
+  },
+  dashboardTitle: {
+    fontWeight: 700,
+    fontSize: '1.25rem',
+    color: theme.palette.text.primary,
+    letterSpacing: '0.5px',
   },
   content: {
     flexGrow: 1,
@@ -120,94 +123,151 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    paddingTop: theme.spacing(13),
-    marginTop: 0,
+    marginLeft: drawerWidth,
+    backgroundColor: '#f5f5f5',
+    minHeight: '100vh',
   },
   contentShift: {
+    marginLeft: 0,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    marginLeft: 0,
-  },
-  contentShiftClose: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  sectionTitle: {
-    marginBottom: theme.spacing(2),
-    color: theme.palette.text.primary,
-    fontWeight: 600,
-    padding: theme.spacing(2),
-    borderBottom: `2px solid ${theme.palette.secondary.main}`,
-    textAlign: 'center',
-  },
-  link: {
-    textDecoration: "none",
-    color: theme.palette.text.primary,
   },
   listItem: {
-    minWidth: '73px',
-    paddingLeft: '14px',
-    "&:hover": {
-      backgroundColor: theme.palette.action.hover,
+    borderRadius: '8px',
+    margin: theme.spacing(0.5, 1.5),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    '&:hover': {
+      backgroundColor: '#e3f2fd',
+    },
+    transition: 'all 0.2s ease-in-out',
+  },
+  listItemActive: {
+    backgroundColor: '#1976d2',
+    color: '#ffffff',
+    '&:hover': {
+      backgroundColor: '#1565c0',
+    },
+    '& .MuiListItemIcon-root': {
+      color: '#ffffff',
+    },
+    '& .MuiListItemText-primary': {
+      fontWeight: 600,
     },
   },
   listItemIcon: {
-    color: theme.palette.secondary.main,
+    minWidth: 40,
+    color: theme.palette.text.secondary,
+  },
+  listItemIconActive: {
+    color: '#ffffff',
   },
   listItemText: {
-    whiteSpace: 'nowrap',
+    '& .MuiListItemText-primary': {
+      fontSize: '0.95rem',
+      fontWeight: 500,
+    },
   },
-  dashboardTitle: {
-    paddingLeft: '16px',
+  logoutButton: {
+    margin: theme.spacing(1, 1.5),
+    borderRadius: '8px',
+    textTransform: 'none',
     fontWeight: 600,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerPaperClose: {
-    width: closedDrawerWidth,
+    backgroundColor: '#d32f2f',
+    color: '#ffffff',
+    '&:hover': {
+      backgroundColor: '#c62828',
+    },
   },
 }));
 
 const AdminLayout = ({ children }) => {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const dispatch = useDispatch();
+  const location = useLocation();
+  const history = useHistory();
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  // Menu items (flat structure, no sub-menus)
+  const menuItems = [
+    {
+      text: 'Order Statistics',
+      icon: <AssessmentIcon />,
+      link: '/admin/orderstats',
+    },
+    {
+      text: 'Product Management',
+      icon: <ShoppingBasketIcon />,
+      link: '/admin/products',
+    },
+    {
+      text: 'Order Management',
+      icon: <ReceiptIcon />,
+      link: '/admin/orders',
+    },
+    {
+      text: 'Category Management',
+      icon: <CategoryIcon />,
+      link: '/admin/categories',
+    },
+    {
+      text: 'Brand Management',
+      icon: <StoreIcon />,
+      link: '/admin/brands',
+    },
+    {
+      text: 'User Management',
+      icon: <GroupIcon />,
+      link: '/admin/users',
+    },
+    {
+      text: 'Customer Chat',
+      icon: <ChatIcon />,
+      link: '/admin/chat',
+    },
+    {
+      text: 'Configuration',
+      icon: <SettingsIcon />,
+      link: '/admin/home-content',
+    },
+  ];
 
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleDrawerToggle = () => {
+    setOpen(!open);
   };
 
   const handleLogout = () => {
     dispatch(logout());
+    history.push('/');
   };
 
-  const drawerItems = [
-    { text: "Manage Users", icon: <GroupIcon />, link: "/admin/userlist" },
-    { text: "Manage Brands", icon: <StoreIcon />, link: "/admin/brandlist" },
-    {
-      text: "Manage Categories",
-      icon: <CategoryIcon />,
-      link: "/admin/categorylist",
-    },
-    {
-      text: "Manage Products",
-      icon: <ShoppingBasketIcon />,
-      link: "/admin/productlist",
-    },
-    { text: "Manage Orders", icon: <LocalShippingIcon />, link: "/admin/orderlist" },
-    { text: "Statistics", icon: <AssessmentIcon />, link: "/admin/orderstats" },
-    { text: "Chat", icon: <ChatIcon />, link: "/admin/chat" },
-    { text: "Edit banner, slider", icon: <ViewCarouselIcon />, link: "/admin/home-content" },
-  ];
+  const isActive = (link) => {
+    const pathname = location.pathname;
+    
+    // Exact match for orderstats
+    if (link === '/admin/orderstats') {
+      return pathname === '/admin/orderstats';
+    }
+    
+    // Match product list - also highlight when on product edit page
+    if (link === '/admin/products') {
+      // Match /admin/products or /admin/product/:id (edit page)
+      return pathname === '/admin/products' || 
+             pathname.match(/^\/admin\/product\/[^/]+$/) ||
+             pathname.match(/^\/admin\/product\/[^/]+\/edit$/);
+    }
+    
+    // Match order list - also highlight when on order detail page
+    if (link === '/admin/orders') {
+      return pathname === '/admin/orders' || 
+             pathname.match(/^\/admin\/order\/[^/]+$/);
+    }
+    
+    // Default: exact match
+    return pathname === link;
+  };
 
   return (
     <div className={classes.root}>
@@ -221,83 +281,88 @@ const AdminLayout = ({ children }) => {
         })}
       >
         <Toolbar className={classes.toolbar}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, {
-                [classes.hide]: open,
-              })}
-            >
-              <MenuIcon />
-            </IconButton>
-          </div>
-          {/* Logo Wrapper */}
+          <IconButton
+            color="inherit"
+            aria-label="toggle drawer"
+            onClick={handleDrawerToggle}
+            edge="start"
+            className={classes.menuButton}
+          >
+            {open ? <ChevronLeftIcon /> : <MenuIcon />}
+          </IconButton>
+          
+          {/* Logo */}
           <div className={classes.logoWrapper}>
             <RouterLink to="/">
-              <img src={logo} alt="#" className={classes.logo} />
+              <img src={logo} alt="NovaWare" className={classes.logo} />
             </RouterLink>
           </div>
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
+
+          <Button
+            variant='contained'
+            color='secondary'
+            onClick={handleLogout}
+            className="!rounded-none"
+            endIcon={<LogoutIcon />}
+          >
+            Đăng xuất
           </Button>
         </Toolbar>
       </AppBar>
 
-      {/* Drawer */}
+      {/* Persistent Drawer */}
       <Drawer
-        variant="temporary" 
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
+        variant="persistent"
+        anchor="left"
+        open={open}
         classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-            [classes.drawerPaper]: open,
-            [classes.drawerPaperClose]: !open,
-          }),
+          paper: classes.drawerPaper,
         }}
-        open={open} 
-        onClose={handleDrawerClose} 
       >
         <div className={classes.drawerHeader}>
-          <Typography variant="h6" noWrap className={classes.dashboardTitle}>
-            Dashboard
+          <Typography variant="h6" className={classes.dashboardTitle}>
+            Admin Panel
           </Typography>
-          <IconButton onClick={handleDrawerClose}>
-            {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
         </div>
         <Divider />
 
-        {/* Drawer Items */}
-        <List>
-          {drawerItems.map((item, index) => (
-            <Link to={item.link} key={index} className={classes.link}>
-              <ListItem button className={classes.listItem}>
-                <ListItemIcon className={classes.listItemIcon}>
+        {/* Menu Items */}
+        <List component="nav" style={{ paddingTop: 8 }}>
+          {menuItems.map((item, index) => {
+            const active = isActive(item.link);
+            return (
+              <ListItem
+                key={index}
+                button
+                component={RouterLink}
+                to={item.link}
+                className={clsx(classes.listItem, {
+                  [classes.listItemActive]: active,
+                })}
+              >
+                <ListItemIcon
+                  className={clsx(classes.listItemIcon, {
+                    [classes.listItemIconActive]: active,
+                  })}
+                >
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText primary={item.text} className={classes.listItemText} />
+                <ListItemText 
+                  primary={item.text}
+                  className={classes.listItemText}
+                />
               </ListItem>
-            </Link>
-          ))}
+            );
+          })}
         </List>
       </Drawer>
 
       {/* Main Content */}
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: open,
-          [classes.contentShiftClose]: !open,
-        })}
-      >
-        <div className={classes.toolbar} />
-        {children}
+      <main className={clsx(classes.content, {
+        [classes.contentShift]: !open,
+      })}>
+        <Toolbar />
+        <Box>{children}</Box>
       </main>
     </div>
   );

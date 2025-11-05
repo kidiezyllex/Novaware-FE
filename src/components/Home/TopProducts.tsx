@@ -39,7 +39,7 @@ const TopProducts: React.FC = () => {
               to="/shop?sort_by=rating"
               className="!rounded-none"
             >
-              Xem thêm
+              View more
             </Button>
           </div>
         </>
