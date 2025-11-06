@@ -35,11 +35,9 @@ const ProductScreen = ({ setLoginModalOpen }) => {
   const classes = useStyles();
   const location = useLocation();
 
-  // Get product ID from query parameter
   const searchParams = new URLSearchParams(location.search);
   const productId = searchParams.get('id');
 
-  // Hooks for API data
   const { data: productResponse, isLoading: loading, error: productError } = useGetProduct(productId);
   const product = productResponse?.data?.product;
   
@@ -62,12 +60,10 @@ const ProductScreen = ({ setLoginModalOpen }) => {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, []);
 
-  // Check if product is in favorites
   useEffect(() => {
     if (userInfo && favoriteItems && product?._id) {
       const isProductInFavorites = favoriteItems.some(
@@ -78,8 +74,13 @@ const ProductScreen = ({ setLoginModalOpen }) => {
   }, [userInfo, favoriteItems, product?._id]);
 
   const addToCartHandler = ({ qty, size, color }) => {
-    const selectedColor = product.colors.find((c) => c.hexCode === color);
-    const colorName = selectedColor ? selectedColor.name : "";
+    let colorName = "";
+    if (product.colors && product.colors.length > 0) {
+      const selectedColor = product.colors.find((c) => c.hexCode === color);
+      colorName = selectedColor ? selectedColor.name : color;
+    } else {
+      colorName = color || "";
+    }
 
     dispatch(addToCart(productId, qty, size, color, colorName));
     toast.success("Sản phẩm đã được thêm vào giỏ hàng!");

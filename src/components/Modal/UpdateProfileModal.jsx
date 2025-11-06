@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useUpdateProfile } from "../../hooks/api/useUser";
 import {
@@ -33,7 +33,7 @@ const UpdateProfileModal = ({ open, onClose, user }) => {
   const { handleSubmit, setValue } = methods;
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       setValue("height", user.height || "");
       setValue("weight", user.weight || "");
