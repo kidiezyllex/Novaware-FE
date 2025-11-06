@@ -169,9 +169,8 @@ const ProfileContent = ({ user, onItemClick }) => {
   const updateProfileMutation = useUpdateProfile();
   const { isSuccess: success } = updateProfileMutation;
 
-  // Get avatar image based on user's age and gender
   const avatarImage = getAvatarImage(user?.age, user?.gender);
-
+  console.log(user);
   useEffect(() => {
     if (user) {
       setValue("name", user.name);
@@ -192,15 +191,29 @@ const ProfileContent = ({ user, onItemClick }) => {
   const submitHandler = async (data) => {
     if (user?._id) {
       try {
-        await updateProfileMutation.mutateAsync({
+        const payload = {
           name: data.name,
           email: data.email,
-          password: data.password,
-          height: data.height,
-          weight: data.weight,
           gender: data.gender,
-          age: data.age,
-        });
+        };
+
+        if (data.password && data.password.trim() !== "") {
+          payload.password = data.password;
+        }
+
+        if (data.height && data.height !== "") {
+          payload.height = data.height;
+        }
+
+        if (data.weight && data.weight !== "") {
+          payload.weight = data.weight;
+        }
+
+        if (data.age && data.age !== "") {
+          payload.age = data.age;
+        }
+
+        await updateProfileMutation.mutateAsync(payload);
       } catch (error) {
         console.error("Failed to update profile:", error);
       }
@@ -222,7 +235,7 @@ const ProfileContent = ({ user, onItemClick }) => {
           variant="dot"
         >
           <Avatar
-            src={avatarImage || `https://ui-avatars.com/api/?background=random&color=fff&name=${user?.name}`}
+            src={avatarImage}
             className={classes.largeAvatar}
           />
         </StyledBadge>
