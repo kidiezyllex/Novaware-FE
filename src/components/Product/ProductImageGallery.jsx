@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, memo } from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProductImageGallery = React.memo(({ product }) => {
+const ProductImageGallery = memo(({ product }) => {
   const classes = useStyles();
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(false);

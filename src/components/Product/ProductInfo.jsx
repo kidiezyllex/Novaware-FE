@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { FiShoppingBag } from "react-icons/fi";
 import { FaTags, FaShareAlt, FaHeart, FaRegHeart, FaTrademark, FaBoxOpen, FaTshirt } from "react-icons/fa";
@@ -233,7 +233,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProductInfo = React.memo(
+const ProductInfo = memo(
   ({
     product,
     user,

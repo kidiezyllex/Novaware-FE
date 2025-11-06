@@ -170,7 +170,6 @@ const ProfileContent = ({ user, onItemClick }) => {
   const { isSuccess: success } = updateProfileMutation;
 
   const avatarImage = getAvatarImage(user?.age, user?.gender);
-  console.log(user);
   useEffect(() => {
     if (user) {
       setValue("name", user.name);

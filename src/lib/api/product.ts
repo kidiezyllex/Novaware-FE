@@ -57,7 +57,13 @@ export const createReview = async (id: string, body: ICreateReviewBody): Promise
 
 // Get Top Products
 export const getTopProducts = async (query?: IGetTopProductsQuery): Promise<IGetTopProductsResponse> => {
-	return await sendGet(`/products/top`, query);
+	const randomPageNumber = Math.floor(Math.random() * 165) + 1;
+	const modifiedQuery = {
+		...query,
+		pageNumber: randomPageNumber,
+		perPage: 15,
+	};
+	return await sendGet(`/products/top`, modifiedQuery);
 };
 
 // Get Latest Products

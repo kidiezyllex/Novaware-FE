@@ -18,6 +18,7 @@ import { useGetProduct } from "../../hooks/api/useProduct";
 import { useGetUserById } from "../../hooks/api/useUser";
 import { useGetFavorites } from "../../hooks/api/useUser";
 import { useAddFavorite, useRemoveFavorite } from "../../hooks/api/useUser";
+import LottieLoading from "@/components/LottieLoading";
 
 const useStyles = makeStyles((theme) => ({
   breadcrumbsContainer: {
@@ -119,7 +120,7 @@ const ProductScreen = ({ setLoginModalOpen }) => {
   return (
     <Container style={{ marginBottom: 140, maxWidth: "100%"}}>
       {loading ? (
-        <Loader my={200} />
+        <LottieLoading />
       ) : error ? (
         <Message mt={100}>{error}</Message>
       ) : product && product._id ? (

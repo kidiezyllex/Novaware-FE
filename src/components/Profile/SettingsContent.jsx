@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Paper,
   Typography,
@@ -27,8 +27,8 @@ const useStyles = makeStyles((theme) => ({
 
 const SettingsContent = () => {
   const classes = useStyles();
-  const [notifications, setNotifications] = React.useState(true);
-  const [emailUpdates, setEmailUpdates] = React.useState(false);
+  const [notifications, setNotifications] = useState(true);
+  const [emailUpdates, setEmailUpdates] = useState(false);
 
   return (
     <Paper className={classes.paper} elevation={0}>

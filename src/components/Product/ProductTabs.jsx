@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGetLatestProducts, useGetSaleProducts, useGetProducts } from '../../hooks/api/useProduct';
 import PropTypes from 'prop-types';
@@ -81,18 +81,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProductTabs = () => {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
   const classes = useStyles();
   const matches = useMediaQuery('(max-width:600px)');
   const titles = ['Latest Products', 'Sale Products', 'All Products'];
 
   const { data: productLatestResponse, isLoading: loadingProductLatest, error: errorProductLatest } = useGetLatestProducts({ pageNumber: 1, perPage: 15 });
   const productsLatestRaw = productLatestResponse?.data?.products || [];
-  const productsLatest = React.useMemo(() => productsLatestRaw.slice(0, 15).sort(() => 0.5 - Math.random()), [productsLatestRaw]);
+  const productsLatest = useMemo(() => productsLatestRaw.slice(0, 15).sort(() => 0.5 - Math.random()), [productsLatestRaw]);
 
   const { data: productSaleResponse, isLoading: loadingProductSale, error: errorProductSale } = useGetSaleProducts({ pageNumber: 1, perPage: 15 });
   const productsSaleRaw = productSaleResponse?.data?.products || [];
-  const productsSale = React.useMemo(() => productsSaleRaw.slice(0, 15).sort(() => 0.5 - Math.random()), [productsSaleRaw]);
+  const productsSale = useMemo(() => productsSaleRaw.slice(0, 15).sort(() => 0.5 - Math.random()), [productsSaleRaw]);
 
   const { data: productListResponse, isLoading: loadingProductList, error: errorProductList } = useGetProducts({ option: 'all', pageNumber: 1, pageSize: 15 });
   const productsList = productListResponse?.data?.products || [];

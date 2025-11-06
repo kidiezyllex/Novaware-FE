@@ -11,16 +11,18 @@ import { useDispatch } from "react-redux";
 import { formatPriceDollar } from "../../utils/formatPrice";
 
 const ProductCard = (props) => {
-  const { _id, name, images, price, sale } = props;
+  const { _id, name, images, price, sale, variants } = props;
   const [openModal, setOpenModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
+  const variant = variants && variants.length > 0 ? variants[0] : null;
+  const finalPrice = variant?.price ? variant?.price : (price * (1 - sale / 100));
 
   const handleAddToCart = (e, id) => {
     e.stopPropagation();
     e.preventDefault();
     dispatch(setOpenCartDrawer(true));
-    dispatch(addToCart(id, 1, "m"));
+    dispatch(addToCart(id, 1, variant?.size || "M", variant?.color || ""));  
   };
   const handleOpenQuickView = (e) => {
     e.stopPropagation();
@@ -28,7 +30,6 @@ const ProductCard = (props) => {
     setOpenModal(true);
   };
 
-  const finalPrice = price * (1 - sale / 100);
 
   return (
     <>
@@ -91,7 +92,7 @@ const ProductCard = (props) => {
                 </span>
                 {sale > 0 && (
                   <span className="text-base italic text-white line-through">
-                    {formatPriceDollar(price)}
+                    {formatPriceDollar(finalPrice)}
                   </span>
                 )}
               </div>

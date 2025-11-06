@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { Button, Typography } from "@material-ui/core";
 import LottieLoading from "../LottieLoading";
@@ -6,10 +6,8 @@ import ProductCard from "../Product/ProductCard";
 import { useGetTopProducts } from "../../hooks/api/useProduct";
 import LottieEmpty from "../LottieEmpty";
 const TopProducts: React.FC = () => {
-  const { data: productTopRatedResponse, isLoading: loadingProductTop, error: errorProductTop } = useGetTopProducts({ pageNumber: 1, perPage: 15 });
+  const { data: productTopRatedResponse, isLoading: loadingProductTop, error: errorProductTop } = useGetTopProducts();
   const productTopRaw = productTopRatedResponse?.data?.products || [];
-  const productTop = React.useMemo(() => productTopRaw.slice(0, 15).sort(() => 0.5 - Math.random()), [productTopRaw]);
-
   return (
     <div className="mx-auto px-16">
       <div className='w-full flex items-center justify-center gap-4 my-10'>
@@ -24,7 +22,7 @@ const TopProducts: React.FC = () => {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-            {productTop && productTop.map((product) => (
+            {productTopRaw && productTopRaw.map((product) => (
               <div key={product._id}>
                 <ProductCard {...product} />
               </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Slide from '@material-ui/core/Slide';
@@ -11,7 +11,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
 }
 
-const SlideTransition = React.forwardRef((props, ref) => (
+const SlideTransition = forwardRef((props, ref) => (
   <Slide direction='left' {...props} ref={ref} />
 ));
 

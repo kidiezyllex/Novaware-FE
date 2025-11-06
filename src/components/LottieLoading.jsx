@@ -13,7 +13,7 @@ const LottieLoading = ({
   style = undefined,
 }) => {
   return (
-    <div className={className} aria-busy="true" aria-live="polite">
+    <div className={className} style={{transform: 'scale(0.75)'}} aria-busy="true" aria-live="polite">
       <DotLottieReact src={src} loop={loop} autoplay={autoplay} />
     </div>
   );

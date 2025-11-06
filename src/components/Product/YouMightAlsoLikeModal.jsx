@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 8
   },
   media: {
-    height: 300,
+    height: 270,
     backgroundSize: "contain",
     objectFit: "contain"
   },
@@ -163,7 +163,6 @@ const YouMightAlsoLikeModal = ({ open, onClose, userId, productId }) => {
     userId || "",
     { k: 5, productId: productId || "" }
   );
- console.log(likeData)
   const explanationSentences = useMemo(() => {
     if (!likeData?.data?.explanation) return [];
     return likeData.data.explanation

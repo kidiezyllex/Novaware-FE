@@ -218,9 +218,6 @@ const HomeContentEditScreen = () => {
           image: imageUrl,
           images: [...oldImages, ...(uploadedImages || [])],
         };
-
-        console.log("Banner update payload:", updated);
-
         if (!updated._id) {
           console.error("Missing _id for banner update");
           return;
@@ -245,7 +242,6 @@ const HomeContentEditScreen = () => {
           ...carouselFormData,
           images: [...oldImages, ...uploadedImages],
         };
-        console.log("Carousel update payload:", updated);
         try {
           await updateContentSectionMutation.mutateAsync({
             id: updated._id,

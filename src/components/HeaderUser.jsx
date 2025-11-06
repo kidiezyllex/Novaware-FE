@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import UserIcon from "../assets/icons/user.svg?react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link as RouterLink } from "react-router-dom";
@@ -38,8 +38,8 @@ export default function HeaderUser({
   const dispatch = useDispatch();
   const classes = useStyles();
   const { userInfo } = useSelector((state) => state.userLogin);
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
   const theme = useTheme();
   const iconColor = theme.palette.text.primary;
   const handleToggle = () => {
