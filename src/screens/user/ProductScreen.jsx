@@ -14,7 +14,7 @@ import ProductReview from "../../components/Product/ProductReview.jsx";
 import ProductRelated from "../../components/Product/ProductRelated.jsx";
 import ProductInfo from "../../components/Product/ProductInfo.jsx";
 import ProductImageGallery from "../../components/Product/ProductImageGallery.jsx";
-import { useGetProduct, useRecommendSize } from "../../hooks/api/useProduct";
+import { useGetProduct } from "../../hooks/api/useProduct";
 import { useGetUserById } from "../../hooks/api/useUser";
 import { useGetFavorites } from "../../hooks/api/useUser";
 import { useAddFavorite, useRemoveFavorite } from "../../hooks/api/useUser";
@@ -48,9 +48,6 @@ const ProductScreen = ({ setLoginModalOpen }) => {
   
   const { data: userResponse } = useGetUserById(currentUserId);
   const user = userResponse?.data?.user;
-  
-  const { data: sizeResponse } = useRecommendSize(user?._id || "");
-  const recommendedSize = sizeResponse?.data?.recommendedSize;
   
   const { data: favoritesResponse } = useGetFavorites(userInfo?._id || "");
   const favoriteItems = favoritesResponse?.data?.favoriteItems || [];
@@ -154,7 +151,6 @@ const ProductScreen = ({ setLoginModalOpen }) => {
             <Grid item xs={12} md={6} className={classes.productInfo} style={{ paddingRight: 0 }}>
               <ProductInfo
                 product={product}
-                recommendedSize={recommendedSize}
                 user={user}
                 handleUpdateModalOpen={() => setUpdateModalOpen(true)}
                 addToCartHandler={addToCartHandler}

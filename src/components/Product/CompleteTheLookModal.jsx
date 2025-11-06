@@ -297,18 +297,25 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const CompleteTheLookModal = ({ open, onClose, userId, productId }) => {
+const CompleteTheLookModal = ({ open, onClose, userId, productId, user }) => {
     const classes = useStyles();
-    const {
-        data: outfitData,
-        isLoading: outfitLoading,
-        error: outfitError,
-    } = useGNNOutfitPerfect(userId || "", {
+    
+    const queryParams = {
         productId: productId || "",
         k: 9,
         pageNumber: 1,
         perPage: 9,
-    });
+    };
+    
+    if (user?.gender) {
+        queryParams.gender = user.gender;
+    }
+    
+    const {
+        data: outfitData,
+        isLoading: outfitLoading,
+        error: outfitError,
+    } = useGNNOutfitPerfect(userId || "", queryParams);
 
     const getCategoryIcon = (categoryName) => {
         const key = categoryName.trim().toLowerCase();
@@ -335,10 +342,13 @@ const CompleteTheLookModal = ({ open, onClose, userId, productId }) => {
             onClose();
             return;
         }
+        if (!user?.gender) {
+            toast.info("Please update your profile with gender information to see outfit recommendations.");
+        }
         if (outfitError) {
             toast.error("Failed to load outfit recommendations.");
         }
-    }, [open, userId, outfitError, onClose]);
+    }, [open, userId, user?.gender, outfitError, onClose]);
 
     return (
         <Dialog

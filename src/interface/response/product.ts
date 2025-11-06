@@ -129,10 +129,3 @@ export interface IFilterProductsResponse {
 	};
 }
 
-export interface IRecommendSizeResponse {
-	message: string;
-	data: {
-		recommendedSize: string;
-	};
-}
-

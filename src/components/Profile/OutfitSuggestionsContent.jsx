@@ -14,6 +14,7 @@ import {
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useGetOutfitRecommendations } from "../../hooks/api/useRecommend";
+import { useGetUserById } from "../../hooks/api/useUser";
 import Message from "../Message";
 import Loader from "../Loader";
 import StarIcon from "@material-ui/icons/Star";
@@ -125,7 +126,10 @@ const OutfitSuggestionsContent = () => {
   const userInfo = useSelector((state) => state.userLogin?.userInfo);
   const currentUserId = userInfo?._id || "";
 
-  const { data: outfitsResponse, isLoading, error } = useGetOutfitRecommendations(currentUserId);
+  const { data: userResponse } = useGetUserById(currentUserId);
+  const user = userResponse?.data?.user;
+
+  const { data: outfitsResponse, isLoading, error } = useGetOutfitRecommendations(currentUserId, user?.gender);
   const outfits = outfitsResponse?.data?.outfits || [];
 
   const handleViewProduct = (productId) => {

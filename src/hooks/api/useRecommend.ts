@@ -25,10 +25,10 @@ export const useGetHybridRecommendations = (userId: string, query?: RecommendReq
 	});
 };
 
-export const useGetOutfitRecommendations = (userId: string) => {
+export const useGetOutfitRecommendations = (userId: string, gender?: string) => {
     return useQuery<RecommendTypes.IOutfitPerfectRecommendationResponse, Error>({
-        queryKey: ['recommend', 'outfit', userId],
-        queryFn: () => getOutfitPerfectRecommendations(userId, { productId: '' }),
+        queryKey: ['recommend', 'outfit', userId, gender],
+        queryFn: () => getOutfitPerfectRecommendations(userId, { productId: '', gender }),
         enabled: !!userId,
     });
 };

@@ -12,7 +12,6 @@ import {
 	IGetRelatedProductsResponse,
 	IGetProductsByPriceResponse,
 	IFilterProductsResponse,
-	IRecommendSizeResponse,
 } from "../../interface/response/product";
 import {
 	IGetProductsQuery,
@@ -79,11 +78,6 @@ export const getRelatedProducts = async (query?: IGetRelatedProductsQuery): Prom
 // Get Products Sorted By Price
 export const getProductsByPrice = async (query?: IGetProductsByPriceQuery): Promise<IGetProductsByPriceResponse> => {
 	return await sendGet(`/products/price`, query);
-};
-
-// Recommend Size
-export const recommendSize = async (userId: string): Promise<IRecommendSizeResponse> => {
-	return await sendGet(`/products/recommend-size/${userId}`);
 };
 
 // Filter Products

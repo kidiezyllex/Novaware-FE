@@ -24,5 +24,6 @@ export interface IGetPersonalizedQuery {
 
 export interface IGetOutfitPerfectQuery extends IGetRecommendationsQuery {
 	productId: string;
+	gender?: string;
 }
 

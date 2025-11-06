@@ -11,7 +11,6 @@ import {
 	getSaleProducts,
 	getRelatedProducts,
 	getProductsByPrice,
-	recommendSize,
 	filterProducts,
 } from '../../lib/api/product';
 import * as ProductTypes from '../../interface/response/product';
@@ -65,14 +64,6 @@ export const useGetProductsByPrice = (query?: ProductRequestTypes.IGetProductsBy
 	return useQuery<ProductTypes.IGetProductsByPriceResponse, Error>({
 		queryKey: ['products', 'price', query],
 		queryFn: () => getProductsByPrice(query),
-	});
-};
-
-export const useRecommendSize = (userId: string) => {
-	return useQuery<ProductTypes.IRecommendSizeResponse, Error>({
-		queryKey: ['products', 'recommend-size', userId],
-		queryFn: () => recommendSize(userId),
-		enabled: !!userId,
 	});
 };
 

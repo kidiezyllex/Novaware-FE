@@ -8,8 +8,6 @@ import {
   Chip,
   Divider,
   Typography,
-  MenuItem,
-  TextField,
   FormHelperText,
 } from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -202,7 +200,6 @@ const useStyles = makeStyles((theme) => ({
 const ProductInfo = React.memo(
   ({
     product,
-    recommendedSize,
     user,
     handleUpdateModalOpen,
     addToCartHandler,
@@ -390,20 +387,16 @@ const ProductInfo = React.memo(
               />
             </Box>
             <Typography variant="body1" className={classes.description}>
-              {recommendedSize ? (
-                `Size recommended for you: ${recommendedSize}`
-              ) : (
-                // eslint-disable-next-line
-                <Link
-                  component="button"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    handleUpdateModalOpen();
-                  }}
-                >
-                  Update your status to get recommended size
-                </Link>
-              )}
+              {/* eslint-disable-next-line */}
+              <Link
+                component="button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  handleUpdateModalOpen();
+                }}
+              >
+                Update your status to get recommended size
+              </Link>
             </Typography>
             <UpdateProfileModal
               open={updateModalOpen}
@@ -612,7 +605,6 @@ const ProductInfo = React.memo(
           </FormControl>
         </form>
 
-        {/* You might also like Modal */}
         <YouMightAlsoLikeModal
           open={likeModalOpen}
           onClose={() => setLikeModalOpen(false)}
@@ -620,12 +612,12 @@ const ProductInfo = React.memo(
           productId={productId}
         />
 
-        {/* Complete the look Modal */}
         <CompleteTheLookModal
           open={outfitModalOpen}
           onClose={() => setOutfitModalOpen(false)}
           userId={currentUserId}
           productId={productId}
+          user={user}
         />
 
         <Box
