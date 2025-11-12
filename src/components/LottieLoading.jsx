@@ -1,23 +1,33 @@
+import React, { forwardRef } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const DEFAULT_SRC =
-  'https://lottie.host/3b1fcf27-8ddd-4b39-9bb1-0930cc3ceaca/Mg0srF2Fsh.lottie'
+  'https://lottie.host/3b1fcf27-8ddd-4b39-9bb1-0930cc3ceaca/Mg0srF2Fsh.lottie';
 /**
  * @param {{ src?: string, loop?: boolean, autoplay?: boolean, className?: any, style?: any }} props
  */
-const LottieLoading = ({
-  src = DEFAULT_SRC,
-  loop = true,
-  autoplay = true,
-  className = undefined,
-  style = undefined,
-}) => {
+const LottieLoading = forwardRef(function LottieLoading(
+  {
+    src = DEFAULT_SRC,
+    loop = true,
+    autoplay = true,
+    className = undefined,
+    style = undefined,
+  },
+  ref,
+) {
   return (
-    <div className={className} style={{transform: 'scale(0.75)'}} aria-busy="true" aria-live="polite">
+    <div
+      ref={ref}
+      className={className}
+      style={{ transform: 'scale(0.75)', ...style }}
+      aria-busy="true"
+      aria-live="polite"
+    >
       <DotLottieReact src={src} loop={loop} autoplay={autoplay} />
     </div>
   );
-};
+});
 
 export default LottieLoading;
 

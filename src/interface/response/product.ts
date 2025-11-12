@@ -1,8 +1,24 @@
 export interface IProductSize {
+	[key: string]: number | undefined;
 	s?: number;
 	m?: number;
 	l?: number;
 	xl?: number;
+}
+
+export interface IProductColor {
+	name: string;
+	hexCode: string;
+}
+
+export interface IProductVariant {
+	id?: string;
+	sku?: string;
+	size: string;
+	color: string;
+	stock: number;
+	price?: number;
+	image?: string | null;
 }
 
 export interface IProductReview {
@@ -17,20 +33,24 @@ export interface IProductReview {
 export interface IProduct {
 	_id: string;
 	name: string;
+	slug?: string;
 	price: number;
 	sale?: number;
 	images: string[];
 	brand: string;
+	brandId?: string | null;
 	category: string;
+	categoryId?: string | null;
 	description: string;
 	size: IProductSize;
 	countInStock: number;
-	colors?: string[];
+	colors?: IProductColor[];
 	rating?: number;
 	numReviews?: number;
 	reviews?: IProductReview[];
 	createdAt?: string;
 	updatedAt?: string;
+	variants?: IProductVariant[];
 }
 
 export interface IGetProductsResponse {

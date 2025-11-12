@@ -34,19 +34,23 @@ export interface IDeleteBrandResponse {
 }
 
 export interface IGroupedBrandItem {
-    _id: string;
+    id: string;
     name: string;
+    _id?: string;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface IBrandGroup {
     letter: string;
-    brands: IGroupedBrandItem[];
+    items: IGroupedBrandItem[];
 }
 
 export interface IGetGroupedBrandsResponse {
     message: string;
     data: {
         groups: IBrandGroup[];
+        count?: number;
     };
 }
 

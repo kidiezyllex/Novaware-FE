@@ -11,18 +11,22 @@ import { useDispatch } from "react-redux";
 import { formatPriceDollar } from "../../utils/formatPrice";
 
 const ProductCard = (props) => {
-  const { _id, name, images, price, sale, variants } = props;
+  const { _id, id, slug, productId: incomingProductId, name, images, price, sale, variants } = props;
+  const productId = _id ?? id ?? incomingProductId ?? slug ?? "";
   const [openModal, setOpenModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
   const variant = variants && variants.length > 0 ? variants[0] : null;
   const finalPrice = variant?.price ? variant?.price : (price * (1 - sale / 100));
 
-  const handleAddToCart = (e, id) => {
+  const handleAddToCart = (e, idToAdd) => {
     e.stopPropagation();
     e.preventDefault();
+    if (!idToAdd) {
+      return;
+    }
     dispatch(setOpenCartDrawer(true));
-    dispatch(addToCart(id, 1, variant?.size || "M", variant?.color || ""));  
+    dispatch(addToCart(idToAdd, 1, variant?.size || "M", variant?.color || ""));  
   };
   const handleOpenQuickView = (e) => {
     e.stopPropagation();
@@ -38,7 +42,15 @@ const ProductCard = (props) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <RouterLink to={`/product?id=${_id}`} className="flex h-full flex-col">
+        <RouterLink
+          to={productId ? `/product?id=${productId}` : '#'}
+          className="flex h-full flex-col"
+          onClick={(e) => {
+            if (!productId) {
+              e.preventDefault();
+            }
+          }}
+        >
           {/* Image Container with proper aspect ratio */}
           <div className="relative w-full pb-[100%] overflow-hidden bg-gray-50">
             {sale > 0 && (
@@ -100,7 +112,7 @@ const ProductCard = (props) => {
               {/* Mobile Add to Cart Button */}
               <div className="w-full md:hidden">
                 <button
-                  onClick={(e) => handleAddToCart(e, _id)}
+                  onClick={(e) => handleAddToCart(e, productId)}
                   className="mt-2 w-full bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-primary/90 active:scale-95"
                 >
                   <span className="flex items-center justify-center gap-2">
@@ -122,7 +134,7 @@ const ProductCard = (props) => {
                 View
               </button>
               <button
-                onClick={(e) => handleAddToCart(e, _id)}
+                onClick={(e) => handleAddToCart(e, productId)}
                 className="h-10 flex items-center gap-2 justify-center border border-white text-white hover:bg-pink-600"
               >
                 <AddShoppingCartOutlinedIcon fontSize="small" className="text-white" />
@@ -134,6 +146,8 @@ const ProductCard = (props) => {
       </motion.div>
       <ProductModalView
         {...props}
+        _id={productId || _id}
+        productId={productId || _id}
         openModal={openModal}
         setOpenModal={setOpenModal}
       />

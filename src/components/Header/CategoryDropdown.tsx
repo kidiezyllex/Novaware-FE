@@ -115,17 +115,20 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ menuItemClassName }
         ) : error ? (
           <MenuItem>{error instanceof Error ? error.message : String(error)}</MenuItem>
         ) : (
-          categories.map((category) => (
-            <MenuItem
-              key={category._id}
-              component={Link}
-              to={`/shop?category=${category.name}`}
-              onClick={() => handleCategoryClick(category.name)}
-            >
-              {renderIcon(category.name)}
-              <Typography className={classes.textMedium}>{category.name}</Typography>
-            </MenuItem>
-          ))
+          categories.map((category, index) => {
+            const key = category?._id ?? category?.name ?? `category-${index}`;
+            return (
+              <MenuItem
+                key={key}
+                component={Link}
+                to={`/shop?category=${category.name}`}
+                onClick={() => handleCategoryClick(category.name)}
+              >
+                {renderIcon(category.name)}
+                <Typography className={classes.textMedium}>{category.name}</Typography>
+              </MenuItem>
+            );
+          })
         )}
       </Menu>
     </>

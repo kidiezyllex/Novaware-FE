@@ -10,10 +10,16 @@ export interface IRegisterResponse {
 	data: IUser;
 }
 
+export interface IAuthTokens {
+	refresh: string;
+	access: string;
+}
+
 export interface ILoginResponse {
+	status: string;
 	message: string;
-	data: IUser & {
-		token: string;
+	data: {
+		tokens: IAuthTokens;
 	};
 }
 

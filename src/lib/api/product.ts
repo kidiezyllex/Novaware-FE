@@ -13,6 +13,7 @@ import {
 	IGetProductsByPriceResponse,
 	IFilterProductsResponse,
 } from "../../interface/response/product";
+import { IProduct, IProductColor, IProductVariant, IProductSize } from "../../interface/response/product";
 import {
 	IGetProductsQuery,
 	ICreateProductBody,
@@ -31,8 +32,179 @@ export const getProducts = async (query?: IGetProductsQuery): Promise<IGetProduc
 };
 
 // Get Product By ID
+const toNumber = (value: unknown, fallback = 0): number => {
+	const parsed = Number(value);
+	return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const normalizeSize = (rawSize: any): IProductSize => {
+	if (!rawSize || typeof rawSize !== "object") return {};
+	return Object.keys(rawSize).reduce((acc: IProductSize, key: string) => {
+		const normalizedKey = key.toLowerCase();
+		acc[normalizedKey] = toNumber(rawSize[key]);
+		return acc;
+	}, {} as IProductSize);
+};
+
+const normalizeColors = (rawColors: any, rawColorIds: any): IProductColor[] => {
+	const colors: IProductColor[] = [];
+
+	if (Array.isArray(rawColors)) {
+		rawColors.forEach((color) => {
+			if (typeof color === "string") {
+				colors.push({ name: color, hexCode: color });
+				return;
+			}
+
+			if (color && (color.name || color.hexCode || color.hex || color.code)) {
+				colors.push({
+					name: color.name || color.label || color.code || color.hexCode || color.hex || "",
+					hexCode: color.hexCode || color.hex || color.code || "",
+				});
+			}
+		});
+	}
+
+	if (colors.length === 0 && Array.isArray(rawColorIds)) {
+		rawColorIds.forEach((color) => {
+			if (typeof color === "string") {
+				colors.push({ name: color, hexCode: color });
+				return;
+			}
+
+			if (color && (color.name || color.hexCode)) {
+				colors.push({
+					name: color.name || color.hexCode || "",
+					hexCode: color.hexCode || color.name || "",
+				});
+			}
+		});
+	}
+
+	return colors;
+};
+
+const normalizeVariants = (
+	rawVariants: any,
+	sizeData: IProductSize,
+	unitPrice: number,
+	productId: string,
+): IProductVariant[] => {
+	if (Array.isArray(rawVariants) && rawVariants.length > 0) {
+		return rawVariants.reduce((acc: IProductVariant[], variant: any, index: number) => {
+			if (!variant) return acc;
+
+			const size = (variant.size || variant.sizeLabel || "").toString().toUpperCase();
+			const color = (variant.color || variant.colorHex || variant.hexCode || "").toString();
+			const stock = toNumber(variant.stock ?? variant.quantity ?? variant.count ?? variant.inventory ?? 0);
+			const price = variant.price !== undefined ? toNumber(variant.price) : unitPrice;
+
+			acc.push({
+				id: variant.id || variant._id || `${productId || "variant"}-${index}`,
+				sku: variant.sku || variant.code,
+				size,
+				color,
+				stock,
+				price,
+				image: variant.image || variant.thumbnail || null,
+			});
+
+			return acc;
+		}, []);
+	}
+
+	// Fallback: build variants from size data when no explicit variants provided
+	return Object.entries(sizeData).reduce((acc: IProductVariant[], [sizeKey, stockValue]) => {
+		const stock = toNumber(stockValue);
+		if (stock <= 0) return acc;
+
+		acc.push({
+			id: `${productId || "variant"}-${sizeKey}`,
+			size: sizeKey.toUpperCase(),
+			color: "",
+			stock,
+			price: unitPrice,
+			image: null,
+		});
+
+		return acc;
+	}, []);
+};
+
+const normalizeProduct = (raw: any): IProduct => {
+	if (!raw || typeof raw !== "object") {
+		return {
+			_id: "",
+			name: "",
+			price: 0,
+			sale: 0,
+			images: [],
+			brand: "",
+			category: "",
+			description: "",
+			size: {},
+			countInStock: 0,
+			colors: [],
+			rating: 0,
+			numReviews: 0,
+			reviews: [],
+			variants: [],
+		};
+	}
+
+	const productId = raw.id || raw._id || "";
+	const sizeData = normalizeSize(raw.size);
+	const unitPrice = toNumber(raw.price);
+	const variants = normalizeVariants(raw.variants, sizeData, unitPrice, productId);
+	const variantStockTotal = variants.reduce((acc, variant) => acc + toNumber(variant.stock), 0);
+	const sizeStockTotal =
+		variantStockTotal === 0
+			? Object.values(sizeData).reduce((acc, value) => acc + toNumber(value), 0)
+			: 0;
+	const declaredStock = toNumber(raw.count_in_stock ?? raw.countInStock ?? raw.stock);
+	const computedStock = variantStockTotal || sizeStockTotal;
+	const countInStock = declaredStock > 0 ? declaredStock : computedStock;
+
+	const colors = normalizeColors(raw.colors, raw.color_ids);
+
+	return {
+		_id: productId,
+		name: raw.name || "",
+		slug: raw.slug || "",
+		price: unitPrice,
+		sale: toNumber(raw.sale ?? raw.discount ?? 0),
+		images: Array.isArray(raw.images) ? raw.images.filter(Boolean) : [],
+		brand: raw.brand_name || raw.brand || "",
+		brandId: raw.brand_id ?? raw.brandId ?? null,
+		category: raw.category_detail?.name || raw.category || raw.category_id || "",
+		categoryId: raw.category_id ?? raw.categoryId ?? null,
+		description: raw.description || "",
+		size: sizeData,
+		countInStock,
+		colors,
+		rating: toNumber(raw.rating ?? raw.rating_average ?? 0),
+		numReviews: toNumber(raw.num_reviews ?? raw.numReviews ?? 0),
+		reviews: Array.isArray(raw.reviews) ? raw.reviews : [],
+		createdAt: raw.created_at || raw.createdAt,
+		updatedAt: raw.updated_at || raw.updatedAt,
+		variants,
+	};
+};
+
 export const getProduct = async (id: string): Promise<IGetProductResponse> => {
-	return await sendGet(`/products/${id}`);
+	const response = await sendGet(`/products/${id}`);
+
+	if (response?.data?.product) {
+		return {
+			...response,
+			data: {
+				...response.data,
+				product: normalizeProduct(response.data.product),
+			},
+		};
+	}
+
+	return response;
 };
 
 // Create Product
@@ -57,10 +229,8 @@ export const createReview = async (id: string, body: ICreateReviewBody): Promise
 
 // Get Top Products
 export const getTopProducts = async (query?: IGetTopProductsQuery): Promise<IGetTopProductsResponse> => {
-	const randomPageNumber = Math.floor(Math.random() * 165) + 1;
 	const modifiedQuery = {
 		...query,
-		pageNumber: randomPageNumber,
 		perPage: 15,
 	};
 	return await sendGet(`/products/top`, modifiedQuery);

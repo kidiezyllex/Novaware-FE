@@ -5,31 +5,57 @@ interface CustomAxiosRequestConfig extends AxiosRequestConfig {
 	shouldNotify?: boolean;
 }
 
+function sanitizeToken(token?: string | null): string | null {
+	if (!token) return null;
+
+	const trimmed = token.trim();
+	if (!trimmed || trimmed === "undefined" || trimmed === "null") {
+		return null;
+	}
+
+	return trimmed;
+}
+
 function getLocalAccessToken() {
-	let accessToken = cookies.get("accessToken");
+	let accessToken = sanitizeToken(cookies.get("accessToken"));
 	if (!accessToken && typeof window !== "undefined") {
 		try {
-			const tokenFromStorage = localStorage.getItem("token");
-			const directAccessToken = localStorage.getItem("accessToken");
-			
+			const tokenFromStorage = sanitizeToken(localStorage.getItem("token"));
+			const directAccessToken = sanitizeToken(localStorage.getItem("accessToken"));
+			const legacyAccessToken = sanitizeToken(localStorage.getItem("access_token"));
+			const userInfoRaw = localStorage.getItem("userInfo");
+
 			let parsedToken: string | null = null;
 			if (tokenFromStorage) {
 				try {
 					const tokenObj = JSON.parse(tokenFromStorage);
-					parsedToken = tokenObj.token || tokenFromStorage;
+					parsedToken = sanitizeToken(tokenObj.token) || sanitizeToken(tokenObj.accessToken);
 				} catch {
 					parsedToken = tokenFromStorage;
 				}
 			}
-			
-			const finalToken = parsedToken || directAccessToken;
-			
+
+			if (!parsedToken && userInfoRaw) {
+				try {
+					const userInfo = JSON.parse(userInfoRaw);
+					parsedToken =
+						sanitizeToken(userInfo.token) ||
+						sanitizeToken(userInfo.accessToken) ||
+						sanitizeToken(userInfo.access) ||
+						null;
+				} catch {
+					parsedToken = sanitizeToken(userInfoRaw);
+				}
+			}
+
+			const finalToken = sanitizeToken(parsedToken) || directAccessToken || legacyAccessToken;
+
 			if (finalToken) {
 				cookies.set("accessToken", finalToken);
 				return finalToken;
 			}
 		} catch (error) {
-			console.error( error);
+			console.error(error);
 		}
 	}
 
@@ -38,7 +64,7 @@ function getLocalAccessToken() {
 
 const instance = axios.create({
 	timeout: 3 * 60 * 1000,
-	baseURL: `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`,
+	baseURL: `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1`,
 	headers: {
 		"Content-Type": "application/json",
 		Accept: "application/json",

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   MenuItem,
   Menu,
@@ -13,8 +13,8 @@ import { useGetGroupedBrands } from "../../hooks/api/useBrand";
 import { filterByBrand } from "../../actions/filterActions";
 import LottieLoading from "../LottieLoading";
 
-type Brand = { _id: string; name: string };
-type BrandGroup = { letter: string; brands: Brand[] };
+type Brand = { _id?: string; id?: string; name: string };
+type BrandGroup = { letter: string; items: Brand[] };
 
 type BrandDropdownProps = {
   menuItemClassName?: string;
@@ -73,7 +73,25 @@ const BrandDropdown: React.FC<BrandDropdownProps> = ({ menuItemClassName }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { data: brandsResponse, isLoading: loadingBrands, error: errorBrands } = useGetGroupedBrands();
-  const brandGroups: BrandGroup[] = brandsResponse?.data?.groups || [];
+
+  const brandGroups: BrandGroup[] = useMemo(() => {
+    const rawGroups = brandsResponse?.data?.groups;
+    if (!Array.isArray(rawGroups) || rawGroups.length === 0) {
+      return [];
+    }
+
+    return rawGroups
+      .map((group) => ({
+        letter: group.letter,
+        items: Array.isArray(group.items)
+          ? group.items.map((brand) => ({
+            ...brand,
+            _id: brand._id ?? (brand as Brand).id ?? `${group.letter}-${brand.name}`,
+          }))
+          : [],
+      }))
+      .filter((group) => group.items.length > 0);
+  }, [brandsResponse]);
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
@@ -137,9 +155,9 @@ const BrandDropdown: React.FC<BrandDropdownProps> = ({ menuItemClassName }) => {
                 <span className={classes.letterText}>{group.letter}</span>
                 <span className={classes.letterDivider} />
               </div>
-              {group.brands.map((brand) => (
+              {group.items.map((brand) => (
                 <MenuItem
-                  key={brand._id}
+                  key={brand._id ?? brand.id ?? brand.name}
                   component={Link}
                   to={`/shop?brand=${brand.name}`}
                   onClick={() => handleBrandClick(brand.name)}

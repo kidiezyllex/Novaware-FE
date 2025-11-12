@@ -115,6 +115,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const decodeJwtPayload = (token) => {
+  try {
+    if (!token || typeof token !== "string") return null;
+    const base64Url = token.split(".")[1];
+    if (!base64Url) return null;
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error("Failed to decode JWT payload:", error);
+    return null;
+  }
+};
+
 const LoginModal = ({
   open,
   onClose,
@@ -124,6 +145,7 @@ const LoginModal = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [authTokens, setAuthTokens] = useState({ access: "", refresh: "" });
   const methods = useForm();
   const { handleSubmit } = methods;
 
@@ -153,56 +175,84 @@ const LoginModal = ({
 
   // Xử lý sau khi đăng nhập thành công
   useEffect(() => {
-    if (isSuccess && loginResponse?.data) {
-      const { _id, token } = loginResponse.data;
-      
-      // Lưu token vào localStorage và cookies
-      localStorage.setItem("access_token", token);
-      localStorage.setItem("accessToken", token);
-      localStorage.setItem("token", JSON.stringify({ token }));
-      cookies.set("accessToken", token);
-      
-      // Lưu currentUserId
-      localStorage.setItem("currentUserId", _id);
-      setCurrentUserId(_id);
-      
-      // Lưu userInfo vào localStorage (để tương thích với code cũ)
-      const userInfoToStore = {
-        _id,
-        name: loginResponse.data.name,
-        email: loginResponse.data.email,
-        isAdmin: loginResponse.data.isAdmin,
-        token,
-      };
-      localStorage.setItem("userInfo", JSON.stringify(userInfoToStore));
-      
-      // Dispatch Redux action để cập nhật state
-      dispatch({
-        type: USER_LOGIN_SUCCESS,
-        payload: userInfoToStore,
-      });
+    if (isSuccess && loginResponse?.data?.tokens) {
+      const { access, refresh } = loginResponse.data.tokens || {};
+
+      if (!access) {
+        toast.error("Không thể lấy access token từ phản hồi đăng nhập");
+        return;
+      }
+
+      localStorage.setItem("access_token", access);
+      localStorage.setItem("accessToken", access);
+      localStorage.setItem("token", JSON.stringify({ token: access, refreshToken: refresh }));
+      cookies.set("accessToken", access);
+
+      if (refresh) {
+        localStorage.setItem("refreshToken", refresh);
+        cookies.set("refreshToken", refresh);
+      }
+
+      setAuthTokens({ access, refresh: refresh || "" });
+
+      const decodedPayload = decodeJwtPayload(access);
+      const userIdFromToken =
+        decodedPayload?.user_id ||
+        decodedPayload?.userId ||
+        decodedPayload?._id ||
+        decodedPayload?.id ||
+        null;
+
+      if (userIdFromToken) {
+        localStorage.setItem("currentUserId", userIdFromToken);
+        setCurrentUserId(userIdFromToken);
+      } else {
+        toast.error("Không thể xác định người dùng từ token đăng nhập");
+        console.error("Decoded token payload:", decodedPayload);
+      }
     }
-  }, [isSuccess, loginResponse, dispatch]);
+  }, [isSuccess, loginResponse]);
 
   // Xử lý sau khi lấy được chi tiết user
   useEffect(() => {
     if (userDetails?.data?.user && currentUserId && !hasRedirected.current) {
+      const user = userDetails.data.user;
+      const accessToken = authTokens.access || localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        toast.error("Không tìm thấy access token sau khi đăng nhập");
+        return;
+      }
+
+      const userInfoToStore = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        token: accessToken,
+      };
+
+      localStorage.setItem("userInfo", JSON.stringify(userInfoToStore));
+
+      dispatch({
+        type: USER_LOGIN_SUCCESS,
+        payload: userInfoToStore,
+      });
+
       hasRedirected.current = true;
       onClose();
       toast.success("Đăng nhập thành công");
       
-      const isAdmin = userDetails.data.user.isAdmin || false;
+      const isAdmin = user?.isAdmin || false;
       if (isAdmin) {
         history.push("/admin/orderstats");
+      } else if (redirect) {
+        history.push(redirect);
       } else {
-        if (redirect) {
-          history.push(redirect);
-        } else {
-          history.push("/");
-        }
+        history.push("/");
       }
     }
-  }, [userDetails, currentUserId, onClose, dispatch, history, redirect]);
+  }, [userDetails, currentUserId, authTokens, onClose, dispatch, history, redirect]);
 
   const submitHandler = async ({ email, password }) => {
     try {

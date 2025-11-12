@@ -137,11 +137,19 @@ const ProductTabs = () => {
           <LottieEmpty className="flex justify-center" />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-            {productsLatest && productsLatest.map((product) => (
-              <div key={product._id}>
-                <ProductCard {...product} />
-              </div>
-            ))}
+            {productsLatest &&
+              productsLatest.map((product, index) => {
+                const key =
+                  product?._id ??
+                  product?.id ??
+                  product?.slug ??
+                  `latest-${product?.name ?? 'product'}-${product?.sku ?? index}`;
+                return (
+                  <div key={key}>
+                    <ProductCard {...product} />
+                  </div>
+                );
+              })}
           </div>
         )}
         <div className={classes.buttonMore}>
@@ -163,11 +171,16 @@ const ProductTabs = () => {
           <LottieEmpty className="flex justify-center" />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-            {productsSale && productsSale.map((product) => (
-              <div key={product._id}>
-                <ProductCard {...product} />
-              </div>
-            ))}
+            {productsSale &&
+              productsSale.map((product, index) => {
+                const key =
+                  product?._id ?? product?.id ?? product?.slug ?? `sale-${product?.name ?? 'product'}-${index}`;
+                return (
+                  <div key={key}>
+                    <ProductCard {...product} />
+                  </div>
+                );
+              })}
           </div>
         )}
         <div className={classes.buttonMore}>

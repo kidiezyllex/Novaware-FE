@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { FiShoppingBag } from "react-icons/fi";
 import { FaTags, FaShareAlt, FaHeart, FaRegHeart, FaTrademark, FaBoxOpen, FaTshirt } from "react-icons/fa";
@@ -256,10 +256,15 @@ const ProductInfo = memo(
     const classes = useStyles(product);
     const [likeModalOpen, setLikeModalOpen] = useState(false);
     const [outfitModalOpen, setOutfitModalOpen] = useState(false);
-    const [selectedVariant, setSelectedVariant] = useState(null);
     const [currentPrice, setCurrentPrice] = useState(product.price || 0);
     const currentUserId = user?._id || user?.id || "";
     const productId = product._id || "";
+    const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
+
+    const safeNumber = useCallback((value, fallback = 0) => {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    }, []);
 
     // Watch size and color changes
     const selectedSize = watch("size");
@@ -267,7 +272,7 @@ const ProductInfo = memo(
 
     // Extract unique sizes from variants
     const sizeOptions = useMemo(() => {
-      if (product.variants && product.variants.length > 0) {
+      if (hasVariants) {
         const sizes = [...new Set(product.variants.map((v) => v.size.toUpperCase()))];
         return sizes.sort((a, b) => {
           const order = { S: 0, M: 1, L: 2, XL: 3 };
@@ -277,45 +282,45 @@ const ProductInfo = memo(
       // Fallback to old structure
       if (product.size) {
         return Object.keys(product.size)
+          .filter((key) => safeNumber(product.size[key]) > 0)
           .map((s) => s.toUpperCase())
           .sort((a, b) => {
             const order = { S: 0, M: 1, L: 2, XL: 3 };
             return (order[a] || 99) - (order[b] || 99);
           });
       }
-      return ["S", "M", "L", "XL"];
-    }, [product.variants, product.size]);
+      return [];
+    }, [hasVariants, product.variants, product.size]);
 
     const colorOptions = useMemo(() => {
-      if (product.variants && product.variants.length > 0) {
+      if (hasVariants) {
         const colorMap = new Map();
         product.variants.forEach((variant) => {
-          if (!colorMap.has(variant.color)) {
-            colorMap.set(variant.color, {
-              hexCode: variant.color,
-              name: variant.color, // Use hex as name if no name provided
+          const colorValue = variant.color || "";
+          if (!colorValue) return;
+          if (!colorMap.has(colorValue)) {
+            colorMap.set(colorValue, {
+              hexCode: colorValue,
+              name: colorValue, // Use hex/name if no name provided
             });
           }
         });
         return Array.from(colorMap.values());
       }
       if (product.colors && product.colors.length > 0) {
-        return product.colors.map((color) => ({
-          name: color.name,
-          hexCode: color.hexCode,
-        }));
+        return product.colors
+          .filter((color) => color && (color.hexCode || color.name))
+          .map((color) => ({
+            name: color.name || color.hexCode,
+            hexCode: color.hexCode || color.name || "",
+          }));
       }
       return [];
-    }, [product.variants, product.colors]);
+    }, [hasVariants, product.variants, product.colors]);
 
     useEffect(() => {
       if (hasInitDefaultVariantRef.current) return;
-      if (
-        product.variants &&
-        product.variants.length > 0 &&
-        !selectedSize &&
-        !selectedColor
-      ) {
+      if (hasVariants && !selectedSize && !selectedColor) {
         const first = product.variants[0];
         if (first) {
           setValue("size", (first.size || "").toUpperCase(), { shouldValidate: true });
@@ -323,37 +328,85 @@ const ProductInfo = memo(
         }
       }
       hasInitDefaultVariantRef.current = true;
-    }, [product.variants, selectedSize, selectedColor, setValue]);
+    }, [hasVariants, product.variants, selectedSize, selectedColor, setValue]);
 
-    const findVariant = useMemo(() => {
-      if (!selectedSize || !selectedColor || !product.variants) return null;
-      return product.variants.find(
-        (v) =>
-          v.size.toLowerCase() === selectedSize.toLowerCase() &&
-          v.color === selectedColor
-      );
-    }, [selectedSize, selectedColor, product.variants]);
+    // Auto select first available size when no variants but sizes exist
+    useEffect(() => {
+      if (hasVariants) return;
+      if (!selectedSize && sizeOptions.length > 0) {
+        setValue("size", sizeOptions[0], { shouldValidate: true });
+      }
+    }, [hasVariants, sizeOptions, selectedSize, setValue]);
+
+    const selectedVariant = useMemo(() => {
+      if (hasVariants) {
+        if (!product.variants) return null;
+
+        const normalizedSize = selectedSize ? selectedSize.toLowerCase() : null;
+        const normalizedColor = selectedColor || null;
+
+        return product.variants.find((variant) => {
+          const variantSize = (variant.size || "").toLowerCase();
+          const variantColor = variant.color || "";
+          const sizeMatches = !normalizedSize || variantSize === normalizedSize;
+          const colorMatches = !normalizedColor || variantColor === normalizedColor;
+          return sizeMatches && colorMatches;
+        }) || null;
+      }
+
+      const variantFromSize = () => {
+        if (!selectedSize) return null;
+        const stock =
+          product.size?.[selectedSize.toLowerCase()] ?? product.size?.[selectedSize] ?? 0;
+        return {
+          size: selectedSize,
+          color: selectedColor || "",
+          stock: safeNumber(stock),
+          price: product.price,
+        };
+      };
+
+      if (sizeOptions.length > 0) {
+        return variantFromSize();
+      }
+
+      const aggregateStock =
+        Object.values(product.size || {}).reduce((acc, value) => acc + safeNumber(value), 0) ||
+        safeNumber(product.countInStock);
+
+      return aggregateStock > 0
+        ? {
+            size: "",
+            color: "",
+            stock: aggregateStock,
+            price: product.price,
+          }
+        : null;
+    }, [
+      hasVariants,
+      product.variants,
+      product.size,
+      product.price,
+      product.countInStock,
+      selectedSize,
+      selectedColor,
+      sizeOptions.length,
+      safeNumber,
+    ]);
 
     useEffect(() => {
-      if (findVariant) {
-        setSelectedVariant(findVariant);
-        const fv = Number(findVariant.price);
-        const pp = Number(product.price);
-        const next = fv > 0 ? fv : (pp > 0 ? pp : null);
-        if (next !== null) {
-          setCurrentPrice(next);
-        }
-      } else {
-        setSelectedVariant(null);
-        const pp = Number(product.price);
-        if (pp > 0) {
-          setCurrentPrice(pp);
-        }
-      }
-    }, [findVariant, product.price]);
+      const variantPrice = selectedVariant?.price;
+      const basePrice = safeNumber(product.price);
+      const nextPrice =
+        variantPrice !== undefined && variantPrice !== null && safeNumber(variantPrice) > 0
+          ? safeNumber(variantPrice)
+          : basePrice;
+      setCurrentPrice(nextPrice);
+    }, [selectedVariant, product.price]);
 
     // Reset color if it's not available for selected size
     useEffect(() => {
+      if (!hasVariants) return;
       if (selectedSize && selectedColor && product.variants) {
         const hasAvailableVariant = product.variants.some(
           (v) =>
@@ -365,7 +418,7 @@ const ProductInfo = memo(
           setValue("color", "", { shouldValidate: false });
         }
       }
-    }, [selectedSize, selectedColor, product.variants, setValue]);
+    }, [hasVariants, selectedSize, selectedColor, product.variants, setValue]);
 
     const getAvailableSizesForColor = (colorHex) => {
       if (!product.variants || !colorHex) return sizeOptions;
@@ -392,10 +445,10 @@ const ProductInfo = memo(
 
     // Check if size is available (considering selected color)
     const isSizeAvailable = (size) => {
-      if (!product.variants) {
+      if (!hasVariants || !product.variants) {
         // Fallback to old structure
         const sizeLower = size.toLowerCase();
-        return product.size && product.size[sizeLower] > 0;
+        return product.size && safeNumber(product.size[sizeLower]) > 0;
       }
       if (selectedColor) {
         const availableSizes = getAvailableSizesForColor(selectedColor);
@@ -408,7 +461,7 @@ const ProductInfo = memo(
     };
 
     const isColorAvailable = (colorHex) => {
-      if (!product.variants) return true; // Fallback
+      if (!hasVariants || !product.variants) return true; // Fallback
       if (selectedSize) {
         const availableColors = getAvailableColorsForSize(selectedSize);
         return availableColors.some((c) => c.hexCode === colorHex);
@@ -420,7 +473,7 @@ const ProductInfo = memo(
 
     // Filter color options to only show colors that have available sizes
     const availableColorOptions = useMemo(() => {
-      if (!product.variants || product.variants.length === 0) {
+      if (!hasVariants || !product.variants || product.variants.length === 0) {
         return colorOptions;
       }
       if (selectedSize) {
@@ -434,7 +487,14 @@ const ProductInfo = memo(
           (v) => v.color === colorHex && v.stock > 0
         );
       });
-    }, [colorOptions, selectedSize, product.variants]);
+    }, [colorOptions, selectedSize, product.variants, hasVariants]);
+
+    const shouldRenderSizeSelector = sizeOptions.length > 0;
+    const shouldRenderColorSelector = availableColorOptions.length > 0;
+    const totalInventory = safeNumber(selectedVariant?.stock ?? product.countInStock);
+    const isOutOfStock =
+      (!hasVariants && shouldRenderSizeSelector && !selectedSize && totalInventory === 0) ||
+      totalInventory === 0;
 
     return (
       <>
@@ -443,14 +503,14 @@ const ProductInfo = memo(
             size="small"
             color="primary"
             icon={<FaTags style={{ fontSize: 14 }} />}
-            label={product.category}
+            label={product.category || "Uncategorized"}
             style={{ marginRight: 8, padding: "0 8px" }}
           />
           <Chip
             size="small"
             color="primary"
             icon={<FaTrademark style={{ fontSize: 14 }} />}
-            label={product.brand}
+            label={product.brand || "Unbranded"}
             style={{ marginRight: 8, padding: "0 8px" }}
           />
           <Chip
@@ -516,165 +576,184 @@ const ProductInfo = memo(
         {/* Form */}
         <form onSubmit={handleSubmit(addToCartHandler)}>
           {/* Size Selection */}
-          <FormControl
-            fullWidth
-            component="fieldset"
-            classes={{ root: classes.sizeFormControl }}
-          >
-            <Box display="flex" alignItems="center">
-              <FormLabel
-                component="legend"
-                color="secondary"
-                className={classes.label1}
-                style={{ marginRight: "16px", marginBottom: "14px" }}
-              >
-                Size:
-              </FormLabel>
-              <Controller
-                name="size"
-                control={control}
-                defaultValue=""
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <RadioGroup {...field} row>
-                      {sizeOptions.map((size) => {
-                        const sizeAvailable = isSizeAvailable(size);
-                        return (
-                          <FormControlLabel
-                            style={{ marginBottom: "15px" }}
-                            key={size}
-                            value={size}
-                            control={<Radio style={{ display: "none" }} />}
-                            label={
-                              <Box
-                                className={clsx(
-                                  classes.buttoncz,
-                                  field.value === size && "active",
-                                  !sizeAvailable && classes.disabled
-                                )}
-                                style={{
-                                  borderRadius: 0,
-                                  backgroundColor:
-                                    field.value === size && sizeAvailable
-                                      ? "#f5005730"
-                                      : "transparent",
-                                  opacity: sizeAvailable ? 1 : 0.5,
-                                  pointerEvents: sizeAvailable
-                                    ? "auto"
-                                    : "none",
-                                  borderColor: field.value === size ? "#DD8190" : "#ccc",
-                                }}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  if (!sizeAvailable) return;
-                                  const next = field.value === size ? "" : size;
-                                  field.onChange(next);
-                                }}
-                              >
-                                <Typography
-                                  style={{
-                                    color: sizeAvailable ? "black" : "gray",
-                                  }}
-                                >
-                                  {size}
-                                </Typography>
-                              </Box>
-                            }
-                            disabled={!sizeAvailable}
-                          />
-                        );
-                      })}
-                    </RadioGroup>
-                    {error && (
-                      <FormHelperText error>{error.message}</FormHelperText>
-                    )}
-                  </>
-                )}
-                rules={{ required: "Please select size!" }}
-              />
-            </Box>
-            <Typography variant="body1" className={classes.description}>
-              {/* eslint-disable-next-line */}
-              <Link
-                component="button"
-                onClick={(event) => {
-                  event.preventDefault();
-                  handleUpdateModalOpen();
-                }}
-              >
-                Update your status to get recommended size
-              </Link>
-            </Typography>
-            <UpdateProfileModal
-              open={updateModalOpen}
-              onClose={handleUpdateModalClose}
-              user={user}
-            />
-          </FormControl>
-
-          {/* Color Selection */}
-          <FormControl
-            fullWidth
-            component="fieldset"
-            className={classes.colorFormControl}
-          >
-            <Box display="flex" alignItems="center">
-              <FormLabel
-                component="legend"
-                className={classes.label1}
-                style={{ marginRight: "16px", marginBottom: "-2px" }}
-              >
-                Color:
-              </FormLabel>
-              <Controller
-                name="color"
-                control={control}
-                defaultValue=""
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <RadioGroup {...field} row>
-                      {availableColorOptions.map((color, index) => {
-                        const colorHex = color.hexCode || color.name;
-                        const isSelected = field.value === colorHex;
-                        return (
-                          <FormControlLabel
-                            key={index}
-                            value={colorHex}
-                            control={<Radio style={{ display: "none" }} />}
-                            label={
-                              <Box
-                                className={classes.colorOption}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  const next = isSelected ? "" : colorHex;
-                                  field.onChange(next);
-                                }}
-                              >
+          {shouldRenderSizeSelector && (
+            <FormControl
+              fullWidth
+              component="fieldset"
+              classes={{ root: classes.sizeFormControl }}
+            >
+              <Box display="flex" alignItems="center">
+                <FormLabel
+                  component="legend"
+                  color="secondary"
+                  className={classes.label1}
+                  style={{ marginRight: "16px", marginBottom: "14px" }}
+                >
+                  Size:
+                </FormLabel>
+                <Controller
+                  name="size"
+                  control={control}
+                  defaultValue=""
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <RadioGroup {...field} row>
+                        {sizeOptions.map((size) => {
+                          const sizeAvailable = isSizeAvailable(size);
+                          return (
+                            <FormControlLabel
+                              style={{ marginBottom: "15px" }}
+                              key={size}
+                              value={size}
+                              control={<Radio style={{ display: "none" }} />}
+                              label={
                                 <Box
                                   className={clsx(
-                                    classes.colorCircle,
-                                    isSelected && classes.colorCircleSelected
+                                    classes.buttoncz,
+                                    field.value === size && "active",
+                                    !sizeAvailable && classes.disabled
                                   )}
-                                  style={{ backgroundColor: colorHex }}
-                                />
-                                <Typography className={classes.colorHexText}>
-                                  {colorHex.toUpperCase()}
-                                </Typography>
-                              </Box>
-                            }
-                          />
-                        );
-                      })}
-                    </RadioGroup>
-                    {error && (
-                      <FormHelperText error>{error.message}</FormHelperText>
-                    )}
-                  </>
-                )}
-                rules={{ required: "Please select a color!" }}
+                                  style={{
+                                    borderRadius: 0,
+                                    backgroundColor:
+                                      field.value === size && sizeAvailable
+                                        ? "#f5005730"
+                                        : "transparent",
+                                    opacity: sizeAvailable ? 1 : 0.5,
+                                    pointerEvents: sizeAvailable
+                                      ? "auto"
+                                      : "none",
+                                    borderColor: field.value === size ? "#DD8190" : "#ccc",
+                                  }}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    if (!sizeAvailable) return;
+                                    const next = field.value === size ? "" : size;
+                                    field.onChange(next);
+                                  }}
+                                >
+                                  <Typography
+                                    style={{
+                                      color: sizeAvailable ? "black" : "gray",
+                                    }}
+                                  >
+                                    {size}
+                                  </Typography>
+                                </Box>
+                              }
+                              disabled={!sizeAvailable}
+                            />
+                          );
+                        })}
+                      </RadioGroup>
+                      {error && (
+                        <FormHelperText error>{error.message}</FormHelperText>
+                      )}
+                    </>
+                  )}
+                  rules={{
+                    required: shouldRenderSizeSelector
+                      ? "Please select size!"
+                      : false,
+                  }}
+                />
+              </Box>
+              <Typography variant="body1" className={classes.description}>
+                {/* eslint-disable-next-line */}
+                <Link
+                  component="button"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleUpdateModalOpen();
+                  }}
+                >
+                  Update your status to get recommended size
+                </Link>
+              </Typography>
+              <UpdateProfileModal
+                open={updateModalOpen}
+                onClose={handleUpdateModalClose}
+                user={user}
               />
-            </Box>
-          </FormControl>
+            </FormControl>
+          )}
+
+          {/* Color Selection */}
+          {shouldRenderColorSelector && (
+            <FormControl
+              fullWidth
+              component="fieldset"
+              className={classes.colorFormControl}
+            >
+              <Box display="flex" alignItems="center">
+                <FormLabel
+                  component="legend"
+                  className={classes.label1}
+                  style={{ marginRight: "16px", marginBottom: "-2px" }}
+                >
+                  Color:
+                </FormLabel>
+                <Controller
+                  name="color"
+                  control={control}
+                  defaultValue=""
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <RadioGroup {...field} row>
+                        {availableColorOptions.map((color, index) => {
+                          const colorHex = color.hexCode || color.name;
+                          const isSelected = field.value === colorHex;
+                          const isAvailable = isColorAvailable(colorHex);
+                          return (
+                            <FormControlLabel
+                              key={index}
+                              value={colorHex}
+                              control={<Radio style={{ display: "none" }} />}
+                              label={
+                                <Box
+                                  className={classes.colorOption}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    if (!isAvailable) return;
+                                    const next = isSelected ? "" : colorHex;
+                                    field.onChange(next);
+                                  }}
+                                  style={{
+                                    opacity: isAvailable ? 1 : 0.5,
+                                    pointerEvents: isAvailable ? "auto" : "none",
+                                  }}
+                                >
+                                  <Box
+                                    className={clsx(
+                                      classes.colorCircle,
+                                      isSelected && classes.colorCircleSelected,
+                                      !isAvailable && classes.colorCircleDisabled
+                                    )}
+                                    style={{ backgroundColor: colorHex || "#ccc" }}
+                                  />
+                                  <Typography className={classes.colorHexText}>
+                                    {(color.name || colorHex || "").toUpperCase()}
+                                  </Typography>
+                                </Box>
+                              }
+                            />
+                          );
+                        })}
+                      </RadioGroup>
+                      {error && (
+                        <FormHelperText error>{error.message}</FormHelperText>
+                      )}
+                    </>
+                  )}
+                  rules={{
+                    required: shouldRenderColorSelector
+                      ? "Please select a color!"
+                      : false,
+                  }}
+                />
+              </Box>
+            </FormControl>
+          )}
 
           {/* Quantity */}
           <FormControl className={classes.colorFormControl} variant="outlined">
@@ -695,10 +774,11 @@ const ProductInfo = memo(
                   const value = Number(field.value) || 1;
                   const min = 1;
                   // Use variant stock if available, otherwise use product countInStock
-                  const max = selectedVariant
-                    ? Math.max(0, Number(selectedVariant.stock) || 0)
-                    : Math.max(0, Number(product.countInStock) || 0);
-                  const disabled = max === 0 || !selectedVariant;
+                  const max = Math.max(0, safeNumber(selectedVariant?.stock ?? product.countInStock));
+                  const disabled =
+                    max === 0 ||
+                    (shouldRenderSizeSelector && !selectedSize) ||
+                    (shouldRenderColorSelector && !selectedColor && hasVariants);
                   const handleChange = (next) => {
                     if (disabled) return;
                     const clamped = Math.min(Math.max(next, min), Math.max(min, max));
@@ -732,7 +812,13 @@ const ProductInfo = memo(
                       </Box>
                       {disabled && (
                         <FormHelperText error>
-                          {!selectedVariant ? "Please select size and color" : "Out of stock"}
+                          {max === 0
+                            ? "Out of stock"
+                            : shouldRenderSizeSelector && !selectedSize
+                              ? "Please select size"
+                              : shouldRenderColorSelector && !selectedColor
+                                ? "Please select color"
+                                : "Out of stock"}
                         </FormHelperText>
                       )}
                     </Box>
@@ -802,7 +888,11 @@ const ProductInfo = memo(
                 color="secondary"
                 startIcon={<FiShoppingBag />}
                 className={classes.addToCartFullWidth}
-                disabled={!selectedVariant || (selectedVariant && selectedVariant.stock === 0)}
+                disabled={
+                  isOutOfStock ||
+                  (shouldRenderSizeSelector && !selectedSize) ||
+                  (shouldRenderColorSelector && !selectedColor && hasVariants)
+                }
                 type="submit"
                 fullWidth
               >

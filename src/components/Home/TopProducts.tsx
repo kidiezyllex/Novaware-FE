@@ -16,7 +16,7 @@ const TopProducts: React.FC = () => {
         <div className='h-[1px] bg-primary flex-1'></div>
       </div>
       {loadingProductTop ? (
-        <LottieLoading className="flex justify-center" />
+        <LottieLoading />
       ) : errorProductTop ? (
         <LottieEmpty className="flex justify-center" />
       ) : (
