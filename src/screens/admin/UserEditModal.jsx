@@ -59,7 +59,7 @@ const UserEditModal = ({ userId, open, handleClose }) => {
 
   useEffect(() => {
     if (successUpdate) {
-      toast.success('Cập nhật thành công');
+      toast.success('Update user successfully!');
       dispatch({ type: USER_UPDATE_RESET });
       handleClose();
     } else if (errorUpdate) {

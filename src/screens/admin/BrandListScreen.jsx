@@ -88,14 +88,14 @@ const BrandListScreen = ({ history }) => {
 
   useEffect(() => {
     if (successCreate) {
-      toast.success("Thương hiệu đã được tạo thành công!");
+      toast.success("Brand created successfully!");
       setBrandName("");
     }
     if (successUpdate) {
-      toast.success("Thương hiệu đã được cập nhật!");
+      toast.success("Brand updated successfully!");
     }
     if (successDelete) {
-      toast.success("Thương hiệu đã được xóa!");
+      toast.success("Brand deleted successfully!");
     }
   }, [successDelete, successCreate, successUpdate]);
 
@@ -104,7 +104,7 @@ const BrandListScreen = ({ history }) => {
       try {
         await deleteBrandMutation.mutateAsync(id);
       } catch (error) {
-        console.error("Failed to delete brand:", error);
+        toast.error("Failed to delete brand");
       }
     }
   };

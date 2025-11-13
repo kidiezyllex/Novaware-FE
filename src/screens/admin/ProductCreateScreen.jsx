@@ -270,11 +270,10 @@ const ProductCreateScreen = ({ history }) => {
     // Create product using mutation
     try {
       await createProductMutation.mutateAsync(productData);
-      toast.success("Sản phẩm đã được tạo thành công!");
+      toast.success("Product created successfully!");
       history.push("/admin/products");
     } catch (error) {
-      console.error("Failed to create product:", error);
-      toast.error("Tạo sản phẩm thất bại");
+      toast.error("Failed to create product");
     } finally {
       setUploading(false);
     }

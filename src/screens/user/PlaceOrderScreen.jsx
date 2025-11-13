@@ -133,7 +133,7 @@ const PlaceOrderScreen = ({ history }) => {
   useEffect(() => {
     if (success && order?._id) {
       history.push(`/order/${order._id}`);
-      toast.success("Đơn hàng đã được tạo thành công!");
+      toast.success("Order created successfully!");
     }
   }, [history, success, order]);
 
@@ -149,8 +149,7 @@ const PlaceOrderScreen = ({ history }) => {
         totalPrice: cart.totalPrice,
       });
     } catch (error) {
-      console.error("Failed to create order:", error);
-      toast.error("Tạo đơn hàng thất bại");
+      toast.error("Failed to create order");
     }
   };
 

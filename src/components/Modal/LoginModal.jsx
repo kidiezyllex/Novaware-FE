@@ -164,14 +164,13 @@ const LoginModal = ({
     }
   }, [open]);
 
-  // Xử lý sau khi đăng nhập thành công
   useEffect(() => {
     if (isSuccess && loginResponse?.data && !hasRedirected.current) {
       const { tokens, user } = loginResponse.data;
       const { access, refresh } = tokens || {};
 
       if (!access) {
-        toast.error("Không thể lấy access token từ phản hồi đăng nhập");
+        toast.error("Cannot get access token from login response");
         return;
       }
 
@@ -210,7 +209,7 @@ const LoginModal = ({
 
       hasRedirected.current = true;
       onClose();
-      toast.success("Đăng nhập thành công");
+      toast.success("Login successfully");
 
       const isAdmin = computedUserInfo.isAdmin;
       if (isAdmin) {
@@ -221,8 +220,7 @@ const LoginModal = ({
         history.push("/");
       }
     } else if (isSuccess && !loginResponse?.data?.tokens && !hasRedirected.current) {
-      toast.error("Không thể xử lý phản hồi đăng nhập");
-      console.error("Login response không hợp lệ:", loginResponse);
+      toast.error("Cannot process login response");
     }
   }, [isSuccess, loginResponse, dispatch, history, onClose, redirect]);
 
@@ -230,8 +228,7 @@ const LoginModal = ({
     try {
       await loginMutation.mutateAsync({ email, password });
     } catch (error) {
-      console.error("Login failed:", error);
-      const errorMessage = error?.message || error?.error || "Đăng nhập thất bại";
+      const errorMessage = error?.message || error?.error || "Login failed";
       toast.error(errorMessage);
     }
   };

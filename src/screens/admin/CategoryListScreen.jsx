@@ -90,14 +90,14 @@ const CategoryListScreen = ({ history }) => {
 
   useEffect(() => {
     if (successCreate) {
-      toast.success("Danh mục đã được tạo thành công!");
+      toast.success("Category created successfully!");
       setCategoryName("");
     }
     if (successUpdate) {
-      toast.success("Danh mục đã được cập nhật!");
+      toast.success("Category updated successfully!");
     }
     if (successDelete) {
-      toast.success("Danh mục đã được xóa!");
+      toast.success("Category deleted successfully!");
     }
   }, [successDelete, successCreate, successUpdate]);
 

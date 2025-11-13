@@ -32,6 +32,7 @@ export interface IUpdateProfileBody {
 }
 
 export interface IGetUsersQuery {
+	keyword?: string;
 	pageNumber?: number;
 	perPage?: number;
 }
@@ -39,6 +40,10 @@ export interface IGetUsersQuery {
 export interface IUpdateUserBody {
 	name?: string;
 	email?: string;
+	gender?: string;
+	age?: number;
+	height?: number;
+	weight?: number;
 	isAdmin?: boolean;
 }
 

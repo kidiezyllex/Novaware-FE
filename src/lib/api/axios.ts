@@ -18,29 +18,19 @@ function sanitizeToken(token?: string | null): string | null {
 
 function getLocalAccessToken() {
 	let accessToken = sanitizeToken(cookies.get("accessToken"));
-	console.log("[axios] accessToken from cookies:", accessToken);
 	if (!accessToken && typeof window !== "undefined") {
 		try {
 			const tokenFromStorage = sanitizeToken(localStorage.getItem("token"));
 			const directAccessToken = sanitizeToken(localStorage.getItem("accessToken"));
 			const legacyAccessToken = sanitizeToken(localStorage.getItem("access_token"));
 			const userInfoRaw = localStorage.getItem("userInfo");
-			console.log("[axios] raw stored tokens:", {
-				token: tokenFromStorage,
-				accessToken: directAccessToken,
-				legacyAccessToken,
-				userInfoRaw,
-			});
-
 			let parsedToken: string | null = null;
 			if (tokenFromStorage) {
 				try {
 					const tokenObj = JSON.parse(tokenFromStorage);
 					parsedToken = sanitizeToken(tokenObj.token) || sanitizeToken(tokenObj.accessToken);
-					console.log("[axios] parsed token object:", tokenObj, "=>", parsedToken);
 				} catch {
 					parsedToken = tokenFromStorage;
-					console.log("[axios] tokenFromStorage used directly:", parsedToken);
 				}
 			}
 
@@ -52,16 +42,12 @@ function getLocalAccessToken() {
 						sanitizeToken(userInfo.accessToken) ||
 						sanitizeToken(userInfo.access) ||
 						null;
-					console.log("[axios] parsed userInfo token:", parsedToken);
 				} catch {
 					parsedToken = sanitizeToken(userInfoRaw);
-					console.log("[axios] userInfoRaw used directly:", parsedToken);
 				}
 			}
 
 			const finalToken = sanitizeToken(parsedToken) || directAccessToken || legacyAccessToken;
-			console.log("[axios] final token chosen:", finalToken);
-
 			if (finalToken) {
 				cookies.set("accessToken", finalToken);
 				return finalToken;

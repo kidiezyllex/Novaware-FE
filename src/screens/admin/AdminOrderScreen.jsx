@@ -159,13 +159,13 @@ const AdminOrderScreen = ({ match, history }) => {
 
   useEffect(() => {
     if (successDeliver) {
-      toast.success("Đơn hàng đã được giao thành công!");
+      toast.success("Order delivered successfully!");
     }
   }, [successDeliver]);
 
   useEffect(() => {
     if (successConfirm) {
-      toast.success("Đơn hàng đã được xác nhận!");
+      toast.success("Order confirmed successfully!");
     }
   }, [successConfirm]);
 
@@ -174,8 +174,7 @@ const AdminOrderScreen = ({ match, history }) => {
       try {
         await confirmOrderMutation.mutateAsync(order._id);
       } catch (error) {
-        console.error("Failed to confirm order:", error);
-        toast.error("Xác nhận đơn hàng thất bại");
+        toast.error("Failed to confirm order");
       }
     }
   };
@@ -185,8 +184,7 @@ const AdminOrderScreen = ({ match, history }) => {
       try {
         await deliverOrderMutation.mutateAsync(order._id);
       } catch (error) {
-        console.error("Failed to deliver order:", error);
-        toast.error("Giao đơn hàng thất bại");
+        toast.error("Failed to deliver order");
       }
     }
   };

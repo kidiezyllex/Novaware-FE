@@ -34,6 +34,7 @@ import {
   Settings as SettingsIcon,
   Receipt as ReceiptIcon,
   ExitToApp as LogoutIcon,
+  ThumbUp as RecommendIcon,
 } from "@material-ui/icons";
 
 const drawerWidth = 280;
@@ -198,7 +199,7 @@ const AdminLayout = ({ children }) => {
       link: '/admin/orderstats',
     },
     {
-      text: 'Product Management',
+      text: 'Products Management',
       icon: <ShoppingBasketIcon />,
       link: '/admin/products',
     },
@@ -232,6 +233,11 @@ const AdminLayout = ({ children }) => {
       icon: <SettingsIcon />,
       link: '/admin/home-content',
     },
+    {
+      text: 'Recommend Products',
+      icon: <RecommendIcon />,
+      link: '/admin/recommend-products',
+    },
   ];
 
   const handleDrawerToggle = () => {
@@ -263,6 +269,11 @@ const AdminLayout = ({ children }) => {
     if (link === '/admin/orders') {
       return pathname === '/admin/orders' || 
              pathname.match(/^\/admin\/order\/[^/]+$/);
+    }
+    
+    // Match recommend products
+    if (link === '/admin/recommend-products') {
+      return pathname === '/admin/recommend-products';
     }
     
     // Default: exact match

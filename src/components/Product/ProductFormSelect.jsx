@@ -54,18 +54,15 @@ const ProductFormSelect = ({ item, className }) => {
     const newSize = data.size;
     const newColor = selectedColorName;
 
-    // Nếu không có thay đổi gì thì không làm gì cả
     if (oldSize === newSize && oldColor === newColor && item.qty === data.qty) {
-      toast.info("Không có thay đổi nào");
+      toast.info("No changes");
       return;
     }
 
-    // 1. Xoá item cũ
     dispatch(removeFromCart(id, oldSize, oldColor));
 
-    // 2. Thêm item mới
     dispatch(addToCart(id, data.qty, newSize, data.color, newColor));
-    toast.success("Sản phẩm đã được cập nhật!");
+    toast.success("Product updated successfully!");
   };
 
   return (

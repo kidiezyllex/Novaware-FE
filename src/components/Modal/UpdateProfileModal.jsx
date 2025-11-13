@@ -51,11 +51,10 @@ const UpdateProfileModal = ({ open, onClose, user }) => {
         gender: data.gender,
       });
       onClose();
-      toast.success("Cập nhật hồ sơ thành công!");
+      toast.success("Update profile successfully!");
       window.location.reload(); 
     } catch (error) {
-      console.error("Failed to update profile:", error);
-      toast.error("Cập nhật hồ sơ thất bại");
+      toast.error("Failed to update profile");
     }
   };
 

@@ -30,9 +30,11 @@ const ProductCreateScreen = React.lazy(() => import("./screens/admin/ProductCrea
 const ProductEditScreen = React.lazy(() => import("./screens/admin/ProductEditScreen"));
 const ProductListScreen = React.lazy(() => import("./screens/admin/ProductListScreen"));
 const UserListScreen = React.lazy(() => import("./screens/admin/UserListScreen"));
+const UserEditScreen = React.lazy(() => import("./screens/admin/UserEditScreen"));
 const StatisticsScreen = React.lazy(() => import("./screens/admin/StatisticsScreen"));
 const AdminChatScreen = React.lazy(() => import("./screens/admin/AdminChatScreen"));
 const HomeContentEditScreen = React.lazy(() => import("./screens/admin/HomeContentEditScreen"));
+const RecommendProductsScreen = React.lazy(() => import("./screens/admin/RecommendProductsScreen"));
 // import 404
 const NotFoundScreen = React.lazy(() => import("./screens/NotFoundScreen"));
 
@@ -83,6 +85,7 @@ const App = () => {
                   <Route path="/admin/home-content" component={HomeContentEditScreen} />
                   <Route path="/admin/order/:id" component={AdminOrderScreen} />
                   <Route path="/admin/brands" component={BrandListScreen} />
+                  <Route path="/admin/user/:userId/edit" component={UserEditScreen} />
                   <Route path="/admin/users" component={UserListScreen} />
                   <Route
                     path="/admin/chat"
@@ -90,6 +93,7 @@ const App = () => {
                       <AdminChatScreen {...props} setHasNewMessageRef={hasNewMessageRef} />
                     )}
                   />
+                  <Route path="/admin/recommend-products" component={RecommendProductsScreen} />
                   <Redirect to="/admin/orderstats" />
                 </Switch>
               </AdminLayout>
