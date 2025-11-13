@@ -156,3 +156,24 @@ export interface ITrainGNNIncrementalResponse {
 	};
 }
 
+export interface IModelTrainingResponse {
+	status: string;
+	model: string;
+	task_id: string;
+	queued_alpha?: number;
+}
+
+export interface IModelRecommendationItem {
+	product_id: string;
+	name: string;
+	score: number;
+	reason?: string;
+}
+
+export interface IModelRecommendationResponse {
+	personalized: IModelRecommendationItem[];
+	outfit: Record<string, IModelRecommendationItem[]>;
+	outfit_complete_score: number;
+}
+
+

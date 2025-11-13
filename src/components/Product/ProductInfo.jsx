@@ -731,9 +731,6 @@ const ProductInfo = memo(
                                     )}
                                     style={{ backgroundColor: colorHex || "#ccc" }}
                                   />
-                                  <Typography className={classes.colorHexText}>
-                                    {(color.name || colorHex || "").toUpperCase()}
-                                  </Typography>
                                 </Box>
                               }
                             />

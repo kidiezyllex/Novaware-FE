@@ -5,6 +5,12 @@ import {
 	getBestRecommendations,
 	getOutfitPerfectRecommendations,
 	trainGNNIncremental,
+	trainGNNModel,
+	trainCBFModel,
+	trainHybridModel,
+	getGNNModelRecommendations,
+	getCBFModelRecommendations,
+	getHybridModelRecommendations,
 } from '../../lib/api/recommend';
 import * as RecommendTypes from '../../interface/response/recommend';
 import * as RecommendRequestTypes from '../../interface/request/recommend';
@@ -52,6 +58,42 @@ export const useGNNOutfitPerfect = (userId: string, query: RecommendRequestTypes
 export const useTrainGNNIncremental = () => {
 	return useMutation<RecommendTypes.ITrainGNNIncrementalResponse, Error>({
 		mutationFn: trainGNNIncremental,
+	});
+};
+
+export const useTrainGNNModel = () => {
+	return useMutation<RecommendTypes.IModelTrainingResponse, Error, RecommendRequestTypes.ITrainGNNRequest>({
+		mutationFn: trainGNNModel,
+	});
+};
+
+export const useTrainCBFModel = () => {
+	return useMutation<RecommendTypes.IModelTrainingResponse, Error, RecommendRequestTypes.ITrainCBFRequest>({
+		mutationFn: trainCBFModel,
+	});
+};
+
+export const useTrainHybridModel = () => {
+	return useMutation<RecommendTypes.IModelTrainingResponse, Error, RecommendRequestTypes.ITrainHybridRequest>({
+		mutationFn: trainHybridModel,
+	});
+};
+
+export const useGNNModelRecommendations = () => {
+	return useMutation<RecommendTypes.IModelRecommendationResponse, Error, RecommendRequestTypes.IGNNRecommendRequest>({
+		mutationFn: getGNNModelRecommendations,
+	});
+};
+
+export const useCBFModelRecommendations = () => {
+	return useMutation<RecommendTypes.IModelRecommendationResponse, Error, RecommendRequestTypes.ICBFRecommendRequest>({
+		mutationFn: getCBFModelRecommendations,
+	});
+};
+
+export const useHybridModelRecommendations = () => {
+	return useMutation<RecommendTypes.IModelRecommendationResponse, Error, RecommendRequestTypes.IHybridRecommendRequest>({
+		mutationFn: getHybridModelRecommendations,
 	});
 };
 

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useGetProducts, useDeleteProduct } from "../../hooks/api/useProduct";
 import { Link as RouterLink } from "react-router-dom";
@@ -13,6 +13,8 @@ import {
   Box,
   TextField,
   InputAdornment,
+  Breadcrumbs,
+  Link,
 } from "@material-ui/core";
 import {
   DataGrid,
@@ -25,9 +27,11 @@ import {
   AiOutlinePlus,
   AiOutlineSearch,
 } from "react-icons/ai";
+import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Meta from "../../components/Meta";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
+import { formatPriceDollar } from "../../utils/formatPrice";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -44,44 +48,110 @@ const useStyles = makeStyles((theme) => ({
   breadcrumbsContainer: {
     ...theme.mixins.customize.breadcrumbs,
     paddingBottom: 0,
+    paddingTop: 0,
     "& .MuiBreadcrumbs-ol": {
       justifyContent: "flex-start",
     },
+    marginTop: 0,
   },
   dataGrid: {
     boxShadow: "0 10px 31px 0 rgba(0,0,0,0.05)",
     textAlign: "center",
   },
+  imageCell: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%",
+    padding: theme.spacing(1),
+    "& img": {
+      width: 64,
+      height: 64,
+      objectFit: "cover",
+      borderRadius: theme.shape.borderRadius,
+    },
+  },
+  lineClampTwo: {
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    textAlign: "left",
+  },
 }));
 
 const ProductListScreen = ({ history }) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
 
   const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(12);
 
   const userInfo = useSelector((state) => state.userLogin?.userInfo);
 
-  const { data: productsResponse, isLoading: loading, error } = useGetProducts(keyword ? { keyword, option: 'all' } : { option: 'all' });
+  const { data: productsResponse, isLoading: loading, error } = useGetProducts({
+    keyword: keyword || undefined,
+    pageNumber: page + 1,
+    pageSize,
+  });
   const productsData = productsResponse?.data?.products || [];
-  const products = productsData.map((product) => ({ ...product, id: product._id }));
+  const products = productsData.map((product) => ({
+    ...product,
+    id: product._id,
+    image: product.images?.[0] || product.image || "",
+  }));
+  const totalProducts = productsResponse?.data?.count || 0;
 
   const deleteProductMutation = useDeleteProduct();
   const { error: errorDelete, isSuccess: successDelete } = deleteProductMutation;
 
   const columns = [
-    { field: "_id", headerName: "ID", width: 220 },
+    {
+      field: "image",
+      headerName: "Image",
+      width: 120,
+      sortable: false,
+      renderCell: (params) => {
+        const imageUrl = params.value;
+        return (
+          <div className={classes.imageCell}>
+            {imageUrl ? (
+              <img src={imageUrl} alt={params.row.name || "Product"} />
+            ) : (
+              <Typography variant="body2">N/A</Typography>
+            )}
+          </div>
+        );
+      },
+    },
     {
       field: "name",
       headerName: "Name",
       flex: 1,
+      renderCell: (params) => (
+        <Typography variant="body2" className={classes.lineClampTwo}>
+          {params.value || "N/A"}
+        </Typography>
+      ),
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      flex: 1,
+      renderCell: (params) => (
+        <Typography variant="body2" color="textSecondary" className={classes.lineClampTwo}>
+          {params.value || "N/A"}
+        </Typography>
+      ),
     },
     {
       field: "price",
       headerName: "Price",
-      width: 120,
+      width: 140,
       align: "right",
       headerAlign: "right",
+      valueFormatter: ({ value }) => formatPriceDollar(value),
     },
     {
       field: "category",
@@ -93,7 +163,7 @@ const ProductListScreen = ({ history }) => {
     {
       field: "brand",
       headerName: "Brand",
-      width: 120,
+      width: 140,
       align: "right",
       headerAlign: "right",
     },
@@ -103,14 +173,7 @@ const ProductListScreen = ({ history }) => {
       width: 110,
       align: "right",
       headerAlign: "right",
-      valueFormatter: (params) => `${params.value} %`,
-    },
-    {
-      field: "countInStock",
-      headerName: "Stock",
-      width: 110,
-      align: "right",
-      headerAlign: "right",
+      valueFormatter: ({ value }) => `${value ?? 0} %`,
     },
     {
       field: "action",
@@ -147,6 +210,7 @@ const ProductListScreen = ({ history }) => {
 
   const handleSearchChange = (event) => {
     setKeyword(event.target.value);
+    setPage(0);
   };
 
   useEffect(() => {
@@ -174,18 +238,20 @@ const ProductListScreen = ({ history }) => {
   };
 
   return (
-    <Container style={{ marginBottom: 140, maxWidth: "100%" }}>
+    <Container disableGutters style={{ marginBottom: 140, maxWidth: "100%" }}>
       <Meta title="Dashboard | Products" />
       <Grid container className={classes.breadcrumbsContainer}>
         <Grid item xs={12}>
           <div>
-            <Typography
-              variant="h5"
-              component="h1"
-              style={{ textAlign: "center" }}
+            <Breadcrumbs
+              separator={<NavigateNextIcon fontSize="small" />}
+              style={{ marginBottom: 24 }}
             >
-              Product Management
-            </Typography>
+              <Link color="inherit" component={RouterLink} to="/admin/orderstats">
+                Dashboard
+              </Link>
+              <Typography color="textPrimary">Products Management</Typography>
+            </Breadcrumbs>
             <Box
               display="flex"
               justifyContent="space-between"
@@ -223,7 +289,7 @@ const ProductListScreen = ({ history }) => {
       {loading ? (
         <Loader></Loader>
       ) : error ? (
-        <Message>{error}</Message>
+        <Message>{error?.message || String(error)}</Message>
       ) : (
         <Grid container>
           <Grid
@@ -236,7 +302,22 @@ const ProductListScreen = ({ history }) => {
             <DataGrid
               rows={products}
               columns={columns}
-              pageSize={12}
+              pagination
+              paginationMode="server"
+              page={page}
+              pageSize={pageSize}
+              rowsPerPageOptions={[12, 24, 36, 48]}
+              rowCount={totalProducts}
+              onPageChange={(params) => {
+                const nextPage = typeof params === "number" ? params : params.page;
+                setPage(nextPage);
+              }}
+              onPageSizeChange={(params) => {
+                const nextPageSize =
+                  typeof params === "number" ? params : params.pageSize;
+                setPageSize(nextPageSize);
+                setPage(0);
+              }}
               autoHeight
               components={{
                 Toolbar: () => (

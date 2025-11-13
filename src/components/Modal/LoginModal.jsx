@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { Link as RouterLink } from "react-router-dom";
 import { useLocation, useHistory } from "react-router-dom";
 import { useLogin } from "../../hooks/api/useAuth";
-import { useGetUserById } from "../../hooks/api/useUser";
 import { useForm, FormProvider } from "react-hook-form";
 import { VscEyeClosed, VscEye, VscClose } from "react-icons/vsc";
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
@@ -145,7 +144,6 @@ const LoginModal = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [authTokens, setAuthTokens] = useState({ access: "", refresh: "" });
   const methods = useForm();
   const { handleSubmit } = methods;
 
@@ -157,26 +155,20 @@ const LoginModal = ({
 
   const loginMutation = useLogin();
   const { isLoading: loading, error, isSuccess, data: loginResponse } = loginMutation;
-  const [currentUserId, setCurrentUserId] = useState(null);
   const hasRedirected = useRef(false);
-  
-  // Lấy chi tiết user sau khi đăng nhập thành công
-  const { data: userDetails, isLoading: isLoadingUserDetails } = useGetUserById(currentUserId || "");
-  
-  const userInfo = useSelector((state) => state.userLogin?.userInfo);
 
   // Reset state khi modal đóng
   useEffect(() => {
     if (!open) {
-      setCurrentUserId(null);
       hasRedirected.current = false;
     }
   }, [open]);
 
   // Xử lý sau khi đăng nhập thành công
   useEffect(() => {
-    if (isSuccess && loginResponse?.data?.tokens) {
-      const { access, refresh } = loginResponse.data.tokens || {};
+    if (isSuccess && loginResponse?.data && !hasRedirected.current) {
+      const { tokens, user } = loginResponse.data;
+      const { access, refresh } = tokens || {};
 
       if (!access) {
         toast.error("Không thể lấy access token từ phản hồi đăng nhập");
@@ -193,57 +185,34 @@ const LoginModal = ({
         cookies.set("refreshToken", refresh);
       }
 
-      setAuthTokens({ access, refresh: refresh || "" });
-
       const decodedPayload = decodeJwtPayload(access);
-      const userIdFromToken =
-        decodedPayload?.user_id ||
-        decodedPayload?.userId ||
-        decodedPayload?._id ||
-        decodedPayload?.id ||
-        null;
+      const userIdFromToken = decodedPayload?.user_id || decodedPayload?.userId || decodedPayload?._id || decodedPayload?.id || null;
+      const userId = user?.id || user?._id || userIdFromToken;
 
-      if (userIdFromToken) {
-        localStorage.setItem("currentUserId", userIdFromToken);
-        setCurrentUserId(userIdFromToken);
-      } else {
-        toast.error("Không thể xác định người dùng từ token đăng nhập");
-        console.error("Decoded token payload:", decodedPayload);
-      }
-    }
-  }, [isSuccess, loginResponse]);
-
-  // Xử lý sau khi lấy được chi tiết user
-  useEffect(() => {
-    if (userDetails?.data?.user && currentUserId && !hasRedirected.current) {
-      const user = userDetails.data.user;
-      const accessToken = authTokens.access || localStorage.getItem("accessToken");
-
-      if (!accessToken) {
-        toast.error("Không tìm thấy access token sau khi đăng nhập");
-        return;
+      if (userId) {
+        localStorage.setItem("currentUserId", userId);
       }
 
-      const userInfoToStore = {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        token: accessToken,
+      const computedUserInfo = {
+        _id: userId,
+        name: user?.name || user?.username || "",
+        email: user?.email || decodedPayload?.email || "",
+        isAdmin: Boolean(user?.isAdmin ?? user?.is_staff ?? decodedPayload?.is_admin),
+        token: access,
       };
 
-      localStorage.setItem("userInfo", JSON.stringify(userInfoToStore));
+      localStorage.setItem("userInfo", JSON.stringify(computedUserInfo));
 
       dispatch({
         type: USER_LOGIN_SUCCESS,
-        payload: userInfoToStore,
+        payload: computedUserInfo,
       });
 
       hasRedirected.current = true;
       onClose();
       toast.success("Đăng nhập thành công");
-      
-      const isAdmin = user?.isAdmin || false;
+
+      const isAdmin = computedUserInfo.isAdmin;
       if (isAdmin) {
         history.push("/admin/orderstats");
       } else if (redirect) {
@@ -251,8 +220,11 @@ const LoginModal = ({
       } else {
         history.push("/");
       }
+    } else if (isSuccess && !loginResponse?.data?.tokens && !hasRedirected.current) {
+      toast.error("Không thể xử lý phản hồi đăng nhập");
+      console.error("Login response không hợp lệ:", loginResponse);
     }
-  }, [userDetails, currentUserId, authTokens, onClose, dispatch, history, redirect]);
+  }, [isSuccess, loginResponse, dispatch, history, onClose, redirect]);
 
   const submitHandler = async ({ email, password }) => {
     try {
