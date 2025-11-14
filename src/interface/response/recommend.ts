@@ -156,11 +156,29 @@ export interface ITrainGNNIncrementalResponse {
 	};
 }
 
+export interface IMatrixData {
+	shape: number[];
+	display_shape: number[];
+	data: number[][];
+	user_ids: string[];
+	product_ids: string[];
+	description: string;
+	row_label: string;
+	col_label: string;
+	value_description: string;
+}
+
 export interface IModelTrainingResponse {
 	status: string;
 	model: string;
-	task_id: string;
+	task_id?: string;
 	queued_alpha?: number;
+	result?: {
+		status: string;
+		model: string;
+	};
+	warning?: string;
+	matrix_data?: IMatrixData;
 }
 
 export interface IModelRecommendationItem {

@@ -1,5 +1,9 @@
 export interface IGetProductsQuery {
 	keyword?: string;
+	search?: string;
+	category?: string;
+	brand?: string;
+	ordering?: string;
 	pageNumber?: number;
 	pageSize?: number;
 	option?: "all";

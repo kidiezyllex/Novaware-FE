@@ -832,12 +832,19 @@ const ProductInfo = memo(
                 startIcon={<FaRegHeart className={classes.pulseIcon} />}
                 className={classes.button}
                 type="button"
-                onClick={() => setLikeModalOpen(true)}
+                // onClick={() => setLikeModalOpen(true)}
+                onClick={() => {
+                  if (!currentUserId) {
+                    toast.info("Please sign in to see outfit recommendations.");
+                    return;
+                  }
+                  setOutfitModalOpen(true);
+                }}
                 style={{ backgroundColor: "#00bcd4", color: "#fff", whiteSpace: "nowrap", paddingLeft: 16, paddingRight: 16, width: "auto", minWidth: "auto" }}
               >
                 You might also like
               </Button>
-              <Button
+              {/* <Button
                 variant="contained"
                 color="default"
                 startIcon={<FaTshirt className={classes.pulseIcon} />}
@@ -853,7 +860,7 @@ const ProductInfo = memo(
                 style={{ backgroundColor: "#9c27b0", color: "#fff", whiteSpace: "nowrap", paddingLeft: 16, paddingRight: 16, width: "auto", minWidth: "auto" }}
               >
                 Complete the look
-              </Button>
+              </Button> */}
               {/* Favorite Button (Wishlist) */}
               <Button
                 variant="contained"

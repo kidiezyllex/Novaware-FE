@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
     Box,
     Button,
@@ -22,7 +22,7 @@ import { FaTshirt, FaChartLine, FaVenusMars, FaInfoCircle, FaDollarSign, FaGem, 
 import { PiPants } from "react-icons/pi";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatPriceDollar } from "../../utils/formatPrice.js";
-import { useGNNOutfitPerfect } from "../../hooks/api/useRecommend";
+import { useHybridModelRecommendations } from "../../hooks/api/useRecommend";
 import LottieLoading from "../LottieLoading.jsx";
 import { toast } from "react-toastify";
 import CallMadeIcon from "@material-ui/icons/CallMade";
@@ -297,25 +297,121 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const CompleteTheLookModal = ({ open, onClose, userId, productId, user }) => {
-    const classes = useStyles();
+// Helper function to normalize category names
+const normalizeCategoryName = (categoryName) => {
+    if (!categoryName) return "Other";
+    const normalized = categoryName.trim();
+    const lower = normalized.toLowerCase();
     
-    const queryParams = {
-        productId: productId || "",
-        k: 9,
-        pageNumber: 1,
-        perPage: 9,
+    const categoryMap = {
+        "top": "Tops",
+        "tops": "Tops",
+        "shirt": "Tops",
+        "shirts": "Tops",
+        "t-shirt": "Tops",
+        "t-shirts": "Tops",
+        "dress": "Dresses",
+        "dresses": "Dresses",
+        "bottom": "Bottoms",
+        "bottoms": "Bottoms",
+        "pants": "Bottoms",
+        "trousers": "Bottoms",
+        "shoe": "Shoes",
+        "shoes": "Shoes",
+        "footwear": "Shoes",
+        "accessory": "Accessories",
+        "accessories": "Accessories",
     };
     
-    if (user?.gender) {
-        queryParams.gender = user.gender;
-    }
+    return categoryMap[lower] || normalized.charAt(0).toUpperCase() + normalized.slice(1).toLowerCase();
+};
+
+const CompleteTheLookModal = ({ open, onClose, userId, productId, user }) => {
+    const classes = useStyles();
+    const [recommendationData, setRecommendationData] = useState(null);
     
-    const {
-        data: outfitData,
-        isLoading: outfitLoading,
-        error: outfitError,
-    } = useGNNOutfitPerfect(userId || "", queryParams);
+    const getHybridRecommendations = useHybridModelRecommendations();
+
+    // Fetch recommendations when modal opens
+    useEffect(() => {
+        if (!open || !userId || !productId) {
+            setRecommendationData(null);
+            return;
+        }
+
+        const fetchRecommendations = async () => {
+            try {
+                const requestData = {
+                    user_id: userId,
+                    current_product_id: productId,
+                    top_k_personal: 5,
+                    top_k_outfit: 9,
+                    alpha: 0.5, // Default alpha for hybrid model
+                };
+                
+                const result = await getHybridRecommendations.mutateAsync(requestData);
+                setRecommendationData(result);
+            } catch (error) {
+                console.error("Failed to fetch recommendations:", error);
+                toast.error("Failed to load outfit recommendations.");
+            }
+        };
+
+        fetchRecommendations();
+    }, [open, userId, productId]);
+
+    // Transform recommendation data to match expected outfit structure
+    const outfitData = useMemo(() => {
+        if (!recommendationData || !recommendationData.outfit) return null;
+
+        // Transform outfit object where each category has { score, reason, product }
+        const outfitCategories = recommendationData.outfit;
+        const categories = Object.keys(outfitCategories);
+        
+        if (categories.length === 0) return null;
+
+        // Create a single outfit from all categories
+        const outfit = {
+            name: "Complete the Look",
+            products: [],
+            style: "Mixed",
+            totalPrice: 0,
+            compatibilityScore: recommendationData.outfit_complete_score || 0,
+            gender: user?.gender || "Unisex",
+            description: "Complete outfit recommendation based on your preferences",
+        };
+
+        // Map all products from all categories
+        // New structure: each category is { score, reason, product: {...} }
+        categories.forEach((category) => {
+            const categoryData = outfitCategories[category];
+            if (!categoryData || !categoryData.product) return;
+
+            const normalizedCategory = normalizeCategoryName(category);
+            const product = categoryData.product;
+            
+            outfit.products.push({
+                _id: product.id,
+                name: product.name || "Product",
+                product_id: product.id,
+                category: normalizedCategory,
+                price: product.price || 0,
+                sale: 0, // API doesn't return sale info
+                images: product.images || [],
+                score: categoryData.score,
+                reason: categoryData.reason,
+            });
+        });
+
+        // Calculate total price
+        outfit.totalPrice = outfit.products.reduce((sum, p) => sum + (p.price || 0), 0);
+
+        return {
+            data: {
+                outfits: [outfit],
+            },
+        };
+    }, [recommendationData, user?.gender]);
 
     const getCategoryIcon = (categoryName) => {
         const key = categoryName.trim().toLowerCase();
@@ -345,10 +441,7 @@ const CompleteTheLookModal = ({ open, onClose, userId, productId, user }) => {
         if (!user?.gender) {
             toast.info("Please update your profile with gender information to see outfit recommendations.");
         }
-        if (outfitError) {
-            toast.error("Failed to load outfit recommendations.");
-        }
-    }, [open, userId, user?.gender, outfitError, onClose]);
+    }, [open, userId, user?.gender, onClose]);
 
     return (
         <Dialog
@@ -371,10 +464,10 @@ const CompleteTheLookModal = ({ open, onClose, userId, productId, user }) => {
                 </IconButton>
             </DialogTitle>
             <DialogContent className={classes.outfitModalContent}>
-                {userId && outfitLoading && (
+                {userId && getHybridRecommendations.isLoading && (
                     <LottieLoading />
                 )}
-                {userId && !outfitLoading && !outfitError && outfitData?.data?.outfits?.length > 0 && (
+                {userId && !getHybridRecommendations.isLoading && !getHybridRecommendations.error && outfitData?.data?.outfits?.length > 0 && (
                     <>
                         <TableContainer component={Paper} className={classes.tableContainer}>
                             <Table className={classes.table} aria-label="outfit table" stickyHeader>
@@ -554,14 +647,14 @@ const CompleteTheLookModal = ({ open, onClose, userId, productId, user }) => {
                         </TableContainer>
                     </>
                 )}
-                {userId && !outfitLoading && !outfitError && (!outfitData?.data?.outfits || outfitData.data.outfits.length === 0) && (
+                {userId && !getHybridRecommendations.isLoading && !getHybridRecommendations.error && (!outfitData?.data?.outfits || outfitData.data.outfits.length === 0) && (
                     <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
                         <Typography variant="body1" color="textSecondary">
                             No outfit recommendations available at the moment.
                         </Typography>
                     </Box>
                 )}
-                {userId && !outfitLoading && outfitError && (
+                {userId && !getHybridRecommendations.isLoading && getHybridRecommendations.error && (
                     <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
                         <Typography variant="body1" color="error">
                             Failed to load outfit recommendations. Please try again later.

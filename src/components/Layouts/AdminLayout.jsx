@@ -224,11 +224,6 @@ const AdminLayout = ({ children }) => {
       link: '/admin/users',
     },
     {
-      text: 'Customer Chat',
-      icon: <ChatIcon />,
-      link: '/admin/chat',
-    },
-    {
       text: 'Configuration',
       icon: <SettingsIcon />,
       link: '/admin/home-content',

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -25,9 +25,9 @@ import "swiper/css/effect-cards";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { formatPriceDollar } from "../../utils/formatPrice.js";
-import { useGNNPersonalizedProducts } from "../../hooks/api/useRecommend";
 import LottieLoading from "../LottieLoading.jsx";
 import { toast } from "react-toastify";
+import { useHybridModelRecommendations } from "../../hooks/api/useRecommend";
 
 const useStyles = makeStyles((theme) => ({
   youMightLikeModal: {
@@ -159,10 +159,77 @@ const useStyles = makeStyles((theme) => ({
 
 const YouMightAlsoLikeModal = ({ open, onClose, userId, productId }) => {
   const classes = useStyles();
-  const { data: likeData, isLoading: likeLoading, error: likeError } = useGNNPersonalizedProducts(
-    userId || "",
-    { k: 5, productId: productId || "" }
-  );
+  const [recommendationData, setRecommendationData] = useState(null);
+  
+  const getHybridRecommendations = useHybridModelRecommendations();
+
+  // Fetch recommendations when modal opens
+  useEffect(() => {
+    if (!open || !userId || !productId) {
+      setRecommendationData(null);
+      return;
+    }
+
+    const fetchRecommendations = async () => {
+      try {
+        const requestData = {
+          user_id: userId,
+          current_product_id: productId,
+          top_k_personal: 5,
+          top_k_outfit: 5,
+          alpha: 0.5, // Default alpha for hybrid model
+        };
+        
+        const result = await getHybridRecommendations.mutateAsync(requestData);
+        setRecommendationData(result);
+      } catch (error) {
+        console.error("Failed to fetch recommendations:", error);
+        toast.error("Failed to load recommendations.");
+      }
+    };
+
+    fetchRecommendations();
+  }, [open, userId, productId]);
+
+  // Transform recommendation data to match expected structure
+  const likeData = useMemo(() => {
+    if (!recommendationData) return null;
+
+    // Map personalized items to products format
+    // Note: API response only includes product_id, name, score, reason
+    // Full product details (images, price, etc.) would need to be fetched separately
+    const products = recommendationData.personalized?.map((item) => ({
+      _id: item.product_id,
+      name: item.name || "Product",
+      product_id: item.product_id,
+      score: item.score,
+      reason: item.reason,
+      // Default values for missing fields
+      images: [],
+      price: 0,
+      sale: 0,
+      category: null,
+      brand: null,
+      countInStock: 0,
+    })) || [];
+
+    // Build explanation from reasons
+    const reasons = recommendationData.personalized
+      ?.map((item) => item.reason)
+      .filter((r) => r && r.trim().length > 0) || [];
+
+    const explanation = reasons.length > 0 
+      ? reasons.join(". ") + "." 
+      : "We recommend these products based on your preferences and similar users' choices.";
+
+    return {
+      data: {
+        products,
+        explanation,
+      },
+    };
+  }, [recommendationData]);
+
   const explanationSentences = useMemo(() => {
     if (!likeData?.data?.explanation) return [];
     return likeData.data.explanation
@@ -197,10 +264,7 @@ const YouMightAlsoLikeModal = ({ open, onClose, userId, productId }) => {
       onClose();
       return;
     }
-    if (likeError) {
-      toast.error("Failed to load recommendations.");
-    }
-  }, [open, userId, likeError, onClose]);
+  }, [open, userId, onClose]);
 
   return (
     <Dialog
@@ -225,8 +289,8 @@ const YouMightAlsoLikeModal = ({ open, onClose, userId, productId }) => {
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.youMightLikeModalContent}>
-        {userId && likeLoading && <LottieLoading />}
-        {userId && !likeLoading && !likeError && likeData?.data?.products?.length > 0 && (
+        {userId && getHybridRecommendations.isLoading && <LottieLoading />}
+        {userId && !getHybridRecommendations.isLoading && !getHybridRecommendations.error && likeData?.data?.products?.length > 0 && (
           <Box>
             <Box className={classes.layoutContainer}>
               {/* Swiper Section - Left */}
@@ -256,9 +320,15 @@ const YouMightAlsoLikeModal = ({ open, onClose, userId, productId }) => {
                             <Typography variant="subtitle2" noWrap>
                               {p.name}
                             </Typography>
-                            <Typography variant="subtitle2" color="secondary">
-                              {formatPriceDollar(p.price * (1 - (p.sale || 0) / 100))}
-                            </Typography>
+                            {p.price > 0 ? (
+                              <Typography variant="subtitle2" color="secondary">
+                                {formatPriceDollar(p.price * (1 - (p.sale || 0) / 100))}
+                              </Typography>
+                            ) : (
+                              <Typography variant="subtitle2" color="textSecondary">
+                                Price not available
+                              </Typography>
+                            )}
                             {(p.category || p.brand || typeof p.countInStock !== 'undefined') && (
                               <Box mt={1} display="flex" alignItems="center" flexWrap="wrap" style={{ gap: 6, rowGap: 6 }}>
                                 {p.category && (

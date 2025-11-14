@@ -102,7 +102,8 @@ export function logout() {
 }
 
 export const sendGet = async (url: string, params?: any): Promise<any> => {
-	const response = await instance.get(url, { params });
+	const normalizedUrl = params && url.endsWith('/') ? url.slice(0, -1) : url;
+	const response = await instance.get(normalizedUrl, { params });
 	return response?.data;
 };
 

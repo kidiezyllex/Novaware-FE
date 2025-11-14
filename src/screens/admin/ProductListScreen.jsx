@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useGetProducts, useDeleteProduct } from "../../hooks/api/useProduct";
+import { useGetCategories } from "../../hooks/api/useCategory";
+import { useGetBrands } from "../../hooks/api/useBrand";
 import { Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -15,6 +17,12 @@ import {
   InputAdornment,
   Breadcrumbs,
   Link,
+  Chip,
+  Collapse,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@material-ui/core";
 import {
   DataGrid,
@@ -26,6 +34,7 @@ import {
   AiOutlineEdit,
   AiOutlinePlus,
   AiOutlineSearch,
+  AiOutlineFilter,
 } from "react-icons/ai";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Meta from "../../components/Meta";
@@ -79,22 +88,82 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     textAlign: "left",
   },
+  filterContainer: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: "0 2px 8px 0 rgba(0,0,0,0.05)",
+  },
+  categoryChip: {
+    margin: theme.spacing(0.5),
+  },
+  categoryList: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: theme.spacing(1),
+  },
+  brandList: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: theme.spacing(1),
+    marginTop: theme.spacing(2),
+  },
+  filterSection: {
+    marginBottom: theme.spacing(2),
+  },
+  orderingSelect: {
+    minWidth: 200,
+    marginTop: theme.spacing(2),
+  },
 }));
 
 const ProductListScreen = ({ history }) => {
   const classes = useStyles();
 
-  const [keyword, setKeyword] = useState("");
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(12);
+  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [ordering, setOrdering] = useState("");
 
   const userInfo = useSelector((state) => state.userLogin?.userInfo);
 
-  const { data: productsResponse, isLoading: loading, error } = useGetProducts({
-    keyword: keyword || undefined,
+  const { data: categoriesResponse, isLoading: loadingCategories } = useGetCategories();
+  const categories = categoriesResponse?.data?.categories || [];
+
+  const { data: brandsResponse, isLoading: loadingBrands } = useGetBrands();
+  const brands = brandsResponse?.data?.brands || [];
+
+  // Build query parameters
+  const queryParams = {
     pageNumber: page + 1,
     pageSize,
-  });
+  };
+
+  if (search) {
+    queryParams.search = search;
+  }
+
+  if (selectedCategories.length > 0) {
+    // If multiple categories, use the first one (API might support only one)
+    // Or if API supports comma-separated, join them
+    queryParams.category = selectedCategories[0];
+  }
+
+  if (selectedBrands.length > 0) {
+    // If multiple brands, use the first one (API might support only one)
+    queryParams.brand = selectedBrands[0];
+  }
+
+  if (ordering) {
+    queryParams.ordering = ordering;
+  }
+
+  const { data: productsResponse, isLoading: loading, error } = useGetProducts(queryParams);
   const productsData = productsResponse?.data?.products || [];
   const products = productsData.map((product) => ({
     ...product,
@@ -209,7 +278,38 @@ const ProductListScreen = ({ history }) => {
   ];
 
   const handleSearchChange = (event) => {
-    setKeyword(event.target.value);
+    setSearch(event.target.value);
+    setPage(0);
+  };
+
+  const handleCategoryToggle = (categoryId) => {
+    setSelectedCategories((prev) => {
+      const idString = String(categoryId);
+      const isCurrentlySelected = prev.some((id) => String(id) === idString);
+      if (isCurrentlySelected) {
+        return prev.filter((id) => String(id) !== idString);
+      } else {
+        return [...prev, categoryId];
+      }
+    });
+    setPage(0);
+  };
+
+  const handleBrandToggle = (brandId) => {
+    setSelectedBrands((prev) => {
+      const idString = String(brandId);
+      const isCurrentlySelected = prev.some((id) => String(id) === idString);
+      if (isCurrentlySelected) {
+        return prev.filter((id) => String(id) !== idString);
+      } else {
+        return [...prev, brandId];
+      }
+    });
+    setPage(0);
+  };
+
+  const handleOrderingChange = (event) => {
+    setOrdering(event.target.value);
     setPage(0);
   };
 
@@ -262,7 +362,7 @@ const ProductListScreen = ({ history }) => {
                 variant="outlined"
                 size="small"
                 placeholder="Search products..."
-                value={keyword}
+                value={search}
                 onChange={handleSearchChange}
                 InputProps={{
                   startAdornment: (
@@ -272,16 +372,119 @@ const ProductListScreen = ({ history }) => {
                   ),
                 }}
               />
-              <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<AiOutlinePlus />}
-                component={RouterLink}
-                to="/admin/product/create"
-              >
-                Create Product
-              </Button>
+              <Box display="flex" style={{ gap: "16px" }}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<AiOutlineFilter />}
+                  onClick={() => setIsFilterExpanded(!isFilterExpanded)}
+                >
+                  Filter by Category
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<AiOutlinePlus />}
+                  component={RouterLink}
+                  to="/admin/product/create"
+                >
+                  Create Product
+                </Button>
+              </Box>
             </Box>
+            <Collapse in={isFilterExpanded}>
+              <Box className={classes.filterContainer}>
+                {/* Categories Filter */}
+                <Box className={classes.filterSection}>
+                  {loadingCategories ? (
+                    <Typography variant="body2" color="textSecondary">
+                      Loading categories...
+                    </Typography>
+                  ) : categories.length === 0 ? (
+                    <Typography variant="body2" color="textSecondary">
+                      No categories available
+                    </Typography>
+                  ) : (
+                    <Box>
+                      <Typography variant="subtitle2" gutterBottom>
+                        Select Categories:
+                      </Typography>
+                      <Box className={classes.categoryList}>
+                        {categories.map((category) => {
+                          const categoryId = category._id || category.id;
+                          const isSelected = selectedCategories.some((id) => String(id) === String(categoryId));
+                          return (
+                            <Chip
+                              key={categoryId}
+                              label={category.name}
+                              className={classes.categoryChip}
+                              clickable
+                              color={isSelected ? "primary" : "default"}
+                              onClick={() => handleCategoryToggle(categoryId)}
+                              onDelete={isSelected ? () => handleCategoryToggle(categoryId) : undefined}
+                            />
+                          );
+                        })}
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+
+                {/* Brands Filter */}
+                <Box className={classes.filterSection}>
+                  {loadingBrands ? (
+                    <Typography variant="body2" color="textSecondary">
+                      Loading brands...
+                    </Typography>
+                  ) : brands.length === 0 ? (
+                    <Typography variant="body2" color="textSecondary">
+                      No brands available
+                    </Typography>
+                  ) : (
+                    <Box>
+                      <Typography variant="subtitle2" gutterBottom>
+                        Select Brands:
+                      </Typography>
+                      <Box className={classes.brandList}>
+                        {brands.map((brand) => {
+                          const brandId = brand._id || brand.id;
+                          const isSelected = selectedBrands.some((id) => String(id) === String(brandId));
+                          return (
+                            <Chip
+                              key={brandId}
+                              label={brand.name}
+                              className={classes.categoryChip}
+                              clickable
+                              color={isSelected ? "primary" : "default"}
+                              onClick={() => handleBrandToggle(brandId)}
+                              onDelete={isSelected ? () => handleBrandToggle(brandId) : undefined}
+                            />
+                          );
+                        })}
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+
+                {/* Ordering Select */}
+                <FormControl variant="outlined" className={classes.orderingSelect} size="small">
+                  <InputLabel>Sort By</InputLabel>
+                  <Select
+                    value={ordering}
+                    onChange={handleOrderingChange}
+                    label="Sort By"
+                  >
+                    <MenuItem value="">None</MenuItem>
+                    <MenuItem value="name">Name (A-Z)</MenuItem>
+                    <MenuItem value="-name">Name (Z-A)</MenuItem>
+                    <MenuItem value="price">Price (Low to High)</MenuItem>
+                    <MenuItem value="-price">Price (High to Low)</MenuItem>
+                    <MenuItem value="createdAt">Date (Oldest First)</MenuItem>
+                    <MenuItem value="-createdAt">Date (Newest First)</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Collapse>
             <div style={{ clear: "both" }}></div>{" "}
           </div>
         </Grid>
