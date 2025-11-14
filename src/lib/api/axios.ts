@@ -16,6 +16,11 @@ function sanitizeToken(token?: string | null): string | null {
 	return trimmed;
 }
 
+function normalizeUrl(url: string): string {
+	if (!url) return url;
+	return url.endsWith('/') ? url.slice(0, -1) : url;
+}
+
 function getLocalAccessToken() {
 	let accessToken = sanitizeToken(cookies.get("accessToken"));
 	if (!accessToken && typeof window !== "undefined") {
@@ -75,6 +80,9 @@ instance.interceptors.request.use(
 		if (token) {
 			config.headers["Authorization"] = `Bearer ${token}`;
 		}
+		if (config.url) {
+			config.url = normalizeUrl(config.url);
+		}
 		return config;
 	},
 	(error) => {
@@ -102,12 +110,13 @@ export function logout() {
 }
 
 export const sendGet = async (url: string, params?: any): Promise<any> => {
-	const normalizedUrl = params && url.endsWith('/') ? url.slice(0, -1) : url;
+	const normalizedUrl = normalizeUrl(url);
 	const response = await instance.get(normalizedUrl, { params });
 	return response?.data;
 };
 
 export const sendPost = (url: string, params?: any, queryParams?: any) => {
+	const normalizedUrl = normalizeUrl(url);
 	const config: AxiosRequestConfig = { params: queryParams };
 
 	if (params instanceof FormData) {
@@ -116,7 +125,7 @@ export const sendPost = (url: string, params?: any, queryParams?: any) => {
 		};
 	}
 
-	return instance.post(url, params, config)
+	return instance.post(normalizedUrl, params, config)
 		.then((res) => res?.data)
 		.catch((error) => {
 			if (error.response?.data) {
@@ -126,8 +135,9 @@ export const sendPost = (url: string, params?: any, queryParams?: any) => {
 		});
 };
 
-export const sendPut = (url: string, params?: any) => 
-	instance.put(url, params)
+export const sendPut = (url: string, params?: any) => {
+	const normalizedUrl = normalizeUrl(url);
+	return instance.put(normalizedUrl, params)
 		.then((res) => res?.data)
 		.catch((error) => {
 			if (error.response?.data) {
@@ -135,11 +145,17 @@ export const sendPut = (url: string, params?: any) =>
 			}
 			throw error;
 		});
+};
 
-export const sendPatch = (url: string, params?: any) => instance.patch(url, params).then((res) => res?.data);
+export const sendPatch = (url: string, params?: any) => {
+	const normalizedUrl = normalizeUrl(url);
+	return instance.patch(normalizedUrl, params).then((res) => res?.data);
+};
 
-export const sendDelete = (url: string, params?: any) =>
-	instance.delete(url, { data: params }).then((res) => res?.data);
+export const sendDelete = (url: string, params?: any) => {
+	const normalizedUrl = normalizeUrl(url);
+	return instance.delete(normalizedUrl, { data: params }).then((res) => res?.data);
+};
 
 class ApiClient {
 	get<T = any>(config: AxiosRequestConfig, options?: { shouldNotify: boolean }): Promise<T> {
