@@ -18,7 +18,7 @@ function sanitizeToken(token?: string | null): string | null {
 
 function normalizeUrl(url: string): string {
 	if (!url) return url;
-	return url.endsWith('/') ? url.slice(0, -1) : url;
+	return url.replace(/\/+$/, '');
 }
 
 function getLocalAccessToken() {
@@ -110,13 +110,11 @@ export function logout() {
 }
 
 export const sendGet = async (url: string, params?: any): Promise<any> => {
-	const normalizedUrl = normalizeUrl(url);
-	const response = await instance.get(normalizedUrl, { params });
+	const response = await instance.get(url, { params });
 	return response?.data;
 };
 
 export const sendPost = (url: string, params?: any, queryParams?: any) => {
-	const normalizedUrl = normalizeUrl(url);
 	const config: AxiosRequestConfig = { params: queryParams };
 
 	if (params instanceof FormData) {
@@ -125,7 +123,7 @@ export const sendPost = (url: string, params?: any, queryParams?: any) => {
 		};
 	}
 
-	return instance.post(normalizedUrl, params, config)
+	return instance.post(url, params, config)
 		.then((res) => res?.data)
 		.catch((error) => {
 			if (error.response?.data) {
@@ -136,8 +134,7 @@ export const sendPost = (url: string, params?: any, queryParams?: any) => {
 };
 
 export const sendPut = (url: string, params?: any) => {
-	const normalizedUrl = normalizeUrl(url);
-	return instance.put(normalizedUrl, params)
+	return instance.put(url, params)
 		.then((res) => res?.data)
 		.catch((error) => {
 			if (error.response?.data) {
@@ -148,13 +145,11 @@ export const sendPut = (url: string, params?: any) => {
 };
 
 export const sendPatch = (url: string, params?: any) => {
-	const normalizedUrl = normalizeUrl(url);
-	return instance.patch(normalizedUrl, params).then((res) => res?.data);
+	return instance.patch(url, params).then((res) => res?.data);
 };
 
 export const sendDelete = (url: string, params?: any) => {
-	const normalizedUrl = normalizeUrl(url);
-	return instance.delete(normalizedUrl, { data: params }).then((res) => res?.data);
+	return instance.delete(url, { data: params }).then((res) => res?.data);
 };
 
 class ApiClient {
